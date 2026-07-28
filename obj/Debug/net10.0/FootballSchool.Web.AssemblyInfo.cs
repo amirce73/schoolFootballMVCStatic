@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FootballSchool.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e27aab1eb448da1a68c7f8720ca85eafb4aab96b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf22f10fbbf42af2995d6127b4dfd97f41fbabef")]
 [assembly: System.Reflection.AssemblyProductAttribute("FootballSchool.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FootballSchool.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
