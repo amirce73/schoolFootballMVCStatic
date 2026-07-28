@@ -1,0 +1,101 @@
+@model IEnumerable<FootballSchool.Web.Models.BankAccount>
+@{
+    ViewData["Title"] = "حساب‌های بانکی";
+}
+
+<div id="view-bank-info" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">حساب‌های بانکی</h3>
+        <button type="button" class="btn-top-action btn-submit-top" onclick="document.getElementById('addBankModal').style.display='flex'">
+            <i class="fa fa-check" style="margin-left: 8px;"></i>+ افزودن حساب بانکی جدید
+        </button>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background: var(--success); color: white; padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card" style="padding: 0px; overflow: hidden;">
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--primary-light); text-align: right;">
+                        <th style="padding: 12px; border-bottom: 1px solid var(--border);">نام بانک</th>
+                        <th style="padding: 12px; border-bottom: 1px solid var(--border);">شعبه</th>
+                        <th style="padding: 12px; border-bottom: 1px solid var(--border);">شماره کارت</th>
+                        <th style="padding: 12px; border-bottom: 1px solid var(--border);">شماره شبا</th>
+                        <th style="padding: 12px; border-bottom: 1px solid var(--border);">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model.Any())
+                    {
+                        foreach (var account in Model)
+                        {
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--border);">@account.BankName</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--border);">@account.Branch</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--border); direction: ltr; text-align: right;">@account.CardNumber</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--border); direction: ltr; text-align: right;">@account.Iban</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--border);">
+                                    <form asp-action="DeleteBankAccount" method="post" style="display:inline;" onsubmit="return confirm('آیا از حذف این حساب مطمئن هستید؟');">
+                                        <input type="hidden" name="id" value="@account.Id" />
+                                        <button type="submit" class="btn-icon" title="حذف" style="background:none; border:none; cursor:pointer;">
+                                            <i class="fa fa-trash" style="color: var(--danger);"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-muted);">هیچ حساب بانکی ثبت نشده است.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="addBankModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px;">
+    <div class="modal-content" style="background: var(--surface); padding: 20px; border-radius: 12px; width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa fa-bank" style="color: var(--primary);"></i> افزودن حساب جدید</h3>
+            <button type="button" onclick="document.getElementById('addBankModal').style.display='none'" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dark);">&times;</button>
+        </div>
+        
+        <form asp-action="AddBankAccount" method="post" class="form-grid">
+            <div class="input-group">
+                <label>نام بانک <span class="text-danger">*</span></label>
+                <input name="BankName" type="text" required>
+            </div>
+            <div class="input-group">
+                <label>شعبه</label>
+                <input name="Branch" type="text">
+            </div>
+            <div class="input-group">
+                <label>شماره کارت <span class="text-danger">*</span></label>
+                <input name="CardNumber" type="text" inputmode="numeric" style="direction: ltr; text-align: left;" required>
+            </div>
+            <div class="input-group">
+                <label>شماره شبا (با IR) <span class="text-danger">*</span></label>
+                <input name="Iban" type="text" style="direction: ltr; text-align: left;" required>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px; grid-column: 1/-1;">
+                <button type="button" onclick="document.getElementById('addBankModal').style.display='none'" style="flex: 1; padding: 12px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; background: #e2e8f0; color: var(--text-dark);">انصراف</button>
+                <button type="submit" style="flex: 1; padding: 12px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; background: var(--success); color: white;">ثبت حساب</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,98 @@
+@model FootballSchool.Web.Models.ViewModels.FinancialViewModel
+
+@{
+    ViewData["Title"] = "اطلاعات مالی";
+}
+
+<div id="view-financial-hub" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a asp-controller="Home" asp-action="Index" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">اطلاعات مالی</h3>
+        <div style="width: 80px;"></div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3 mx-3">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="financial-top-grid">
+        <div class="debt-card @(Model.TotalDebt > 0 ? "status-due" : "status-paid")" style="padding: 16px;">
+            <div class="debt-info-wrap">
+                <div class="debt-icon">@(Model.TotalDebt > 0 ? "❌" : "✅")</div>
+                <div class="debt-info">
+                    <span class="label">وضعیت مالی حساب</span>
+                    <span class="amount" style="padding-top: 3px;">
+                        @(Model.TotalDebt > 0 ? Model.TotalDebt.ToString("N0") + " تومان بدهی" : "تسويه شده")
+                    </span>
+                </div>
+            </div>
+            @if (Model.TotalDebt > 0)
+            {
+                <form asp-controller="Financial" asp-action="PayDebt" method="post">
+                    <button type="submit" class="btn-credit" title="پرداخت بدهی" style="width: 100%;">
+                        <i class="fa fa-plus"></i> پرداخت بدهی
+                    </button>
+                </form>
+            }
+        </div>
+
+        <div class="card">
+            <div class="hub-list">
+                <div class="hub-btn">
+                    <div class="hub-btn-left">
+                        <div class="hub-btn-icon"><i class="fa fa-bank"></i></div> حساب‌های بانکی
+                    </div>
+                    <i class="fa fa-angle-left"></i>
+                </div>
+                <div class="hub-btn">
+                    <div class="hub-btn-left">
+                        <div class="hub-btn-icon" style="color: var(--success);"><i class="fa fa-credit-card"></i></div> پرداخت شهریه
+                    </div>
+                    <i class="fa fa-angle-left"></i>
+                </div>
+                <div class="hub-btn">
+                    <div class="hub-btn-left">
+                        <div class="hub-btn-icon" style="color: var(--info);"><i class="fa fa-bar-chart"></i></div> گزارشات و تایم‌لاین مالی
+                    </div>
+                    <i class="fa fa-angle-left"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card recent-transactions-card">
+        <h4 class="transactions-title"><i class="fa fa-exchange" style="color: var(--primary); margin-left: 8px;"></i> سوابق تراکنش‌های اخیر</h4>
+        <div class="transactions-list">
+            @if (!Model.Transactions.Any())
+            {
+                <div class="text-center p-3 text-muted">تراکنشی یافت نشد.</div>
+            }
+            else
+            {
+                foreach (var tr in Model.Transactions)
+                {
+                    <div class="transaction-item">
+                        <div class="tr-info">
+                            <div class="tr-icon @(tr.IsCredit ? (tr.IsSuccessful ? "success" : "fail") : "fail")">
+                                <i class="fa @(tr.IsCredit ? "fa-arrow-down" : "fa-arrow-up")"></i>
+                            </div>
+                            <div>
+                                <strong>@tr.Title</strong>
+                                <span class="tr-date">@tr.TransactionDate.ToString("yyyy/MM/dd | HH:mm")</span>
+                            </div>
+                        </div>
+                        <div class="tr-amount @(tr.IsCredit ? (tr.IsSuccessful ? "success" : "fail") : "fail")">
+                            @tr.Amount.ToString("N0") تومان
+                            <span class="@(tr.IsSuccessful ? "badge-success" : "badge-fail")">
+                                @(tr.IsSuccessful ? (tr.IsCredit ? "موفق" : "بدهی") : "ناموفق")
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

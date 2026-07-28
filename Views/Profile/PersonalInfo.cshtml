@@ -1,0 +1,156 @@
+@model FootballSchool.Web.Models.ViewModels.PersonalInfoViewModel
+@{
+    ViewData["Title"] = "اطلاعات فردی";
+}
+
+<div id="view-personal-info" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">اطلاعات فردی</h3>
+        <button type="submit" form="personalInfoForm" class="btn-top-action btn-submit-top">
+            <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+        </button>
+    </div>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background: var(--success); color: white; padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <form id="personalInfoForm" class="form-grid" asp-controller="Profile" asp-action="PersonalInfo" method="post">
+            
+            <div class="input-group">
+                <label>نام <span class="text-danger">*</span></label>
+                <input asp-for="FirstName" maxlength="50" type="text">
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>نام خانوادگی <span class="text-danger">*</span></label>
+                <input asp-for="LastName" maxlength="50" type="text">
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>کد ملی<span class="text-danger">*</span></label>
+                <input asp-for="NationalId" maxlength="10" inputmode="numeric" type="text">
+                <span asp-validation-for="NationalId" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>تاریخ تولد <span class="text-danger">*</span></label>
+                <input asp-for="BirthDate" type="date" style="width: 100%; padding: 12px 14px; border: 1px solid rgb(203, 213, 225); border-radius: 8px; font-size: 0.9rem; background: rgb(255, 255, 255); color: inherit; cursor: pointer; min-height: 44px; display: flex; align-items: center;">
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>شماره شناسنامه</label>
+                <input asp-for="BirthCertificateNo" maxlength="10" inputmode="numeric" type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>نام پدر</label>
+                <input asp-for="FatherName" maxlength="50" type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>وزن (کیلوگرم)</label>
+                <input asp-for="Weight" maxlength="3" inputmode="numeric" type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>قد (سانتی‌متر)</label>
+                <input asp-for="Height" maxlength="3" inputmode="numeric" type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>جنسیت <span class="text-danger">*</span></label>
+                <select asp-for="Gender">
+                    <option value="">انتخاب کنید</option>
+                    <option value="مرد">مرد</option>
+                    <option value="زن">زن</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>گروه خونی</label>
+                <select asp-for="BloodGroup">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>وضعیت تاهل</label>
+                <select asp-for="MaritalStatus">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="مجرد">مجرد</option>
+                    <option value="متاهل">متاهل</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>وضعیت نظام وظیفه</label>
+                <select asp-for="MilitaryServiceStatus">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="مشمول">مشمول</option>
+                    <option value="معافیت تحصیلی">معافیت تحصیلی</option>
+                    <option value="معافیت دائم">معافیت دائم</option>
+                    <option value="پایان خدمت">پایان خدمت</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>دین <span class="text-danger">*</span></label>
+                <select asp-for="Religion">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="اسلام">اسلام</option>
+                    <option value="مسیحیت">مسیحیت</option>
+                    <option value="یهودیت">یهودیت</option>
+                    <option value="زرتشتی">زرتشتی</option>
+                    <option value="سایر">سایر</option>
+                </select>
+                <span asp-validation-for="Religion" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>مذهب</label>
+                <select asp-for="Sect">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="شیعه">شیعه</option>
+                    <option value="سنی">سنی</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>شغل</label>
+                <input asp-for="Occupation" maxlength="50" type="text">
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label>وضعیت سلامت و بیماری‌های خاص</label>
+                <textarea asp-for="HealthStatus" rows="2" maxlength="500" placeholder="اگر بیماری خاصی دارید اینجا بنویسید"></textarea>
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label>توضیحات</label>
+                <textarea asp-for="Description" rows="3" maxlength="500"></textarea>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

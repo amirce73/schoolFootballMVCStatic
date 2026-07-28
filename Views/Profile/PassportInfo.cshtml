@@ -1,0 +1,91 @@
+@model FootballSchool.Web.Models.ViewModels.PassportInfoViewModel
+@{
+    ViewData["Title"] = "اطلاعات گذرنامه";
+}
+
+<div id="view-passport-info" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">اطلاعات گذرنامه</h3>
+        <button type="submit" form="passportForm" class="btn-top-action btn-submit-top">
+            <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+        </button>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background: var(--success); color: white; padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <form id="passportForm" asp-action="PassportInfo" method="post" enctype="multipart/form-data" class="form-grid">
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label asp-for="PassportNumber">شماره گذرنامه <span class="text-danger">*</span></label>
+                <input asp-for="PassportNumber" maxlength="20" placeholder="شماره گذرنامه" style="text-align: left; direction: ltr;" required />
+                <span asp-validation-for="PassportNumber" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="PassportIssueDate">تاریخ صدور <span class="text-danger">*</span></label>
+                <input asp-for="PassportIssueDate" placeholder="YYYY/MM/DD" style="text-align: left; direction: ltr;" required />
+                <span asp-validation-for="PassportIssueDate" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="PassportExpiryDate">تاریخ انقضا <span class="text-danger">*</span></label>
+                <input asp-for="PassportExpiryDate" placeholder="YYYY/MM/DD" style="text-align: left; direction: ltr;" required />
+                <span asp-validation-for="PassportExpiryDate" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="EnglishName">نام (انگلیسی) <span class="text-danger">*</span></label>
+                <input asp-for="EnglishName" maxlength="50" style="text-align: left; direction: ltr;" required />
+                <span asp-validation-for="EnglishName" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="EnglishSurname">نام خانوادگی (انگلیسی) <span class="text-danger">*</span></label>
+                <input asp-for="EnglishSurname" maxlength="50" style="text-align: left; direction: ltr;" required />
+                <span asp-validation-for="EnglishSurname" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label asp-for="PassportDescription">توضیحات</label>
+                <textarea asp-for="PassportDescription" rows="3" maxlength="500"></textarea>
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label>تصویر گذرنامه</label>
+                <input asp-for="PassportPhoto" id="passportFile" accept="image/*" type="file" style="display: none;" onchange="updateFileName(this)" />
+                <div style="border: 2px dashed rgb(203, 213, 225); padding: 20px; text-align: center; border-radius: 12px; background: rgb(248, 250, 252); cursor: pointer; transition: 0.2s;" onclick="document.getElementById('passportFile').click()">
+                    <i class="fa fa-cloud-upload" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                    <p id="fileNameDisplay" style="margin: 0px; color: var(--text-muted);">
+                        @if (!string.IsNullOrEmpty(Model.ExistingPassportPhotoPath))
+                        {
+                            <span>تصویر قبلا آپلود شده است. برای تغییر کلیک کنید.</span>
+                        }
+                        else
+                        {
+                            <span>برای انتخاب فایل کلیک کنید</span>
+                        }
+                    </p>
+                </div>
+            </div>
+            
+            <div class="desktop-anchor" style="display: none;"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateFileName(input) {
+            if (input.files && input.files.length > 0) {
+                document.getElementById('fileNameDisplay').innerText = input.files[0].name;
+            }
+        }
+    </script>
+}

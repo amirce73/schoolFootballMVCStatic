@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "اطلاعات تخصصی";
+}
+
+<div id="view-specialized-hub" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a asp-controller="Home" asp-action="Index" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">اطلاعات تخصصی</h3>
+        <div style="width: 80px;"></div>
+    </div>
+    
+    <div class="specialized-top-grid">
+        <div class="card" style="padding: 16px; grid-column: 1 / -1;">
+            <div class="section-title" style="margin-top: 0px; display: flex; justify-content: space-between; align-items: center;">
+                <div><i class="fa fa-line-chart" style="color: var(--primary);"></i> نمرات در تمرینات (از ۱ تا ۱۰) - هفته اخیر</div>
+                <button class="btn-primary" style="font-size: 0.8rem; padding: 4px 12px; border-radius: 4px;">مشاهده</button>
+            </div>
+            <div class="css-chart-wrap">
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 70%; background: rgb(133, 207, 23);"><span class="css-bar-val">7</span></div>
+                    </div><span class="css-bar-label">شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 80%; background: rgb(96, 207, 23);"><span class="css-bar-val">8</span></div>
+                    </div><span class="css-bar-label">۱شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 90%; background: rgb(60, 207, 23);"><span class="css-bar-val">9</span></div>
+                    </div><span class="css-bar-label">۲شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 60%; background: rgb(170, 207, 23);"><span class="css-bar-val">6</span></div>
+                    </div><span class="css-bar-label">۳شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 80%; background: rgb(96, 207, 23);"><span class="css-bar-val">8</span></div>
+                    </div><span class="css-bar-label">۴شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 70%; background: rgb(133, 207, 23);"><span class="css-bar-val">7</span></div>
+                    </div><span class="css-bar-label">۵شنبه</span>
+                </div>
+                <div class="css-bar-col">
+                    <div class="css-bar">
+                        <div class="css-bar-fill" style="height: 0%; background: rgb(203, 213, 225);"></div>
+                    </div><span class="css-bar-label">جمعه</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="section-title" style="padding: 0px 16px; margin-top: 16px;">
+            <i class="fa fa-folder-open" style="color: var(--danger);"></i> فرم‌ها و گزارش‌ها
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(16, 185, 129); background: rgb(220, 252, 231);"><i class="fa fa-check-square-o"></i></div>
+                <div class="spec-title">گزارش حضور و غیاب<br>در تمرینات</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: var(--warning); background: rgb(254, 243, 199);"><i class="fa fa-map-marker"></i></div>
+                <div class="spec-title">فرم داده‌های<br>GPS</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(29, 78, 216); background: var(--primary-light);"><i class="fa fa-history"></i></div>
+                <div class="spec-title">تاریخچه<br>ثبت‌نام‌ها</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(147, 51, 234); background: rgb(243, 232, 255);"><i class="fa fa-search"></i></div>
+                <div class="spec-title">فرم<br>استعدادیابی</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(245, 158, 11); background: rgb(254, 243, 199);"><i class="fa fa-line-chart"></i></div>
+                <div class="spec-title">تحلیل عملکرد<br>در مسابقه</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(59, 130, 246); background: rgb(224, 231, 255);"><i class="fa fa-area-chart"></i></div>
+                <div class="spec-title">تحلیل عملکرد<br>در تمرینات</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(14, 165, 233); background: rgb(224, 242, 254);"><i class="fa fa-heartbeat"></i></div>
+                <div class="spec-title">وضعیت<br>بیمه ورزشی</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(245, 158, 11); background: rgb(254, 243, 199);"><i class="fa fa-certificate"></i></div>
+                <div class="spec-title">گواهی<br>پایان دوره</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(239, 68, 68); background: rgb(254, 226, 226);"><i class="fa fa-medkit"></i></div>
+                <div class="spec-title">فرم<br>پزشکی</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-icon" style="color: rgb(100, 116, 139); background: rgb(241, 245, 249);"><i class="fa fa-id-badge"></i></div>
+                <div class="spec-title">دریافت کارت<br>عضویت</div>
+            </div>
+        </div>
+    </div>
+</div>

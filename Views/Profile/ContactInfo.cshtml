@@ -1,0 +1,569 @@
+@model FootballSchool.Web.Models.ViewModels.ContactInfoViewModel
+@{
+    ViewData["Title"] = "اطلاعات تماس";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/leaflet/leaflet.css" />
+    <style>
+        .desktop-mobile-hint {
+            display: block;
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .desktop-mobile-input {
+            flex: 1;
+            width: auto;
+        }
+
+        .desktop-mobile-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .desktop-mobile-inner {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .desktop-mobile-edit-btn {
+            padding: 0 16px;
+            border-radius: 8px;
+            white-space: nowrap;
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+            border: none;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+            box-shadow: none;
+        }
+
+        .desktop-mobile-edit-btn:hover {
+            background-color: color-mix(in srgb, var(--primary) 80%, black);
+        }
+
+        @@media (min-width: 768px) {
+            .desktop-mobile-hint {
+                font-size: 0.9rem;
+                margin-top: 0;
+                margin-right: 4px;
+            }
+
+            .desktop-mobile-input {
+                flex: none !important;
+                width: 315px !important;
+            }
+
+            .desktop-mobile-container {
+                flex-direction: row;
+                gap: 8px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .desktop-mobile-inner {
+                flex: none;
+                width: auto;
+            }
+        }
+    </style>
+}
+
+<div id="view-contact-info" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">اطلاعات تماس</h3>
+        <button type="submit" form="contactInfoForm" class="btn-top-action btn-submit-top">
+            <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+        </button>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background: var(--success); color: white; padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <form id="contactInfoForm" class="form-grid" asp-controller="Profile" asp-action="ContactInfo" method="post">
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label>موبایل(شماره پنل)</label>
+                <div class="desktop-mobile-container">
+                    <div class="desktop-mobile-inner">
+                        <input asp-for="Mobile" inputmode="numeric" readonly type="text" class="desktop-mobile-input" style="background: #f1f5f9; color: #64748b; direction: ltr; text-align: left;">
+                        <button type="button" class="desktop-mobile-edit-btn" onclick="if(typeof mapModal !== 'undefined') { document.getElementById('mobileModal').style.display='flex'; }">
+                            <i class="fa fa-edit"></i> ویرایش
+                        </button>
+                    </div>
+                    <span class="desktop-mobile-hint">
+                        برای ویرایش تلفن همراه روی دکمه ویرایش کلیک کنید.
+                    </span>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>تلفن ثابت</label>
+                <input asp-for="Telephone" inputmode="numeric" placeholder="021..." type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>شماره ولی (پدر یا مادر)</label>
+                <input asp-for="GuardianMobile" inputmode="numeric" placeholder="09..." type="text">
+            </div>
+            
+            <div class="input-group">
+                <label>تلفن ضروری <span class="text-danger">*</span></label>
+                <input asp-for="EmergencyPhone" inputmode="numeric" type="text">
+                <span asp-validation-for="EmergencyPhone" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>ایمیل</label>
+                <input asp-for="Email" type="email" style="text-align: left; direction: ltr;">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group">
+                <label>وب سایت</label>
+                <input asp-for="Website" placeholder="https://..." type="text" style="text-align: left; direction: ltr;">
+            </div>
+            
+            <div class="input-group">
+                <label>کد پستی (۱۰ رقم)</label>
+                <input asp-for="PostalCode" inputmode="numeric" placeholder="مثال: ۱۲۳۴۵۶۷۸۹۰" type="text">
+            </div>
+            
+            <!-- شبکه‌های اجتماعی -->
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label style="color: var(--text-dark); font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-share-alt" style="color: var(--primary);"></i> شبکه‌های اجتماعی
+                </label>
+                <div style="padding: 3px; border: 1.5px solid rgba(234, 179, 8, 0.5); border-radius: 10px; background: #f8fafc; overflow: visible; position: relative;" id="social-networks-container">
+                    <div id="social-networks-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; padding: 5px; display: none;">
+                    </div>
+
+                    <div style="padding: 10px 14px; background: var(--primary-light); animation: fadeIn 0.2s ease-out; border-radius: 8px; margin-top: 5px;" id="social-add-section">
+                        <div class="social-add-controls">
+                            <div class="social-fields-row" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;">
+                                <div class="social-network-field" style="display: flex; flex-direction: column; gap: 4px;">
+                                    <div style="position: relative;" id="social-dropdown-wrapper">
+                                        <div id="social-dropdown-trigger" style="display: flex; align-items: center; gap: 7px; padding: 7px 9px; direction: rtl; border: 1.5px solid rgba(234,179,8,0.6); border-radius: 8px; background: #fff; cursor: pointer; transition: all 0.15s; user-select: none;">
+                                            <div id="social-dropdown-icon-bg" style="width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(234,179,8,0.15); color: #eab308; font-size: 0.8rem;">
+                                                <i class="fa fa-share-alt" id="social-dropdown-icon"></i>
+                                            </div>
+                                            <span id="social-dropdown-label" style="flex: 1; font-size: 0.8rem; font-weight: 700; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">انتخاب شبکه</span>
+                                            <i class="fa fa-chevron-down" id="social-dropdown-chevron" style="font-size: 0.6rem; color: #94a3b8; flex-shrink: 0;"></i>
+                                        </div>
+                                        <div id="social-dropdown-menu" style="display: none; position: absolute; top: 100%; right: 0; left: 0; background: #fff; border: 1.5px solid rgba(234,179,8,0.5); border-top: none; border-radius: 0 0 10px 10px; box-shadow: 0 10px 28px rgba(0,0,0,0.15); overflow: hidden; z-index: 1001; max-height: 250px; overflow-y: auto;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="social-url-field" style="display: flex; flex-direction: column; gap: 4px;">
+                                    <input type="text" id="social-input-val" placeholder="https://..." style="width: 100%; direction: ltr; text-align: left; font-size: 0.85rem; padding: 7px 10px; border: 1.5px solid rgba(234,179,8,0.6); border-radius: 8px; outline: none; background: #fff; font-family: inherit;">
+                                    <span id="social-input-error" style="color: #ef4444; font-size: 0.7rem; direction: rtl; display: none;"><i class="fa fa-exclamation-triangle" style="margin-left: 4px;"></i><span id="social-input-error-msg"></span></span>
+                                </div>
+                            </div>
+                            <div class="social-buttons-row" style="display: flex; gap: 8px;">
+                                <button type="button" id="social-btn-add" style="flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 7px 14px; background: var(--primary); border: none; border-radius: 8px; cursor: pointer; color: #fff; font-family: inherit; font-size: 0.82rem; font-weight: 700; box-shadow: 0 2px 6px var(--primary);"><i class="fa fa-plus" style="font-size: 0.75rem;"></i> افزودن</button>
+                                <button type="button" id="social-btn-cancel" style="flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 7px 12px; background: #ef4444; border: none; border-radius: 8px; cursor: pointer; color: #fff; font-family: inherit; font-size: 0.82rem; font-weight: 700;"><i class="fa fa-times" style="font-size: 0.75rem;"></i> انصراف</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="social-btn-open-add" style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 14px; background: transparent; border: none; cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--primary); font-family: inherit; transition: 0.2s;">
+                        <i class="fa fa-plus" style="font-size: 0.78rem;"></i> افزودن شبکه اجتماعی جدید
+                    </button>
+                </div>
+                <div id="social-hidden-inputs"></div>
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label style="margin-bottom: 0; right: 3px;">
+                    آدرس دقیق منزل <span class="text-danger">*</span>
+                </label>
+                <button type="button" onclick="if(typeof mapModal !== 'undefined') mapModal.style.display='flex'; else document.getElementById('mapModal').style.display='flex'; setTimeout(() => { if(typeof map !== 'undefined' && map) map.invalidateSize(); }, 300);" style="align-self: flex-start; margin-top: 16px; margin-right: 12px; margin-bottom: 8px; background: var(--primary-light); color: var(--text-dark); border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: bold; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: none;">
+                    <i class="fa fa-map-marker"></i> انتخاب از نقشه
+                </button>
+                <textarea asp-for="Address" rows="2" placeholder="استان، شهر، خیابان..."></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            
+            <div class="input-group" style="grid-column: 1 / -1;">
+                <label style="margin-bottom: 0; right: 3px;">
+                    آدرس محل کار والدین
+                </label>
+                <button type="button" onclick="if(typeof mapModal !== 'undefined') mapModal.style.display='flex'; else document.getElementById('mapModal').style.display='flex'; setTimeout(() => { if(typeof map !== 'undefined' && map) map.invalidateSize(); }, 300);" style="align-self: flex-start; margin-top: 16px; margin-right: 12px; margin-bottom: 8px; background: var(--primary-light); color: var(--text-dark); border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: bold; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: none;">
+                    <i class="fa fa-map-marker"></i> انتخاب از نقشه
+                </button>
+                <textarea asp-for="ParentsWorkAddress" rows="2" placeholder="آدرس دقیق"></textarea>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="mapModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px;" onclick="closeMapModal()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="background: var(--surface); padding: 20px; border-radius: 12px; width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa fa-map-marker text-danger"></i> انتخاب موقعیت روی نقشه</h3>
+            <button type="button" onclick="closeMapModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dark);">&times;</button>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <input type="text" id="mapSearchInput" placeholder="جستجوی شهر، خیابان (مثلا: Isfahan)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);" onkeydown="if(event.key === 'Enter') { searchMap(); event.preventDefault(); }">
+            <button type="button" onclick="searchMap()" class="btn-app-secondary" style="padding: 0 15px; border-radius: 8px;"><i class="fa fa-search"></i></button>
+        </div>
+        <div style="height: 300px; width: 100%; border-radius: 10px; overflow: hidden; position: relative;">
+            <div id="map" style="height: 100%; width: 100%; z-index: 1;"></div>
+            <button type="button" title="موقعیت من" onclick="event.preventDefault(); if (navigator.geolocation) { navigator.geolocation.getCurrentPosition((pos) => { const lat = pos.coords.latitude; const lng = pos.coords.longitude; if(window.mapInstance) { window.mapInstance.setView([lat, lng], 16); window.mapMarker.setLatLng([lat, lng]); } if(window.fetchMapAddress) { window.fetchMapAddress(lat, lng); } }, (err) => { alert('دسترسی به موقعیت یاب امکانپذیر نیست.'); }); } else { alert('مرورگر شما از موقعیت یاب پشتیبانی نمیکند.'); }" style="position: absolute; bottom: 15px; right: 15px; z-index: 1000; background: #eef4ff; color: #1e293b; border: none; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" fill="#1e293b" />
+                    <line x1="12" y1="2" x2="12" y2="6" />
+                    <line x1="12" y1="18" x2="12" y2="22" />
+                    <line x1="2" y1="12" x2="6" y2="12" />
+                    <line x1="18" y1="12" x2="22" y2="12" />
+                </svg>
+            </button>
+        </div>
+        <div style="padding: 12px; background: var(--background); border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem; min-height: 60px; display: flex; align-items: center; justify-content: center; text-align: center;">
+            <span id="mapAddressText" style="font-weight: bold;">نقشه را کلیک کنید یا نشانگر را جابجا کنید</span>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            <button type="button" onclick="closeMapModal()" style="flex: 1; padding: 12px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; background: var(--danger); color: white; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">انصراف</button>
+            <button type="button" onclick="confirmMapSelection()" style="flex: 1; padding: 12px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">تایید موقعیت</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/assets/leaflet/leaflet.js"></script>
+    <script>
+        function closeMapModal() {
+            document.getElementById('mapModal').style.display = 'none';
+        }
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const NETWORKS = [
+                { key: 'Telegram', label: 'تلگرام', icon: 'fa fa-telegram', color: '#229ED9', placeholder: 'https://t.me/username', isImage: false },
+                { key: 'Instagram', label: 'اینستاگرام', icon: 'fa fa-instagram', color: '#C13584', placeholder: 'https://instagram.com/username', isImage: false },
+                { key: 'WhatsApp', label: 'واتساپ', icon: 'fa fa-whatsapp', color: '#25D366', placeholder: 'شماره همراه: 09...', isImage: false },
+                { key: 'LinkedIn', label: 'لینکدین', icon: 'fa fa-linkedin', color: '#0077b5', placeholder: 'https://linkedin.com/in/username', isImage: false },
+                { key: 'Facebook', label: 'فیسبوک', icon: 'fa fa-facebook', color: '#1877F2', placeholder: 'https://facebook.com/username', isImage: false },
+                { key: 'Bale', label: 'بله', icon: '/assets/images/icon/Bale_logo.png', color: '#2ECC71', placeholder: '@@username یا شماره', isImage: true },
+                { key: 'Eitaa', label: 'ایتا', icon: '/assets/images/icon/eitaa-logo.png', color: '#FF6B35', placeholder: '@@username یا شماره', isImage: true },
+                { key: 'Rubika', label: 'روبیکا', icon: '/assets/images/icon/logo-rubika.png', color: '#ff3c00', placeholder: '@@username یا شماره', isImage: true }
+            ];
+            
+            let userNetworks = {};
+            @if(!string.IsNullOrEmpty(Model?.Telegram)) { <text>userNetworks['Telegram'] = '@Html.Raw(Model.Telegram)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.Instagram)) { <text>userNetworks['Instagram'] = '@Html.Raw(Model.Instagram)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.LinkedIn)) { <text>userNetworks['LinkedIn'] = '@Html.Raw(Model.LinkedIn)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.Facebook)) { <text>userNetworks['Facebook'] = '@Html.Raw(Model.Facebook)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.WhatsApp)) { <text>userNetworks['WhatsApp'] = '@Html.Raw(Model.WhatsApp)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.Bale)) { <text>userNetworks['Bale'] = '@Html.Raw(Model.Bale)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.Eitaa)) { <text>userNetworks['Eitaa'] = '@Html.Raw(Model.Eitaa)';</text> }
+            @if(!string.IsNullOrEmpty(Model?.Rubika)) { <text>userNetworks['Rubika'] = '@Html.Raw(Model.Rubika)';</text> }
+
+            let selectedNetKey = null;
+
+            const listEl = document.getElementById('social-networks-list');
+            const dropTrigger = document.getElementById('social-dropdown-trigger');
+            const dropMenu = document.getElementById('social-dropdown-menu');
+            const dropLabel = document.getElementById('social-dropdown-label');
+            const dropIconBg = document.getElementById('social-dropdown-icon-bg');
+            const inputVal = document.getElementById('social-input-val');
+            const btnAdd = document.getElementById('social-btn-add');
+            const hiddenInputs = document.getElementById('social-hidden-inputs');
+            const errorWrap = document.getElementById('social-input-error');
+            const errorMsg = document.getElementById('social-input-error-msg');
+            const btnOpenAdd = document.getElementById('social-btn-open-add');
+            const addSection = document.getElementById('social-add-section');
+            const btnCancel = document.getElementById('social-btn-cancel');
+
+            let addingNew = false;
+            function setAddingNew(state) {
+                addingNew = state;
+                if (state) {
+                    addSection.style.display = 'block';
+                    btnOpenAdd.style.display = 'none';
+                } else {
+                    addSection.style.display = 'none';
+                    updateDropdownVisibility();
+                }
+            }
+
+            function updateDropdownVisibility() {
+                const keys = Object.keys(userNetworks);
+                const available = NETWORKS.filter(n => !userNetworks[n.key]);
+                if (available.length > 0 && !addingNew) {
+                    btnOpenAdd.style.display = 'flex';
+                    if (keys.length > 0) {
+                        btnOpenAdd.style.borderTop = '1px solid rgba(234,179,8,0.25)';
+                    } else {
+                        btnOpenAdd.style.borderTop = 'none';
+                    }
+                } else {
+                    btnOpenAdd.style.display = 'none';
+                }
+                if (keys.length === 0) {
+                    setAddingNew(true);
+                }
+            }
+
+            btnOpenAdd.onclick = () => setAddingNew(true);
+
+            btnCancel.onclick = () => {
+                const keys = Object.keys(userNetworks);
+                if (keys.length > 0) {
+                    setAddingNew(false);
+                    inputVal.value = '';
+                    selectedNetKey = null;
+                    dropLabel.innerText = 'انتخاب شبکه';
+                    dropLabel.style.color = '#94a3b8';
+                    dropIconBg.innerHTML = '<i class="fa fa-share-alt"></i>';
+                    dropIconBg.style.background = 'rgba(234,179,8,0.15)';
+                    dropIconBg.style.color = '#eab308';
+                    errorWrap.style.display = 'none';
+                }
+            };
+
+            function renderIcon(net) {
+                if (net.isImage) return '<img src="' + net.icon + '" style="width: 16px; height: 16px; object-fit: contain;">';
+                return '<i class="' + net.icon + '"></i>';
+            }
+
+            function hexToRgba(hex, alpha) {
+                if (!hex.startsWith('#')) return hex;
+                var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+                return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+            }
+
+            function updateDropdown() {
+                const available = NETWORKS.filter(n => !userNetworks[n.key]);
+                dropMenu.innerHTML = '';
+                available.forEach((n, idx) => {
+                    const opt = document.createElement('div');
+                    opt.style.cssText = 'display: flex; align-items: center; gap: 9px; padding: 9px 11px; cursor: pointer; border-bottom: ' + (idx < available.length - 1 ? '1px solid rgba(234,179,8,0.12)' : 'none') + '; background: #fff; transition: background 0.12s; direction: rtl;';
+                    opt.innerHTML = '<div style="width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: ' + (n.color.startsWith('#') ? hexToRgba(n.color, 0.1) : n.color + '15') + '; color: ' + n.color + '; border: 1.5px solid ' + (n.color.startsWith('#') ? hexToRgba(n.color, 0.25) : n.color + '40') + '; font-size: 0.85rem;">' + renderIcon(n) + '</div><span style="font-size: 0.83rem; font-weight: 700; color: #0f172a; flex: 1;">' + n.label + '</span>';
+                    opt.onmouseover = () => opt.style.background = 'var(--primary-light)';
+                    opt.onmouseout = () => opt.style.background = '#fff';
+                    opt.onclick = (e) => {
+                        e.stopPropagation();
+                        selectedNetKey = n.key;
+                        dropLabel.innerText = n.label;
+                        dropLabel.style.color = '#0f172a';
+                        dropIconBg.innerHTML = renderIcon(n);
+                        dropIconBg.style.background = n.color.startsWith('#') ? hexToRgba(n.color, 0.15) : n.color + '20';
+                        dropIconBg.style.color = n.color;
+                        inputVal.placeholder = n.placeholder;
+                        dropMenu.style.display = 'none';
+                        document.getElementById('social-dropdown-chevron').className = 'fa fa-chevron-down';
+                        errorWrap.style.display = 'none';
+                    };
+                    dropMenu.appendChild(opt);
+                });
+            }
+
+            dropTrigger.onclick = () => {
+                const isOpen = dropMenu.style.display === 'block';
+                dropMenu.style.display = isOpen ? 'none' : 'block';
+                document.getElementById('social-dropdown-chevron').className = isOpen ? 'fa fa-chevron-down' : 'fa fa-chevron-up';
+            };
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('social-dropdown-wrapper').contains(e.target)) {
+                    dropMenu.style.display = 'none';
+                    document.getElementById('social-dropdown-chevron').className = 'fa fa-chevron-down';
+                }
+            });
+
+            function renderList() {
+                listEl.innerHTML = '';
+                hiddenInputs.innerHTML = '';
+                const keys = Object.keys(userNetworks);
+                if (keys.length === 0) {
+                    listEl.style.display = 'none';
+                } else {
+                    listEl.style.display = 'grid';
+                    keys.forEach(k => {
+                        const val = userNetworks[k];
+                        const net = NETWORKS.find(n => n.key === k);
+                        if (!net) return;
+
+                        const item = document.createElement('div');
+                        item.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid rgba(234,179,8,0.2); border-radius: 8px; background: #fff; transition: background 0.2s; direction: rtl;';
+
+                        item.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; background: ' + (net.color.startsWith('#') ? hexToRgba(net.color, 0.1) : net.color + '15') + '; color: ' + net.color + '; border: 1.5px solid ' + (net.color.startsWith('#') ? hexToRgba(net.color, 0.25) : net.color + '40') + '; font-size: 1rem;">' + renderIcon(net) + '</div><span style="font-size: 0.78rem; font-weight: 700; color: ' + net.color + '; flex-shrink: 0; white-space: nowrap;">' + net.label + '</span><span style="flex: 1; direction: ltr; text-align: left; font-size: 0.82rem; color: #0f172a; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + val + '</span>';
+
+                        const actions = document.createElement('div');
+                        actions.style.display = 'flex';
+                        actions.style.gap = '4px';
+
+                        const editBtn = document.createElement('button');
+                        editBtn.type = 'button';
+                        editBtn.style.cssText = 'background: #f1f5f9; border: none; border-radius: 7px; width: 28px; height: 28px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.15s;';
+                        editBtn.innerHTML = '<i class="fa fa-pencil" style="font-size: 0.78rem;"></i>';
+                        editBtn.onclick = () => {
+                            inputVal.value = val;
+                            selectedNetKey = k;
+                            dropLabel.innerText = net.label;
+                            dropLabel.style.color = '#0f172a';
+                            dropIconBg.innerHTML = renderIcon(net);
+                            dropIconBg.style.background = net.color.startsWith('#') ? hexToRgba(net.color, 0.15) : net.color + '20';
+                            dropIconBg.style.color = net.color;
+                            delete userNetworks[k];
+                            renderList();
+                            updateDropdown();
+                            setAddingNew(true);
+                        };
+
+                        const delBtn = document.createElement('button');
+                        delBtn.type = 'button';
+                        delBtn.style.cssText = 'background: #fee2e2; border: none; border-radius: 7px; width: 28px; height: 28px; cursor: pointer; color: #ef4444; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.15s;';
+                        delBtn.innerHTML = '<i class="fa fa-times" style="font-size: 0.78rem;"></i>';
+                        delBtn.onclick = () => {
+                            delete userNetworks[k];
+                            renderList();
+                            updateDropdown();
+                        };
+
+                        actions.appendChild(editBtn);
+                        actions.appendChild(delBtn);
+                        item.appendChild(actions);
+                        listEl.appendChild(item);
+
+                        const hi = document.createElement('input');
+                        hi.type = 'hidden';
+                        hi.name = k;
+                        hi.value = val;
+                        hiddenInputs.appendChild(hi);
+                    });
+                }
+            }
+
+            const checkIdOrPhone = (val, name) => {
+                if (val.startsWith('@@')) {
+                    const raw = val.replace(/^@@/, '');
+                    if (/^[0-9]+$/.test(raw)) {
+                        return 'شناسه نمی‌تواند فقط شامل عدد باشد';
+                    }
+                    return /^@@[A-Za-z0-9_]{3,}$/.test(val) ? null : `شناسه ${name} باید حداقل ۳ حرف و شامل حروف انگلیسی باشد`;
+                } else {
+                    if (/^[0-9]+$/.test(val)) {
+                        return /^09[0-9]{9}$/.test(val) ? null : 'شماره همراه باید ۱۱ رقم و با 09 شروع شود';
+                    }
+                    return 'فرمت وارد شده نامعتبر است';
+                }
+            };
+
+            const SOCIAL_VALIDATIONS = {
+                Telegram: (val) => {
+                    const idPart = val.replace(/^(https?:\/\/)?(t\.me\/)/, '').replace(/^@@/, '');
+                    if (/^[0-9]+$/.test(idPart)) return 'شناسه تلگرام نمی‌تواند فقط شامل عدد باشد';
+                    if (/^[0-9]/.test(idPart)) return 'شناسه تلگرام باید با حرف شروع شود';
+                    return /^(https?:\/\/)?(t\.me\/[A-Za-z0-9_]{5,}|@@[A-Za-z0-9_]{5,})$/.test(val) ? null : 'شناسه صحیح تلگرام وارد کنید (حداقل ۵ حرف)';
+                },
+                Instagram: (val) => {
+                    const idPart = val.replace(/^(https?:\/\/)?(www\.)?instagram\.com\//, '').replace(/^@@/, '').replace(/\/?$/, '');
+                    if (/^[0-9]+$/.test(idPart)) return 'شناسه اینستاگرام نمی‌تواند فقط شامل عدد باشد';
+                    return /^(https?:\/\/)?(www\.)?instagram\.com\/[A-Za-z0-9._]{1,30}\/?$|^@@[A-Za-z0-9._]{1,30}$/.test(val) ? null : 'شناسه صحیح اینستاگرام وارد کنید';
+                },
+                WhatsApp: (val) => /^09[0-9]{9}$/.test(val) ? null : 'شماره واتساپ باید شماره همراه ایرانی باشد (مثال: 09123456789)',
+                Bale: (val) => checkIdOrPhone(val, 'بله'),
+                Eitaa: (val) => checkIdOrPhone(val, 'ایتا'),
+                Rubika: (val) => checkIdOrPhone(val, 'روبیکا'),
+                LinkedIn: (val) => null,
+                Facebook: (val) => null
+            };
+
+            const formatSocialValue = (network, value) => {
+                let val = value.trim();
+                if (!val) return val;
+
+                if (network === 'Telegram') {
+                    val = val.replace(/^@@/, '');
+                    if (!val.startsWith('http')) return `https://t.me/${val}`;
+                    return val;
+                }
+                if (network === 'Instagram') {
+                    val = val.replace(/^@@/, '');
+                    if (!val.startsWith('http')) return `https://instagram.com/${val}`;
+                    return val;
+                }
+                if (network === 'WhatsApp') {
+                    return val;
+                }
+                if (['Bale', 'Eitaa', 'Rubika'].includes(network)) {
+                    if (val.startsWith('@@')) return val;
+                    if (/^[0-9]+$/.test(val)) return val;
+                    if (!val.startsWith('http')) return '@@' + val;
+                    return val;
+                }
+                return val;
+            };
+
+            inputVal.addEventListener('input', function () {
+                if (selectedNetKey === 'WhatsApp') {
+                    const pDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+                    let val = this.value.replace(/[۰-۹]/g, w => pDigits.indexOf(w).toString());
+                    val = val.replace(/[^0-9]/g, '');
+                    if (val.length > 11) val = val.slice(0, 11);
+                    this.value = val;
+                } else if (selectedNetKey) {
+                    this.value = this.value.replace(/[^A-Za-z0-9@@._:\/\-]/g, '');
+                }
+            });
+
+            btnAdd.onclick = () => {
+                if (!selectedNetKey) {
+                    errorMsg.innerText = 'لطفا یک شبکه انتخاب کنید';
+                    errorWrap.style.display = 'block';
+                    return;
+                }
+                const val = inputVal.value.trim();
+                if (!val) {
+                    errorMsg.innerText = 'لطفا آدرس یا شناسه را وارد کنید';
+                    errorWrap.style.display = 'block';
+                    return;
+                }
+
+                const formattedValue = formatSocialValue(selectedNetKey, val);
+                const validate = SOCIAL_VALIDATIONS[selectedNetKey];
+                const errMsg = validate ? validate(formattedValue) : null;
+                if (errMsg) {
+                    errorMsg.innerText = errMsg;
+                    errorWrap.style.display = 'block';
+                    return;
+                }
+
+                userNetworks[selectedNetKey] = formattedValue;
+                selectedNetKey = null;
+                inputVal.value = '';
+                dropLabel.innerText = 'انتخاب شبکه';
+                dropLabel.style.color = '#94a3b8';
+                dropIconBg.innerHTML = '<i class="fa fa-share-alt"></i>';
+                dropIconBg.style.background = 'rgba(234,179,8,0.15)';
+                dropIconBg.style.color = '#eab308';
+                errorWrap.style.display = 'none';
+
+                renderList();
+                updateDropdown();
+                setAddingNew(false);
+            };
+
+            updateDropdown();
+            renderList();
+            updateDropdownVisibility();
+        });
+    </script>
+}

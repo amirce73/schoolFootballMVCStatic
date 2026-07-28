@@ -1,0 +1,73 @@
+@model FootballSchool.Web.Models.ViewModels.ClothingInfoViewModel
+@{
+    ViewData["Title"] = "سایز پوشاک";
+}
+
+<div id="view-clothing-info" class="view-section fade-in">
+    <div class="sticky-top-bar">
+        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <h3 class="sticky-title">سایز پوشاک</h3>
+        <button type="submit" form="clothingForm" class="btn-top-action btn-submit-top">
+            <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
+        </button>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" style="background: var(--success); color: white; padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card">
+        <form id="clothingForm" asp-action="ClothingInfo" method="post" class="form-grid">
+            <div class="input-group">
+                <label asp-for="ShirtSize">سایز پیراهن <span class="text-danger">*</span></label>
+                <div class="custom-select-wrapper">
+                    <select asp-for="ShirtSize" class="hidden-native-select" style="display: none;" onchange="updateSelectText(this, 'shirtText')">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                    <div id="shirtText" class="custom-select-trigger" onclick="document.querySelector('select[name=ShirtSize]').style.display='block'; this.style.display='none';">
+                        @(string.IsNullOrEmpty(Model.ShirtSize) ? "انتخاب کنید" : Model.ShirtSize)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="ShortsSize">سایز شورت ورزشی <span class="text-danger">*</span></label>
+                <div class="custom-select-wrapper">
+                    <select asp-for="ShortsSize" class="hidden-native-select" style="display: none;" onchange="updateSelectText(this, 'shortsText')">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                    <div id="shortsText" class="custom-select-trigger" onclick="document.querySelector('select[name=ShortsSize]').style.display='block'; this.style.display='none';">
+                        @(string.IsNullOrEmpty(Model.ShortsSize) ? "انتخاب کنید" : Model.ShortsSize)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label asp-for="ShoesSize">سایز کفش:</label>
+                <input asp-for="ShoesSize" class="form-control" placeholder="مثال: 42" type="number" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateSelectText(selectElement, displayId) {
+            document.getElementById(displayId).innerText = selectElement.options[selectElement.selectedIndex].text;
+            document.getElementById(displayId).style.display = 'flex';
+            selectElement.style.display = 'none';
+        }
+    </script>
+}
