@@ -486,4 +486,4 @@ C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballS
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.genruntimeconfig.cache
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\ref\FootballSchool.Web.dll
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.sourcelink.json
-C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\oyl6s6t3dc-{0}-3ewt0zjfbi-3ewt0zjfbi.gz
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\oyl6s6t3dc-{0}-s1j2vn281n-s1j2vn281n.gz

@@ -5151,9 +5151,3 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .error-label {
     color: var(--danger) !important;
 }
-
-/* FIX SCROLL ISSUE */
-.main-wrapper,
-.form-grid {
-    padding-bottom: 140px !important;
-}
