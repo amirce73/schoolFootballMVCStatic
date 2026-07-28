@@ -127,11 +127,10 @@ namespace FootballSchool.Web.Models
         public string? PassportPhotoPath { get; set; }
 
         // Clothing Info
-        // Clothing
-        public string ShirtSize { get; set; }
-        public string ShortsSize { get; set; }
-        public string SocksSize { get; set; }
-        public string ShoesSize { get; set; }
+        public string? ShirtSize { get; set; }
+        public string? ShortsSize { get; set; }
+        public string? SocksSize { get; set; }
+        public string? ShoesSize { get; set; }
 
         public ICollection<RegistrationRecord> RegistrationRecords { get; set; }
         public ICollection<FinancialTransaction> FinancialTransactions { get; set; }
