@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FootballSchool.Web.Data;
 using FootballSchool.Web.Models;
@@ -39,6 +39,27 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+var enCulture = new System.Globalization.CultureInfo("en-US");
+var faCulture = new System.Globalization.CultureInfo("fa-IR");
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(culture: faCulture, uiCulture: faCulture),
+    SupportedCultures = new[] { faCulture },
+    SupportedUICultures = new[] { faCulture }
+});
+app.Use(async (context, next) => {
+    context.Request.EnableBuffering();
+    await next(context);
+    if (context.Response.StatusCode == 400) {
+        Console.WriteLine("400 Bad Request! Path: " + context.Request.Path);
+        context.Request.Body.Position = 0;
+        using var reader = new System.IO.StreamReader(context.Request.Body, System.Text.Encoding.UTF8, leaveOpen: true);
+        var body = await reader.ReadToEndAsync();
+        context.Request.Body.Position = 0;
+        Console.WriteLine("REQUEST BODY: " + body);
+    }
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -52,4 +73,12 @@ app.MapControllerRoute(
     pattern: "{controller=Pages}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+
+
+
+
+
 

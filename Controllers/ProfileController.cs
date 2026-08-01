@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -89,7 +89,16 @@ namespace FootballSchoolMVC.Controllers
             if (user == null) return Redirect("/");
 
             if (!ModelState.IsValid)
+            {
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"ModelState Error in {state.Key}: {error.ErrorMessage} (Exception: {error.Exception?.Message})");
+                    }
+                }
                 return View("~/Views/Pages/personal-info.cshtml", vm);
+            }
 
             user.FirstName = vm.FirstName;
             user.LastName = vm.LastName;
@@ -378,3 +387,7 @@ namespace FootballSchoolMVC.Controllers
         }
     }
 }
+
+
+
+

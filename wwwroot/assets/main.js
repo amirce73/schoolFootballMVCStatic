@@ -565,7 +565,8 @@ document.addEventListener('DOMContentLoaded', () => {
         datePickerInputs.forEach(input => {
             input.addEventListener('click', () => {
                 const span = input.querySelector('span');
-                const val = span ? span.textContent.trim() : input.textContent.trim();
+                const hiddenInput = document.querySelector(`input[type="hidden"][name="${input.id}"]`);
+                const val = hiddenInput && hiddenInput.value ? hiddenInput.value : (span ? span.textContent.trim() : (input.value || input.textContent).trim());
                 const cleanVal = val.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728));
 
                 let setDate = false;
@@ -613,7 +614,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const span = currentActiveInput.querySelector('span');
                 if (span) {
                     span.textContent = pDate;
-                    span.style.color = 'inherit';
+                    span.style.color = "inherit";
+                    const hiddenInput = document.querySelector(`input[type="hidden"][name="${currentActiveInput.id}"]`);
+                    if (hiddenInput) {
+                        hiddenInput.value = `${selectedYear}/${m}/${d}`;
+                    }
                 } else {
                     currentActiveInput.value = pDate;
                     currentActiveInput.textContent = pDate;
@@ -832,7 +837,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 6. Validations
     document.querySelectorAll('form').forEach(form => {
-        const submitBtn = form.querySelector('button[type="submit"]') || document.querySelector('.btn-submit-top');
+        let submitBtn = form.querySelector('button[type="submit"]');
+        if (!submitBtn) {
+            const topBtn = document.querySelector('.btn-submit-top');
+            if (topBtn && topBtn.getAttribute('form') === form.id) {
+                submitBtn = topBtn;
+            }
+        }
         if (!submitBtn) return;
 
         // Complex validations
@@ -927,46 +938,51 @@ document.addEventListener('DOMContentLoaded', () => {
             issueDate: {
                 required: 'تاریخ صدور الزامی است',
                 customCheck: (val) => {
-                    const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
-                    const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
-                    if (vy > pYear) return false;
-                    if (vy === pYear && vm > pMonth) return false;
-                    if (vy === pYear && vm === pMonth && vd > pDay) return false;
-                    return true;
+                    try {
+                        const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
+                        const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
+                        if (vy > pYear) return false;
+                        if (vy === pYear && vm > pMonth) return false;
+                        if (vy === pYear && vm === pMonth && vd > pDay) return false;
+                        return true;
+                    } catch (e) { return true; } // Fallback to true if Intl or format is not supported
                 },
                 msg: 'تاریخ صدور نمی‌تواند بعد از امروز باشد'
             },
             expiryDate: {
                 required: 'تاریخ انقضا الزامی است',
                 customCheck: (val) => {
-                    const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
-                    const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
-                    if (vy < pYear) return false;
-                    if (vy === pYear && vm < pMonth) return false;
-                    if (vy === pYear && vm === pMonth && vd < pDay) return false;
-                    return true;
+                    try {
+                        const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
+                        const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
+                        if (vy > pYear) return false;
+                        if (vy === pYear && vm > pMonth) return false;
+                        if (vy === pYear && vm === pMonth && vd > pDay) return false;
+                        return true;
+                    } catch (e) { return true; } // Fallback to true if Intl or format is not supported
                 },
                 msg: 'تاریخ انقضا نمی‌تواند قبل از امروز باشد'
             },
             birthDate: {
                 required: 'تاریخ تولد الزامی است',
                 customCheck: (val) => {
-                    const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
-                    const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-                    const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
-
-                    const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
-                    if (vy > pYear) return false;
-                    if (vy === pYear && vm > pMonth) return false;
-                    if (vy === pYear && vm === pMonth && vd > pDay) return false;
-                    return true;
+                    try {
+                        const faDateParts = new Intl.DateTimeFormat('fa-IR').formatToParts(new Date());
+                        const pYear = parseInt(faDateParts.find(p => p.type === 'year').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pMonth = parseInt(faDateParts.find(p => p.type === 'month').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const pDay = parseInt(faDateParts.find(p => p.type === 'day').value.replace(/[۰-۹]/g, w => String.fromCharCode(w.charCodeAt(0) - 1728)));
+                        const [vy, vm, vd] = val.split('/').map(n => parseInt(n));
+                        if (vy > pYear) return false;
+                        if (vy === pYear && vm > pMonth) return false;
+                        if (vy === pYear && vm === pMonth && vd > pDay) return false;
+                        return true;
+                    } catch (e) { return true; } // Fallback to true if Intl or format is not supported
                 },
                 msg: 'تاریخ تولد نمیتواند در آینده باشد'
             },
@@ -1104,9 +1120,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             } else {
+                e.preventDefault();
                 const originalHtml = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> در حال ثبت...';
-                // Let the browser submit the form normally
+                form.submit();
             }
         });
     });
@@ -1689,6 +1706,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+
+
+
 
 
 

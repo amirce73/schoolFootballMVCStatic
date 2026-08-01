@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model FootballSchool.Web.Models.ViewModels.PersonalInfoViewModel
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
 <head>
@@ -5505,13 +5506,11 @@
             <div id="view-personal-info" class="view-section fade-in">
                 <div class="sticky-top-bar"><button type="button" class="btn-top-action btn-back-top"><i
                             class="fa fa-arrow-right"></i> بازگشت</button>
-                    <h3 class="sticky-title">اطلاعات فردی</h3><button type="submit"
-                        class="btn-top-action btn-submit-top"><i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
+                    <h3 class="sticky-title">اطلاعات فردی</h3><button type="submit" form="personal-info-form" class="btn-top-action btn-submit-top"><i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
                         اطلاعات</button>
-                </div>
-@model FootballSchool.Web.Models.ViewModels.PersonalInfoViewModel
-                <div class="card">
-                    <form class="form-grid" method="post" action="/personal-info">
+                </div><div class="card">
+                    <form id="personal-info-form" class="form-grid" method="post" action="/personal-info">@Html.AntiForgeryToken()
+<div asp-validation-summary="All" style="grid-column: 1 / -1; color: red; margin-bottom: 15px; font-weight: bold;"></div>
                         <div class="input-group"><label class="">نام <span class="text-danger">*</span></label><input
                                 maxlength="50" class="" type="text" name="firstName" value="@Model?.FirstName"></div>
                         <div class="input-group"><label class="">نام خانوادگی <span
@@ -5520,10 +5519,10 @@
                         <div class="input-group"><label class="">کد ملی<span class="text-danger">*</span></label><input
                                 maxlength="10" inputmode="numeric" class="" type="text" name="nationalId" value="@Model?.NationalId"></div>
                         <div class="input-group"><label class="">تاریخ تولد <span class="text-danger">*</span></label>
-                            <div id="birthDate" class="date-picker-input"
-                                style="width: 100%; padding: 12px 14px; border: 1px solid rgb(203, 213, 225); border-radius: 8px; font-size: 0.9rem; background: rgb(255, 255, 255); color: inherit; cursor: pointer; min-height: 44px; display: flex; align-items: center;">
-                                <input type="date" name="birthDate" value="@(Model?.BirthDate?.ToString("yyyy-MM-dd"))" style="width: 100%; border: none; outline: none; background: transparent; color: inherit; font-family: inherit;" />
+                            <div id="birthDate" class="date-picker-input" style="width: 100%; padding: 12px 14px; border: 1px solid rgb(203, 213, 225); border-radius: 8px; font-size: 0.9rem; background: rgb(255, 255, 255); cursor: pointer; min-height: 44px; display: flex; align-items: center;">
+                                <span style="color: inherit; width: 100%;">@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")).Replace("0","۰").Replace("1","۱").Replace("2","۲").Replace("3","۳").Replace("4","۴").Replace("5","۵").Replace("6","۶").Replace("7","۷").Replace("8","۸").Replace("9","۹") : "انتخاب تاریخ")</span>
                             </div>
+                            <input type="hidden" name="birthDate" value="@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "")" />
                         </div>
                         <div class="input-group"><label class="">شماره شناسنامه</label><input maxlength="10"
                                 inputmode="numeric" class="" type="text" name="birthCertificateNo" value="@Model?.BirthCertificateNo"></div>
@@ -5536,10 +5535,11 @@
                         <div class="input-group"><label class="">جنسیت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper  "><select name="gender" class="hidden-native-select"
                                     style="display: none;">
+                                    <option value="">انتخاب کنید...</option>
                                     <option value="مرد">مرد</option>
                                     <option value="زن">زن</option>
                                 </select>
-                                <div class="custom-select-trigger ">انتخاب کنید</div>
+                                <div class="custom-select-trigger ">انتخاب کنید...</div>
                             </div>
                         </div>
                         <div class="input-group"><label>گروه خونی</label>
@@ -5629,6 +5629,9 @@
 </body>
 
 </html>
+
+
+
 
 
 
