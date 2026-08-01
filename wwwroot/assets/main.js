@@ -1,4 +1,4 @@
-// =====================================================
+﻿// =====================================================
 // STATIC ROUTING LAYER
 // Maps React Router paths → static .html files
 // =====================================================
@@ -9,28 +9,28 @@
         '/profile-hub': './profile-hub.html',
         '/financial-hub': './financial-hub.html',
         '/specialized-hub': './specialized-hub.html',
-        '/registration': './registration.html',
-        '/store': './store.html',
-        '/gallery': './gallery.html',
-        '/training-backpack': './training-backpack.html',
+        '/registration': '/registration',
+        '/store': '/store',
+        '/gallery': '/gallery',
+        '/training-backpack': '/training-backpack',
         '/financial-timeline': './financial-timeline.html',
         '/verification': './verification.html',
         '/registration-history': './registration-history.html',
-        '/personal-info': './personal-info.html',
-        '/contact-info': './contact-info.html',
-        '/passport-info': './passport-info.html',
+        '/personal-info': '/personal-info',
+        '/contact-info': '/contact-info',
+        '/passport-info': '/passport-info',
         '/bank-info': './bank-info.html',
-        '/sports-info': './sports-info.html',
-        '/club-info': './club-info.html',
-        '/clothing-info': './clothing-info.html',
-        '/documents': './documents.html',
-        '/password': './password.html',
+        '/sports-info': '/sports-info',
+        '/club-info': '/club-info',
+        '/clothing-info': '/clothing-info',
+        '/documents': '/documents',
+        '/password': '/password',
         '/attendance': './attendance.html',
         '/talent': './talent.html',
         '/insurance': './insurance.html',
         '/insurance-status': './insurance-status.html',
         '/certificate': './certificate.html',
-        '/bulletin': './bulletin.html',
+        '/bulletin': '/bulletin',
     };
 
     // Back-button destinations per page (derived from React source navigate() calls)
@@ -97,17 +97,17 @@
         // These are identified by their text label (فارسی)
         const TEXT_ROUTE_MAP = {
             // ProfileHub frame-items
-            'اطلاعات شخصی': './personal-info.html',
-            'اطلاعات تماس': './contact-info.html',
-            'گذرنامه': './passport-info.html',
-            'مشخصات ورزشی': './sports-info.html',
-            'اطلاعات باشگاهی': './club-info.html',
-            'اطلاعات پوشاک': './clothing-info.html',
-            'کارت ملی': './documents.html',
-            'شناسنامه': './documents.html',
-            'مجوز ورزشی': './documents.html',
-            'مدارک و سایر': './documents.html',
-            'تغییر رمز عبور': './password.html',
+            'اطلاعات شخصی': '/personal-info',
+            'اطلاعات تماس': '/contact-info',
+            'گذرنامه': '/passport-info',
+            'مشخصات ورزشی': '/sports-info',
+            'اطلاعات باشگاهی': '/club-info',
+            'اطلاعات پوشاک': '/clothing-info',
+            'کارت ملی': '/documents',
+            'شناسنامه': '/documents',
+            'مجوز ورزشی': '/documents',
+            'مدارک و سایر': '/documents',
+            'تغییر رمز عبور': '/password',
             // SpecializedHub spec-items (text from spec-title divs)
             'گزارش حضور': './attendance.html',
             'حضور و غیاب': './attendance.html',
@@ -149,14 +149,14 @@
 
                 // Class-based routing for dash-action-cards
                 if (!dest && sel === '.dash-action-card') {
-                    if (el.classList.contains('card-store')) dest = './store.html';
-                    else if (el.classList.contains('card-gallery')) dest = './gallery.html';
-                    else if (el.classList.contains('card-backpack')) dest = './training-backpack.html';
+                    if (el.classList.contains('card-store')) dest = '/store';
+                    else if (el.classList.contains('card-gallery')) dest = '/gallery';
+                    else if (el.classList.contains('card-backpack')) dest = '/training-backpack';
                 }
                 // news-card → bulletin
-                if (!dest && sel === '.news-card') dest = './bulletin.html';
+                if (!dest && sel === '.news-card') dest = '/bulletin';
                 // registration-card → registration
-                if (!dest && sel === '.registration-card') dest = './registration.html';
+                if (!dest && sel === '.registration-card') dest = '/registration';
 
                 if (dest) {
                     el.style.cursor = 'pointer';
@@ -1689,3 +1689,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+

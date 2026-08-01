@@ -486,4 +486,4 @@ C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\ref\Footb
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.sourcelink.json
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\oyl6s6t3dc-{0}-ay7g3ku2ds-ay7g3ku2ds.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ddzwa2sufi-{0}-udgzfggfxt-udgzfggfxt.gz
-C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\focqqocyp4-{0}-exmdqlub3h-exmdqlub3h.gz
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\focqqocyp4-{0}-flp9s693kt-flp9s693kt.gz

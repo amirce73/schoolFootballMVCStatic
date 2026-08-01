@@ -5748,7 +5748,7 @@
                         class="btn-top-action btn-submit-top"><i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
                         اطلاعات</button>
                 </div>
-@model FootballSchool.Web.Models.ApplicationUser
+@model FootballSchool.Web.Models.ViewModels.ContactInfoViewModel
                 <div class="card">
                     <form class="form-grid" method="post" action="/contact-info">
                         <div class="input-group" style="grid-column: 1 / -1;">
@@ -5827,7 +5827,7 @@
                             <div class="desktop-mobile-container">
                                 <div class="desktop-mobile-inner">
                                     <input type="text" inputmode="numeric" readonly class="desktop-mobile-input"
-                                        name="PhoneNumber" value="@Model?.PhoneNumber"
+                                        name="PhoneNumber" value="@Model?.Mobile"
                                         style="background: #f1f5f9; color: #64748b; direction: ltr; text-align: left;">
                                     <button type="button" class="desktop-mobile-edit-btn"
                                         onclick="document.getElementById('mobileModal').style.display='flex'">
@@ -6327,4 +6327,6 @@
 </body>
 
 </html>
+
+
 
