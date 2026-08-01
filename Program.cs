@@ -20,6 +20,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.LoginPath = "/";
+});
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -40,10 +44,12 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// Support both attribute routing (for new controllers) and conventional routing
+app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Pages}/{action=Index}/{id?}");
 
 app.Run();
+

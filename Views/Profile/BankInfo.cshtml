@@ -1,11 +1,11 @@
-@model IEnumerable<FootballSchool.Web.Models.BankAccount>
+﻿@model IEnumerable<FootballSchool.Web.Models.BankAccount>
 @{
     ViewData["Title"] = "حساب‌های بانکی";
 }
 
 <div id="view-bank-info" class="view-section fade-in">
     <div class="sticky-top-bar">
-        <a href="/Profile" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
+        <a href="/profile-hub" class="btn-top-action btn-back-top"><i class="fa fa-arrow-right"></i> بازگشت</a>
         <h3 class="sticky-title">حساب‌های بانکی</h3>
         <button type="button" class="btn-top-action btn-submit-top" onclick="document.getElementById('addBankModal').style.display='flex'">
             <i class="fa fa-check" style="margin-left: 8px;"></i>+ افزودن حساب بانکی جدید
@@ -99,3 +99,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

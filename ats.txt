@@ -1,0 +1,56 @@
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1:@model FootballSchool.Web.Models.ViewModels.ProfileHubViewModel
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:2:@{
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:19:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:27:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:35:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:43:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:51:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:59:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:67:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:75:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:83:        @@font-face {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:163:        @@keyframes fadeIn {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:435:        @@media (max-width: 380px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1745:        @@media (min-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1826:        @@media (min-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1852:        @@media (min-width: 700px) and (max-width: 1023px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1868:        @@media (min-width: 1023px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1889:        @@media (min-width: 500px) and (max-width: 1023px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:1898:        @@media (min-width: 1024px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:2414:        @@media (max-width: 500px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:2639:        @@media (min-width: 1024px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:2837:        @@keyframes modal-pop {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3070:        @@media (max-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3140:        @@media (min-width: 1281px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3147:        @@media (min-width: 1023px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3156:        @@media (max-width: 400px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3245:        @@media (min-width: 1023px) and (max-width: 1120px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3297:        @@media (min-width: 560px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3321:        @@media (max-width: 559px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3392:        @@media (min-width: 560px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3398:        @@media (min-width: 560px) and (max-width: 1024px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3500:        @@media (min-width: 1025px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3601:        @@media (min-width: 550px) and (max-width: 630px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3607:        @@media (width: 1024px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3621:        @@media (min-width: 769px) and (max-width: 1023px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3751:        @@media (min-width: 992px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:3940:        @@media (max-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4098:        @@keyframes fadeInDown {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4173:        @@media (max-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4185:        @@media (max-width: 380px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4193:        @@media (max-width: 350px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4201:        @@media (min-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4216:        @@media (min-width: 992px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4226:        @@media (max-width: 399px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4294:        @@media (max-width: 768px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4353:        @@media (max-width: 400px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4376:        @@media (min-width: 1025px) {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4438:        @@keyframes floatShape {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:4468:        @@keyframes fadeInUp {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5436:        @@media print {
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5455:                        <div class="header-profile-info"><span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) ? "?????" : Model.User.FirstName) @Model.User.LastName</span><span class="meta"><i
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5457:                                    class="dir-ltr" style="margin-right: 4px;">@(Model.User.RegistrationRecords?.FirstOrDefault()?.Term?.Title ?? "- - -")</strong></span></div>
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5474:                                <span>?? ???:</span> <strong>@(Model.User.NationalId ?? "- - - - - - - - - -")</strong>
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5478:                                <span>????? ????:</span> <strong class="dir-ltr">@(Model.User.BirthDate?.ToString("yyyy/MM/dd") ?? "- - / - - / - - - -")</strong>
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5524:                        <h3 style="margin-top: 16px; margin-bottom: 4px; color: var(--text-dark);">@(string.IsNullOrEmpty(Model.User.FirstName) ? "?????" : Model.User.FirstName) @Model.User.LastName</h3>
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\Views\Pages\profile-hub.cshtml:5525:                        <p style="margin: 0px; color: var(--text-muted); font-size: 0.9rem;">@(Model.User.NationalId ?? "?? ??? ??? ????")</p>

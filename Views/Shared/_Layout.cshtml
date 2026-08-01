@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8" />
@@ -588,10 +588,10 @@
                 <strong class="dir-ltr">- - / - - / - - - -</strong>
               </div>
             </div>
-            <a href="/Profile" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a>
-            <form id="logoutForm" method="post" action="/Account/Logout" style="display: none;">
+            <form id="logoutForm" method="post" action="/account/logout" style="display: none;">
                 @Html.AntiForgeryToken()
             </form>
+            <a href="/profile-hub" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a>
             <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"
               style="color: var(--danger); padding: 12px 16px"><i class="fa fa-sign-out"></i> خروج از حساب</a>
           </div>
@@ -608,7 +608,7 @@
         منوی اصلی
       </div>
       <a class="dnav-item" href="/Home/Index"><i class="fa fa-home"></i> خانه</a>
-      <a class="dnav-item" href="/Profile"><i class="fa fa-user"></i> پروفایل</a>
+      <a class="dnav-item" href="/profile-hub"><i class="fa fa-user"></i> پروفایل</a>
       <a class="dnav-item" href="/Registration"><i class="fa fa-edit"></i> ثبت‌نام</a>
       <a class="dnav-item" href="/Financial"><i class="fa fa-credit-card"></i> مالی</a>
       <a class="dnav-item" href="/Specialized"><i class="fa fa-building"></i> تخصصی</a>
@@ -618,7 +618,7 @@
     </main>
     <nav class="bottom-nav">
       <a class="bnav-item" href="/Home/Index"><i class="fa fa-home"></i> خانه</a>
-      <a class="bnav-item" href="/Profile"><i class="fa fa-user"></i> پروفایل</a>
+      <a class="bnav-item" href="/profile-hub"><i class="fa fa-user"></i> پروفایل</a>
       <a class="bnav-item" href="/Registration"><i class="fa fa-edit"></i> ثبت‌نام</a>
       <a class="bnav-item" href="/Financial"><i class="fa fa-credit-card"></i> مالی</a>
       <a class="bnav-item" href="/Specialized"><i class="fa fa-building"></i> تخصصی</a>
@@ -629,3 +629,4 @@
   @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

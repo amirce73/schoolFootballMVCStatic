@@ -4,63 +4,63 @@
 // =====================================================
 (function () {
     const ROUTE_MAP = {
-        '/': './index.html',
-        '/dashboard': './dashboard.html',
-        '/profile-hub': './profile-hub.html',
-        '/financial-hub': './financial-hub.html',
-        '/specialized-hub': './specialized-hub.html',
-        '/registration': './registration.html',
-        '/store': './store.html',
-        '/gallery': './gallery.html',
-        '/training-backpack': './training-backpack.html',
-        '/financial-timeline': './financial-timeline.html',
-        '/verification': './verification.html',
-        '/registration-history': './registration-history.html',
-        '/personal-info': './personal-info.html',
-        '/contact-info': './contact-info.html',
-        '/passport-info': './passport-info.html',
-        '/bank-info': './bank-info.html',
-        '/sports-info': './sports-info.html',
-        '/club-info': './club-info.html',
-        '/clothing-info': './clothing-info.html',
-        '/documents': './documents.html',
-        '/password': './password.html',
-        '/attendance': './attendance.html',
-        '/talent': './talent.html',
-        '/insurance': './insurance.html',
-        '/insurance-status': './insurance-status.html',
-        '/certificate': './certificate.html',
-        '/bulletin': './bulletin.html',
+        '/': '/index',
+        '/dashboard': '/dashboard',
+        '/profile-hub': '/profile-hub',
+        '/financial-hub': '/financial-hub',
+        '/specialized-hub': '/specialized-hub',
+        '/registration': '/registration',
+        '/store': '/store',
+        '/gallery': '/gallery',
+        '/training-backpack': '/training-backpack',
+        '/financial-timeline': '/financial-timeline',
+        '/verification': '/verification',
+        '/registration-history': '/registration-history',
+        '/personal-info': '/personal-info',
+        '/contact-info': '/contact-info',
+        '/passport-info': '/passport-info',
+        '/bank-info': '/bank-info',
+        '/sports-info': '/sports-info',
+        '/club-info': '/club-info',
+        '/clothing-info': '/clothing-info',
+        '/documents': '/documents',
+        '/password': '/password',
+        '/attendance': '/attendance',
+        '/talent': '/talent',
+        '/insurance': '/insurance',
+        '/insurance-status': '/insurance-status',
+        '/certificate': '/certificate',
+        '/bulletin': '/bulletin',
     };
 
     // Back-button destinations per page (derived from React source navigate() calls)
     const BACK_MAP = {
-        'dashboard': './index.html',
-        'profile-hub': './dashboard.html',
-        'financial-hub': './dashboard.html',
-        'specialized-hub': './dashboard.html',
-        'registration': './dashboard.html',
-        'store': './dashboard.html',
-        'gallery': './dashboard.html',
-        'training-backpack': './dashboard.html',
-        'financial-timeline': './financial-hub.html',
-        'verification': './profile-hub.html',
-        'registration-history': './specialized-hub.html',
-        'personal-info': './profile-hub.html',
-        'contact-info': './profile-hub.html',
-        'passport-info': './profile-hub.html',
-        'bank-info': './financial-hub.html',
-        'sports-info': './profile-hub.html',
-        'club-info': './specialized-hub.html',
-        'clothing-info': './profile-hub.html',
-        'documents': './profile-hub.html',
-        'password': './profile-hub.html',
-        'attendance': './specialized-hub.html',
-        'talent': './specialized-hub.html',
-        'insurance': './specialized-hub.html',
-        'insurance-status': './specialized-hub.html',
-        'certificate': './specialized-hub.html',
-        'bulletin': './dashboard.html',
+        'dashboard': '/index',
+        'profile-hub': '/dashboard',
+        'financial-hub': '/dashboard',
+        'specialized-hub': '/dashboard',
+        'registration': '/dashboard',
+        'store': '/dashboard',
+        'gallery': '/dashboard',
+        'training-backpack': '/dashboard',
+        'financial-timeline': '/financial-hub',
+        'verification': '/profile-hub',
+        'registration-history': '/specialized-hub',
+        'personal-info': '/profile-hub',
+        'contact-info': '/profile-hub',
+        'passport-info': '/profile-hub',
+        'bank-info': '/financial-hub',
+        'sports-info': '/profile-hub',
+        'club-info': '/specialized-hub',
+        'clothing-info': '/profile-hub',
+        'documents': '/profile-hub',
+        'password': '/profile-hub',
+        'attendance': '/specialized-hub',
+        'talent': '/specialized-hub',
+        'insurance': '/specialized-hub',
+        'insurance-status': '/specialized-hub',
+        'certificate': '/specialized-hub',
+        'bulletin': '/dashboard',
     };
 
     function resolveRoute(path) {
@@ -97,37 +97,37 @@
         // These are identified by their text label (فارسی)
         const TEXT_ROUTE_MAP = {
             // ProfileHub frame-items
-            'اطلاعات شخصی': './personal-info.html',
-            'اطلاعات تماس': './contact-info.html',
-            'گذرنامه': './passport-info.html',
-            'مشخصات ورزشی': './sports-info.html',
-            'اطلاعات باشگاهی': './club-info.html',
-            'اطلاعات پوشاک': './clothing-info.html',
-            'کارت ملی': './documents.html',
-            'شناسنامه': './documents.html',
-            'مجوز ورزشی': './documents.html',
-            'مدارک و سایر': './documents.html',
-            'تغییر رمز عبور': './password.html',
+            'اطلاعات شخصی': '/personal-info',
+            'اطلاعات تماس': '/contact-info',
+            'گذرنامه': '/passport-info',
+            'مشخصات ورزشی': '/sports-info',
+            'اطلاعات باشگاهی': '/club-info',
+            'اطلاعات پوشاک': '/clothing-info',
+            'کارت ملی': '/documents',
+            'شناسنامه': '/documents',
+            'مجوز ورزشی': '/documents',
+            'مدارک و سایر': '/documents',
+            'تغییر رمز عبور': '/password',
             // SpecializedHub spec-items (text from spec-title divs)
-            'گزارش حضور': './attendance.html',
-            'حضور و غیاب': './attendance.html',
-            'تاریخچه\nثبت‌نام': './registration-history.html',
-            'سوابق ثبت‌نام': './registration-history.html',
-            'استعداد': './talent.html',
-            'وضعیت\nبیمه': './insurance-status.html',
-            'بیمه ورزشی': './insurance-status.html',
-            'گواهی\nپایان': './certificate.html',
-            'گواهینامه': './certificate.html',
-            'گواهی': './certificate.html',
+            'گزارش حضور': '/attendance',
+            'حضور و غیاب': '/attendance',
+            'تاریخچه\nثبت‌نام': '/registration-history',
+            'سوابق ثبت‌نام': '/registration-history',
+            'استعداد': '/talent',
+            'وضعیت\nبیمه': '/insurance-status',
+            'بیمه ورزشی': '/insurance-status',
+            'گواهی\nپایان': '/certificate',
+            'گواهینامه': '/certificate',
+            'گواهی': '/certificate',
             // FinancialHub hub-btns
-            'تاریخچه مالی': './financial-timeline.html',
-            'تایم‌لاین مالی': './financial-timeline.html',
-            'تایم لاین مالی': './financial-timeline.html',
-            'پرداخت آنلاین': './bank-info.html',
-            'حساب بانکی': './bank-info.html',
-            'اطلاعات بانکی': './bank-info.html',
+            'تاریخچه مالی': '/financial-timeline',
+            'تایم‌لاین مالی': '/financial-timeline',
+            'تایم لاین مالی': '/financial-timeline',
+            'پرداخت آنلاین': '/bank-info',
+            'حساب بانکی': '/bank-info',
+            'اطلاعات بانکی': '/bank-info',
             // SpecializedHub spec-items with partial text match
-            'تاریخچه': './registration-history.html',
+            'تاریخچه': '/registration-history',
         };
 
 
@@ -149,14 +149,14 @@
 
                 // Class-based routing for dash-action-cards
                 if (!dest && sel === '.dash-action-card') {
-                    if (el.classList.contains('card-store')) dest = './store.html';
-                    else if (el.classList.contains('card-gallery')) dest = './gallery.html';
-                    else if (el.classList.contains('card-backpack')) dest = './training-backpack.html';
+                    if (el.classList.contains('card-store')) dest = '/store';
+                    else if (el.classList.contains('card-gallery')) dest = '/gallery';
+                    else if (el.classList.contains('card-backpack')) dest = '/training-backpack';
                 }
                 // news-card → bulletin
-                if (!dest && sel === '.news-card') dest = './bulletin.html';
+                if (!dest && sel === '.news-card') dest = '/bulletin';
                 // registration-card → registration
-                if (!dest && sel === '.registration-card') dest = './registration.html';
+                if (!dest && sel === '.registration-card') dest = '/registration';
 
                 if (dest) {
                     el.style.cursor = 'pointer';
@@ -170,21 +170,21 @@
         // "تکمیل هویت" → verification
         document.querySelectorAll('.btn-verify-action').forEach(btn => {
             if (btn.textContent.includes('تکمیل هویت')) {
-                btn.addEventListener('click', () => { window.location.href = './verification.html'; });
+                btn.addEventListener('click', () => { window.location.href = '/verification'; });
             }
         });
 
         // "بازگشت به پروفایل"
         document.querySelectorAll('.btn-app-primary').forEach(btn => {
             if (btn.textContent.includes('بازگشت به پروفایل')) {
-                btn.addEventListener('click', () => { window.location.href = './profile-hub.html'; });
+                btn.addEventListener('click', () => { window.location.href = '/profile-hub'; });
             }
         });
 
         // "تکمیل اطلاعات" (btn-mini)
         document.querySelectorAll('.btn-mini').forEach(btn => {
             if (btn.textContent.includes('تکمیل اطلاعات')) {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = './profile-hub.html'; });
+                btn.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = '/profile-hub'; });
             }
         });
 
@@ -194,7 +194,7 @@
             if (t === 'مشاهده') {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    window.location.href = './attendance.html';
+                    window.location.href = '/attendance';
                 });
             }
         });
@@ -203,7 +203,7 @@
         document.querySelectorAll('button').forEach(btn => {
             const t = (btn.textContent || '').trim();
             if (t.includes('تاریخچه مالی') || t.includes('سوابق مالی') || t.includes('تایم‌لاین مالی') || t.includes('تایم لاین مالی')) {
-                btn.addEventListener('click', () => { window.location.href = './financial-timeline.html'; });
+                btn.addEventListener('click', () => { window.location.href = '/financial-timeline'; });
             }
         });
     }
@@ -1106,7 +1106,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const originalHtml = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> در حال ثبت...';
-                // Let the browser submit the form normally
+                if (!submitBtn.closest('form')) {
+                    form.submit();
+                }
+                // Let the browser submit the form normally if inside
             }
         });
     });
@@ -1689,3 +1692,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+

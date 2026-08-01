@@ -400,11 +400,9 @@ C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compresse
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\q0ujw6hge6-{0}-3v5qt61il4-3v5qt61il4.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\m0joopiw76-{0}-im1f2z1u64-im1f2z1u64.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\f7n9i6jnfn-{0}-uqjtact8bj-uqjtact8bj.gz
-C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ddzwa2sufi-{0}-5yw84iepoe-5yw84iepoe.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\q20pipazao-{0}-v78t325kt9-v78t325kt9.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\kkmvd31rp0-{0}-7888sfn8yc-7888sfn8yc.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\n9qrtqjs15-{0}-v78t325kt9-v78t325kt9.gz
-C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\focqqocyp4-{0}-aany01mxih-aany01mxih.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\9748fdhd1k-{0}-iahzfzc3nt-iahzfzc3nt.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\5rmygsgpf1-{0}-7trw0vijr1-7trw0vijr1.gz
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\kxlu4rb2v1-{0}-uqjtact8bj-uqjtact8bj.gz
@@ -486,4 +484,6 @@ C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballS
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.genruntimeconfig.cache
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\ref\FootballSchool.Web.dll
 C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.sourcelink.json
-C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\oyl6s6t3dc-{0}-s1j2vn281n-s1j2vn281n.gz
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\oyl6s6t3dc-{0}-ay7g3ku2ds-ay7g3ku2ds.gz
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ddzwa2sufi-{0}-udgzfggfxt-udgzfggfxt.gz
+C:\Users\amirce73\Desktop\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\focqqocyp4-{0}-exmdqlub3h-exmdqlub3h.gz

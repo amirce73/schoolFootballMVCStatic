@@ -1,0 +1,2 @@
+5452: <div class="header-profile-info"><span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) ? "کاربر" : Model.User.FirstName) @Model.User.LastName</span><span class="meta"><i
+5521: <h3 style="margin-top: 16px; margin-bottom: 4px; color: var(--text-dark);">@(string.IsNullOrEmpty(Model.User.FirstName) ? "کاربر" : Model.User.FirstName) @Model.User.LastName</h3>

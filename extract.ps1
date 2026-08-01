@@ -1,0 +1,1 @@
+$content = Get-Content -Encoding UTF8 "Views\Pages\profile-hub.cshtml" -Raw; $matches = [regex]::Matches($content, "<([a-zA-Z]+)"); $tags = $matches | ForEach-Object { $_.Groups[1].Value.ToLower() } | Sort-Object -Unique; Set-Content "tags.txt" $tags

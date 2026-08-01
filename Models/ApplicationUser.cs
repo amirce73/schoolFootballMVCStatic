@@ -132,7 +132,40 @@ namespace FootballSchool.Web.Models
         public string? SocksSize { get; set; }
         public string? ShoesSize { get; set; }
 
-        public ICollection<RegistrationRecord> RegistrationRecords { get; set; }
-        public ICollection<FinancialTransaction> FinancialTransactions { get; set; }
+        // Sports Info Fields
+        [StringLength(50)]
+        public string? CompetitionSeason { get; set; }
+        
+        [StringLength(50)]
+        public string? MainPosition { get; set; }
+        
+        [StringLength(200)]
+        public string? PlayingAbility { get; set; }
+        
+        [StringLength(50)]
+        public string? PreferredFoot { get; set; }
+        
+        public bool? HasNationalTeam { get; set; }
+        
+        [StringLength(50)]
+        public string? SportsInsuranceNumber { get; set; }
+        
+        [StringLength(50)]
+        public string? SportsWarmerSize { get; set; }
+        
+        [StringLength(50)]
+        public string? FootballShoeSize { get; set; }
+        
+        [StringLength(50)]
+        public string? SlipperSize { get; set; }
+        
+        [StringLength(200)]
+        public string? SportsSlogan { get; set; }
+        
+        [StringLength(1000)]
+        public string? SportsDescription { get; set; }
+
+        public ICollection<RegistrationRecord> RegistrationRecords { get; set; } = new List<RegistrationRecord>();
+        public ICollection<FinancialTransaction> FinancialTransactions { get; set; } = new List<FinancialTransaction>();
     }
 }

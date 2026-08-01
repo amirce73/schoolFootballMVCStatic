@@ -1,4 +1,5 @@
-﻿<!doctype html>
+﻿@model FootballSchool.Web.Models.ViewModels.DashboardViewModel
+<!doctype html>
 <html lang="fa" dir="rtl">
 
 <head>
@@ -5442,9 +5443,8 @@
           </div>
           <div>
             <div class="header-profile-info">
-              <span class="name">نام نام خانوادگی</span><span class="meta"><i class="fa fa-calendar-check-o"
-                  style="margin-left: 4px"></i>عضویت:<strong class="dir-ltr" style="margin-right: 4px">- - - - / - - / -
-                  -</strong></span>
+              <span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) ? "کاربر" : Model.User.FirstName) @Model.User.LastName</span><span class="meta"><i class="fa fa-calendar-check-o"
+                  style="margin-left: 4px"></i>عضویت:<strong class="dir-ltr" style="margin-right: 4px">@(Model.User.RegistrationRecords?.FirstOrDefault()?.Term?.Title ?? "- - -")</strong></span>
             </div>
           </div>
           <i class="fa fa-angle-down" style="
@@ -5476,9 +5476,11 @@
                       display: flex;
                       justify-content: center;
                     ">
-                  <span class="badge-verify unverified" style="border-color: rgb(51, 65, 85)"><i
-                      class="fa fa-exclamation-circle"></i>استعلام هویت
-                    نشده</span>
+                  @if (Model.IsVerified) {
+                    <span class="badge-verify verified" style="border-color: var(--success)"><i class="fa fa-check-circle"></i> تایید شده</span>
+                  } else {
+                    <span class="badge-verify unverified" style="border-color: rgb(51, 65, 85)"><i class="fa fa-exclamation-circle"></i>استعلام هویت نشده</span>
+                  }
                 </div>
               </div>
               <div style="
@@ -5488,7 +5490,7 @@
                     color: var(--text-muted);
                     margin-bottom: 6px;
                   ">
-                <span>کد ملی:</span> <strong>- - - - - - - - - -</strong>
+                <span>کد ملی:</span> <strong>@(Model.User.NationalId ?? "- - - - - - - - - -")</strong>
               </div>
               <div style="
                     display: flex;
@@ -5498,7 +5500,7 @@
                     margin-bottom: 6px;
                   ">
                 <span>تاریخ تولد:</span>
-                <strong class="dir-ltr">- - / - - / - - - -</strong>
+                <strong class="dir-ltr">@(Model.User.BirthDate?.ToString("yyyy/MM/dd") ?? "- - / - - / - - - -")</strong>
               </div>
               <div style="
                     display: flex;
@@ -5507,7 +5509,7 @@
                     color: var(--text-muted);
                     margin-bottom: 6px;
                   ">
-                <span>سن:</span> <strong>۰ سال</strong>
+                <span>سن:</span> <strong>@Model.Age سال</strong>
               </div>
               <div style="
                     display: flex;
@@ -5518,13 +5520,13 @@
                 <span>رده سنی:</span> <strong>- - - - - - -</strong>
               </div>
             </div>
-            <a href="#" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a><a href="#"
+            <a href="#" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a><a href="/logout"
               style="color: var(--danger); padding: 12px 16px"><i class="fa fa-sign-out"></i> خروج از حساب</a>
           </div>
         </div>
         <div class="header-actions">
           <button class="btn-noti" title="اعلان‌ها">
-            <i class="fa fa-bell-o"></i><span class="badge">۳</span></button><a href="#" class="btn-app-header"
+            <i class="fa fa-bell-o"></i><span class="badge">@Model.UnreadNotificationsCount</span></button><a href="#" class="btn-app-header"
             title="دانلود اپلیکیشن"><i class="fa fa-android"></i> <span>دانلود اپ</span></a>
         </div>
       </div>

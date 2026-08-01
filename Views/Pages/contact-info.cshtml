@@ -5748,8 +5748,9 @@
                         class="btn-top-action btn-submit-top"><i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
                         اطلاعات</button>
                 </div>
+@model FootballSchool.Web.Models.ApplicationUser
                 <div class="card">
-                    <form class="form-grid">
+                    <form class="form-grid" method="post" action="/contact-info">
                         <div class="input-group" style="grid-column: 1 / -1;">
                             <label class="">موبایل(شماره پنل)</label>
                             <style>
@@ -5826,7 +5827,7 @@
                             <div class="desktop-mobile-container">
                                 <div class="desktop-mobile-inner">
                                     <input type="text" inputmode="numeric" readonly class="desktop-mobile-input"
-                                        name="mobile"
+                                        name="PhoneNumber" value="@Model?.PhoneNumber"
                                         style="background: #f1f5f9; color: #64748b; direction: ltr; text-align: left;">
                                     <button type="button" class="desktop-mobile-edit-btn"
                                         onclick="document.getElementById('mobileModal').style.display='flex'">
@@ -5841,30 +5842,30 @@
 
                         <div class="input-group">
                             <label class="">تلفن ثابت</label>
-                            <input inputmode="numeric" placeholder="021..." class="" type="text" name="tel">
+                            <input inputmode="numeric" placeholder="021..." class="" type="text" name="Telephone" value="@Model?.Telephone">
                         </div>
                         <div class="input-group">
                             <label class="">شماره ولی (پدر یا مادر)</label>
-                            <input inputmode="numeric" placeholder="09..." class="" type="text" name="guardianMobile">
+                            <input inputmode="numeric" placeholder="09..." class="" type="text" name="guardianMobile" value="@Model?.GuardianMobile">
                         </div>
                         <div class="input-group">
                             <label class="">تلفن ضروری <span class="text-danger">*</span></label>
-                            <input inputmode="numeric" class="" type="text" name="emergencyPhone">
+                            <input inputmode="numeric" class="" type="text" name="emergencyPhone" value="@Model?.EmergencyPhone">
                         </div>
                         <div class="input-group">
                             <label class="">ایمیل</label>
-                            <input class="" type="email" name="email" style="text-align: left; direction: ltr;">
+                            <input class="" type="email" name="email" value="@Model?.Email" style="text-align: left; direction: ltr;">
                         </div>
 
                         <div class="input-group">
                             <label class="">وب سایت</label>
                             <input type="text" style="text-align: left; direction: ltr;" placeholder="https://..."
-                                name="website" class="">
+                                name="website" class="" value="@Model?.Website">
                         </div>
                         <div class="input-group">
                             <label class="">کد پستی (۱۰ رقم)</label>
                             <input inputmode="numeric" placeholder="مثال: ۱۲۳۴۵۶۷۸۹۰" class="" type="text"
-                                name="postalCode">
+                                name="postalCode" value="@Model?.PostalCode">
                         </div>
 
                         <div class="input-group" style="grid-column: 1 / -1;">
@@ -6326,3 +6327,4 @@
 </body>
 
 </html>
+

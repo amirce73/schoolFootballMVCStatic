@@ -5509,29 +5509,30 @@
                         class="btn-top-action btn-submit-top"><i class="fa fa-check" style="margin-left: 8px;"></i>ثبت
                         اطلاعات</button>
                 </div>
+@model FootballSchool.Web.Models.ApplicationUser
                 <div class="card">
-                    <form class="form-grid">
+                    <form class="form-grid" method="post" action="/personal-info">
                         <div class="input-group"><label class="">نام <span class="text-danger">*</span></label><input
-                                maxlength="50" class="" type="text" name="firstName"></div>
+                                maxlength="50" class="" type="text" name="firstName" value="@Model?.FirstName"></div>
                         <div class="input-group"><label class="">نام خانوادگی <span
                                     class="text-danger">*</span></label><input maxlength="50" class="" type="text"
-                                name="lastName"></div>
+                                name="lastName" value="@Model?.LastName"></div>
                         <div class="input-group"><label class="">کد ملی<span class="text-danger">*</span></label><input
-                                maxlength="10" inputmode="numeric" class="" type="text" name="nationalId"></div>
+                                maxlength="10" inputmode="numeric" class="" type="text" name="nationalId" value="@Model?.NationalId"></div>
                         <div class="input-group"><label class="">تاریخ تولد <span class="text-danger">*</span></label>
                             <div id="birthDate" class="date-picker-input"
                                 style="width: 100%; padding: 12px 14px; border: 1px solid rgb(203, 213, 225); border-radius: 8px; font-size: 0.9rem; background: rgb(255, 255, 255); color: inherit; cursor: pointer; min-height: 44px; display: flex; align-items: center;">
-                                <span style="color: rgb(148, 163, 184);">انتخاب تاریخ</span>
+                                <input type="date" name="birthDate" value="@(Model?.BirthDate?.ToString("yyyy-MM-dd"))" style="width: 100%; border: none; outline: none; background: transparent; color: inherit; font-family: inherit;" />
                             </div>
                         </div>
                         <div class="input-group"><label class="">شماره شناسنامه</label><input maxlength="10"
-                                inputmode="numeric" class="" type="text" name="birthCertificateNo"></div>
+                                inputmode="numeric" class="" type="text" name="birthCertificateNo" value="@Model?.BirthCertificateNo"></div>
                         <div class="input-group"><label class="">نام پدر</label><input maxlength="50" class=""
-                                type="text" name="fatherName"></div>
+                                type="text" name="fatherName" value="@Model?.FatherName"></div>
                         <div class="input-group"><label class="">وزن (کیلوگرم)</label><input maxlength="3"
-                                inputmode="numeric" class="" type="text" name="weight"></div>
+                                inputmode="numeric" class="" type="text" name="weight" value="@Model?.Weight"></div>
                         <div class="input-group"><label class="">قد (سانتی‌متر)</label><input maxlength="3"
-                                inputmode="numeric" class="" type="text" name="height"></div>
+                                inputmode="numeric" class="" type="text" name="height" value="@Model?.Height"></div>
                         <div class="input-group"><label class="">جنسیت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper  "><select name="gender" class="hidden-native-select"
                                     style="display: none;">
@@ -5603,12 +5604,12 @@
                             </div>
                         </div>
                         <div class="input-group"><label class="">شغل</label><input maxlength="50" class="" type="text"
-                                name="occupation"></div>
+                                name="occupation" value="@Model?.Occupation"></div>
                         <div class="input-group" style="grid-column: 1 / -1;"><label>وضعیت سلامت و بیماری‌های
                                 خاص</label><textarea rows="2" maxlength="500" name="healthStatus"
-                                placeholder="اگر بیماری خاصی دارید اینجا بنویسید"></textarea></div>
+                                placeholder="اگر بیماری خاصی دارید اینجا بنویسید">@Model?.HealthStatus</textarea></div>
                         <div class="input-group" style="grid-column: 1 / -1;"><label>توضیحات</label><textarea rows="3"
-                                maxlength="500" name="description"></textarea></div>
+                                maxlength="500" name="description">@Model?.Description</textarea></div>
                         <div class="desktop-anchor" style="display: none;"></div>
                     </form>
                 </div>
@@ -5628,4 +5629,5 @@
 </body>
 
 </html>
+
 
