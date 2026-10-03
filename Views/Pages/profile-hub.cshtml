@@ -1,4 +1,4 @@
-﻿@model FootballSchool.Web.Models.ViewModels.ProfileHubViewModel
+@model FootballSchool.Web.Models.ViewModels.ProfileHubViewModel
 @{
     Layout = null;
 }
@@ -5485,12 +5485,12 @@
                                 style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
                                 <span>رده سنی:</span> <strong>- - - - - - -</strong>
                             </div>
-                        </div><a href="#" style="color: rgb(51, 65, 85);"><i class="fa fa-shield"></i>تایید هویت و
+                        </div><a href="/verification" style="color: rgb(51, 65, 85);"><i class="fa fa-shield"></i>تایید هویت و
                             مدارک</a><a href="/logout" style="color: var(--danger); padding: 12px 16px;"><i
                                 class="fa fa-sign-out"></i> خروج از حساب</a>
                     </div>
                 </div>
-                <div class="header-actions"><button class="btn-noti" title="اعلان‌ها"><i class="fa fa-bell-o"></i><span
+                <div class="header-actions"><button class="btn-noti" title="اعلان‌ها" onclick="window.location.href='/bulletin'" style="cursor: pointer;"><i class="fa fa-bell-o"></i><span
                             class="badge">۳</span></button><a href="#" class="btn-app-header" title="دانلود اپلیکیشن"><i
                             class="fa fa-android"></i> <span>دانلود اپ</span></a></div>
             </div>
@@ -5507,7 +5507,7 @@
         </aside>
         <main class="main-wrapper">
             <div id="view-profile-hub" class="view-section fade-in">
-                <div class="sticky-top-bar"><button class="btn-top-action btn-back-top"><i
+                <div class="sticky-top-bar"><button class="btn-top-action btn-back-top"/dashboard'" onclick="window.location.href='/dashboard'"><i
                             class="fa fa-arrow-right"></i> بازگشت</button>
                     <h3 class="sticky-title">پروفایل کاربری</h3>
                     <div style="width: 80px;"></div>
@@ -5536,21 +5536,21 @@
                                         تکمیل کنید.</span><span class="mobile-text-400">جهت استفاده از تمامی امکانات و
                                         ثبت‌نام<br>مدارک خود را تکمیل کنید.</span></p>
                             </div>
-                        </div><button class="btn-verify-action">تکمیل هویت</button>
+                        </div><button class="btn-verify-action" onclick="window.location.href='/verification'" style="cursor: pointer;">تکمیل هویت</button>
                     </div>
                     <div class="profile-frame">
                         <div class="frame-title"><i class="fa fa-user" style="color: var(--primary);"></i> اطلاعات فردی
                         </div>
                         <div class="frame-grid">
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/personal-info'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-blue"><i class="fa fa-id-card-o"></i></div><span
                                     class="frame-item-label">اطلاعات شخصی</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/contact-info'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-green"><i class="fa fa-phone"></i></div><span
                                     class="frame-item-label">اطلاعات تماس</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/passport-info'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-orange"><i class="fa fa-globe"></i></div><span
                                     class="frame-item-label">سایر (گذرنامه)</span>
                             </div>
@@ -5560,11 +5560,11 @@
                         <div class="frame-title"><i class="fa fa-soccer-ball-o" style="color: var(--warning);"></i>
                             اطلاعات ورزشی</div>
                         <div class="frame-grid">
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/sports-info'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-purple"><i class="fa fa-star"></i></div><span
                                     class="frame-item-label">مشخصات ورزشی</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/club-info'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-blue"><i class="fa fa-shield"></i></div><span
                                     class="frame-item-label">اطلاعات باشگاهی</span>
                             </div>
@@ -5574,19 +5574,19 @@
                         <div class="frame-title"><i class="fa fa-folder-open" style="color: var(--danger);"></i> مستندات
                             و مدارک</div>
                         <div class="frame-grid">
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/documents'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-blue"><i class="fa fa-file-image-o"></i></div><span
                                     class="frame-item-label">کارت ملی</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/documents'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-green"><i class="fa fa-file-text-o"></i></div><span
                                     class="frame-item-label">شناسنامه</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/documents'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-purple"><i class="fa fa-certificate"></i></div><span
                                     class="frame-item-label">مجوز ورزشی</span>
                             </div>
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/documents'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-red-card"><i class="fa fa-plus-circle"></i></div><span
                                     class="frame-item-label">مدارک و سایر</span>
                             </div>
@@ -5596,7 +5596,7 @@
                         <div class="frame-title"><i class="fa fa-shield" style="color: var(--success);"></i> امنیت و
                             حساب کاربری</div>
                         <div class="frame-grid">
-                            <div class="frame-item">
+                            <div class="frame-item" onclick="window.location.href='/password'" style="cursor: pointer;">
                                 <div class="frame-icon-circle ic-orange"><i class="fa fa-lock"></i></div><span
                                     class="frame-item-label">تغییر رمز عبور</span>
                             </div>

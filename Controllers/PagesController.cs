@@ -28,6 +28,8 @@ namespace FootballSchoolMVC.Controllers
 
         [Route("")]
         [Route("index.html")]
+        [Route("login")]
+        [Route("login.html")]
         [HttpGet]
         public IActionResult Index()
         {
@@ -39,6 +41,8 @@ namespace FootballSchoolMVC.Controllers
 
         [Route("")]
         [Route("index.html")]
+        [Route("login")]
+        [Route("login.html")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string Mobile)
@@ -124,6 +128,25 @@ namespace FootballSchoolMVC.Controllers
         public IActionResult SpecializedHub()
         {
             return View("~/Views/Pages/specialized-hub.cshtml");
+        }
+
+        // ─── Generic Dynamic Protected Pages ───────────────────────────────────
+
+        [Route("{page}")]
+        [Route("{page}.html")]
+        [HttpGet]
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        public IActionResult RenderPage(string page)
+        {
+            if (string.IsNullOrWhiteSpace(page)) return NotFound();
+            var lower = page.ToLower();
+            if (lower.Contains("/") || lower.Contains("\\") || lower.Contains(".")) return NotFound();
+
+            if (lower == "certificates") lower = "certificate";
+            if (lower == "bmi-history") return Redirect("/personal-info");
+
+            var viewPath = $"~/Views/Pages/{lower}.cshtml";
+            return View(viewPath);
         }
     }
 }

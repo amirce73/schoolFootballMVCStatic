@@ -1,4 +1,4 @@
-﻿@model FootballSchool.Web.Models.ViewModels.DashboardViewModel
+@model FootballSchool.Web.Models.ViewModels.DashboardViewModel
 <!doctype html>
 <html lang="fa" dir="rtl">
 
@@ -5470,12 +5470,7 @@
                       justify-content: center;
                       align-items: center;
                     "></div>
-                <div style="
-                      margin-right: auto;
-                      margin-bottom: 12px;
-                      display: flex;
-                      justify-content: center;
-                    ">
+                <div style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center; cursor: pointer;" onclick="window.location.href='/verification'">
                   @if (Model.IsVerified) {
                     <span class="badge-verify verified" style="border-color: var(--success)"><i class="fa fa-check-circle"></i> تایید شده</span>
                   } else {
@@ -5520,12 +5515,12 @@
                 <span>رده سنی:</span> <strong>- - - - - - -</strong>
               </div>
             </div>
-            <a href="#" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a><a href="/logout"
+            <a href="/verification" style="color: rgb(51, 65, 85)"><i class="fa fa-shield"></i>تایید هویت و مدارک</a><a href="/logout"
               style="color: var(--danger); padding: 12px 16px"><i class="fa fa-sign-out"></i> خروج از حساب</a>
           </div>
         </div>
         <div class="header-actions">
-          <button class="btn-noti" title="اعلان‌ها">
+          <button class="btn-noti" title="اعلان‌ها" onclick="window.location.href='/bulletin'" style="cursor: pointer;">
             <i class="fa fa-bell-o"></i><span class="badge">@Model.UnreadNotificationsCount</span></button><a href="#" class="btn-app-header"
             title="دانلود اپلیکیشن"><i class="fa fa-android"></i> <span>دانلود اپ</span></a>
         </div>
@@ -5665,7 +5660,7 @@
                 <div class="action-row" style="margin-bottom: 6px">
                   <span class="action-label"><i class="fa fa-exclamation-triangle"
                       style="color: rgb(253, 224, 71); font-size: 1rem"></i>
-                    اطلاعات شما تکمیل نیست (۳۲٪)</span><button class="btn-mini">تکمیل اطلاعات</button>
+                    اطلاعات شما تکمیل نیست (۳۲٪)</span><button class="btn-mini" onclick="event.stopPropagation(); window.location.href='/profile-hub'">تکمیل اطلاعات</button>
                 </div>
                 <div class="progress-bar-wrap">
                   <div class="progress-fill" style="width: 32%"></div>
@@ -5673,7 +5668,7 @@
               </div>
             </div>
             <div class="left-cards-container">
-              <div class="card registration-card school-registration-card" style="
+              <div class="card registration-card school-registration-card" onclick="window.location.href='/registration'" style="
                     flex: 1 1 0%;
                     margin: 0px;
                     cursor: pointer;
@@ -5699,7 +5694,8 @@
                   ورود
                 </div>
               </div>
-              <div class="card bmi-card school-top-bmi-card" style="
+              <div class="card bmi-card school-top-bmi-card" onclick="window.location.href='/personal-info'" style="
+                    cursor: pointer;
                     flex: 1 1 0%;
                     margin: 0px;
                     padding: 8px;
@@ -5846,7 +5842,7 @@
                   <span class="stat-label">رده سنی</span><span class="stat-val">بزرگسالان</span>
                 </div>
               </div>
-              <div class="stat-card school-stat-card" style="cursor: pointer">
+              <div class="stat-card school-stat-card" onclick="window.location.href='/attendance'" style="cursor: pointer">
                 <div class="stat-icon ic-green">
                   <i class="fa fa-calendar-check-o"></i>
                 </div>
@@ -5854,7 +5850,7 @@
                   <span class="stat-label">کل | حضور در تمرین</span><span class="stat-val">۲۰ | ۱۴ (۷۰٪)</span>
                 </div>
               </div>
-              <div class="stat-card school-stat-card school-kpi-bmi" style="cursor: pointer">
+              <div class="stat-card school-stat-card school-kpi-bmi" onclick="window.location.href='/personal-info'" style="cursor: pointer">
                 <div class="stat-icon" style="
                       color: rgb(71, 85, 105);
                       background: rgb(241, 245, 249);
@@ -5885,7 +5881,7 @@
                   <span class="stat-label">شاخص BMI</span><span class="stat-val">نامشخص</span>
                 </div>
               </div>
-              <div class="stat-card school-stat-card" style="cursor: pointer">
+              <div class="stat-card school-stat-card" onclick="window.location.href='/talent'" style="cursor: pointer">
                 <div class="stat-icon" style="
                       color: rgb(147, 51, 234);
                       background: rgb(243, 232, 255);
@@ -5900,7 +5896,7 @@
                   <span class="stat-label">استعدادیابی</span><span class="stat-val">مشاهده</span>
                 </div>
               </div>
-              <div class="stat-card school-stat-card" style="cursor: pointer">
+              <div class="stat-card school-stat-card" onclick="window.location.href='/insurance-status'" style="cursor: pointer">
                 <div class="stat-icon ic-orange">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round"
@@ -5916,20 +5912,20 @@
           </div>
           <div class="col-span-3 media-group-wrapper">
             <div class="dash-action-grid">
-              <div class="dash-action-card card-store">
+              <div class="dash-action-card card-store" onclick="window.location.href='/store'" style="cursor: pointer">
                 <i class="fa fa-shopping-cart"></i>
                 <h4>فروشگاه</h4>
               </div>
-              <div class="dash-action-card card-gallery">
+              <div class="dash-action-card card-gallery" onclick="window.location.href='/gallery'" style="cursor: pointer">
                 <i class="fa fa-picture-o"></i>
                 <h4>گالری</h4>
               </div>
-              <div class="dash-action-card card-backpack">
+              <div class="dash-action-card card-backpack" onclick="window.location.href='/training-backpack'" style="cursor: pointer">
                 <i class="fa fa-briefcase"></i>
                 <h4>ویدیو</h4>
               </div>
             </div>
-            <div class="card news-card" style="cursor: pointer; margin-bottom: 0px">
+            <div class="card news-card" onclick="window.location.href='/bulletin'" style="cursor: pointer; margin-bottom: 0px">
               <div class="news-header">
                 <h4>
                   <i class="fa fa-bell-o" style="color: var(--primary)"></i>

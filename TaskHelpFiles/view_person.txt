@@ -1,0 +1,277 @@
+       public ActionResult view_person()
+        {
+            if (Session["userid"] == null)
+            {
+                Session["alarmclass"] = "alarm_box";
+                Session["alarmText_title"] = "خطا در ثبت اطلاعات";
+                Session["btn_class"] = "btn-Pcustome-alarm";
+                Session["td_class"] = "red";
+                Session["alarmText"] = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید.";
+                Session["alarmpic"] = "/Content/images/Cancel-128.png";
+                return RedirectToAction("../home/LogInFS");
+            }
+
+            HomeController HC = new HomeController();
+            set_alarm();
+            HC.set_active_menu("MA8", "MA81");
+            user_not_access test = new user_not_access();
+            string[] str = test.initial_access(int.Parse(Session["userid"].ToString()), 5);
+            int j = 0;
+            while (str[j] != null)
+            {
+                ViewData[str[j]] = ",@disabled";
+                j++;
+            }
+            set_personcombo();
+            String soccer_id = Request["soccer_id"];
+            fs_period fsp = new fs_period();
+            if (string.IsNullOrEmpty(System.Web.HttpContext.Current.Session["period_id"] as String))
+                Session["period_id"] = fsp.last_fsperiod(long.Parse(Session["fschool_id"].ToString()));
+            conect_db.CommandTimeout = 1200;
+            var result_soccer = conect_db.sp_fs_soccer_list(long.Parse(Session["fschool_id"].ToString())
+                                                                , long.Parse(Session["userid"].ToString())
+                                                                , long.Parse(Session["period_id"].ToString())
+                                                                , "");
+
+            List<SelectListItem> soccer = new List<SelectListItem>();
+            foreach (var item in result_soccer)
+            {
+                SelectListItem temp_soccer = new SelectListItem();
+                temp_soccer.Text = item.soccer_name;
+                temp_soccer.Value = item.user_id_FK.ToString();
+                soccer.Add(temp_soccer);
+            }
+
+            ViewBag.soccer = soccer;
+
+            long? flag = 0;
+            if (soccer.Count == 0)
+            {
+                return View("view_person");
+            }
+
+            if ((soccer_id == "" || soccer_id == null))
+            {
+                flag = long.Parse(soccer.First().Value);
+                soccer_id = flag.ToString();
+            }
+
+            var model = set_personinfo(long.Parse(soccer_id));
+            person rec = new person();
+
+            if (model.Count() > 0)
+            {
+                rec = model.First();
+                Session["selectsoccer"] = rec.user_id_FK.ToString();
+                if (flag != 0)
+                {
+                    return View("view_person", rec);
+                }
+                else
+                {
+                    return Json(new { model = rec }, JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            else
+            {
+                return View("view_person");
+            }
+        }
+        [HttpPost]
+        public ActionResult view_person(footbalit_project.Models.person model)
+        {
+            if (Session["userid"] == null)
+            {
+                return Json(new { errorcode = "1", file_logo = "" }, JsonRequestBehavior.AllowGet);
+
+
+            }
+            HomeController HC = new HomeController();
+            set_alarm();
+
+            var query = from p in conect_db.tbl_users
+                        where p.user_name == model.international_id && p.user_id != model.user_id_FK
+                        select p;
+
+            if (query.Count() != 0)
+            {
+                return Json(new { errorcode = "2", file_logo = "" }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            try
+            {
+                if (model.person_id != 0 && model.person_id != null) { Session["person_id"] = model.person_id; }
+                if (Session["person_id"] == null)
+                {
+                    return Json(new { errorcode = "3", file_logo = "" }, JsonRequestBehavior.AllowGet);
+
+                }
+                int temp = 0;
+                tbl_user_personal_info record = conect_db.tbl_user_personal_infos.Single(p => p.person_id == Int32.Parse(Session["person_id"].ToString()));
+                football_person fp = new football_person();
+                string mds_str = fp.set_number_ascii(model.birth_date_shamsi.Trim(), 1);
+
+                PersianCalendar pc = new PersianCalendar();
+                DateTime bdm = new DateTime(int.Parse(mds_str.Substring(0, 4)), int.Parse(mds_str.Substring(5, 2)), int.Parse(mds_str.Substring(8, 2)), pc);
+                record.name = model.name;
+                if (model.name != "" && model.name != null)
+                    temp++;
+                record.family = model.family;
+                if (model.family != "" && model.family != null)
+                    temp++;
+                record.passport_eng_name = model.eng_name;
+                if (model.eng_name != "" && model.eng_name != null)
+                    temp++;
+                record.passport_eng_family = model.eng_family;
+                if (model.eng_family != "" && model.eng_family != null)
+                    temp++;
+                record.father_job = model.father_job;
+                if (model.father_job != "" && model.father_job != null)
+                    temp++;
+                record.father_name = model.father_name;
+                if (model.father_name != "" && model.father_name != null)
+                    temp++;
+                record.international_id = model.international_id;
+                if (model.international_id != "" && model.international_id != null)
+                    temp++;
+                char[] ch = model.international_id.ToCharArray();
+                if (char.IsLetter(ch[0]))
+                {
+                    record.passport_no = model.international_id;
+                }
+                record.id_no = model.id_no;
+                if (model.id_no != "" && model.id_no != null)
+                    temp++;
+                record.location_id = model.location_id;
+                if (model.location_id != "" && model.location_id != null)
+                    temp++;
+                record.serial_id = model.serial_id;
+                if (model.serial_id != "" && model.serial_id != null)
+                    temp++;
+                string miladi_year = bdm.Year.ToString();
+                string miladi_month = bdm.Month.ToString();
+                if (miladi_month.Length == 1) { miladi_month = "0" + miladi_month; }
+                string miladi_day = bdm.Day.ToString();
+                if (miladi_day.Length == 1) { miladi_day = "0" + miladi_day; }
+                record.birth_date_miladi = miladi_year + "/" + miladi_month + "/" + miladi_day;
+                if (record.birth_date_miladi != "" && record.birth_date_miladi != null)
+                    temp++;
+                record.birth_date_shamsi = mds_str;
+                if (record.birth_date_shamsi != "" && record.birth_date_shamsi != null)
+                    temp++;
+                if (model.nationality_id_FK2 != 0 && model.nationality_id_FK2 != -1 && model.nationality_id_FK2 != null) { record.nationality_id_FK = model.nationality_id_FK2; temp++; } else { record.nationality_id_FK = null; }
+                if (model.citizenship2 != 0 && model.citizenship2 != -1 && model.citizenship2 != null) { record.citizenship = model.citizenship2; temp++; } else { record.citizenship = -1; }
+                if (model.health_status2 != -1 && model.health_status2 != null) { record.health_status = model.health_status2; temp++; } else { record.health_status = -1; }
+                if (model.blood_type2 != "-1" && model.blood_type2 != "null") { record.blood_type = model.blood_type2; temp++; } else { record.blood_type = "-1"; }
+                if (model.gender2 != -1 && model.gender2 != null) { record.gender = model.gender2; temp++; } else { record.religion = -1; }
+                if (model.marital_status2 != -1 && model.marital_status2 != null) { record.marital_status = model.marital_status2; temp++; } else { record.marital_status = -1; }
+                if (model.military_service_status2 != -1 && model.military_service_status2 != null) { record.military_service_status = model.military_service_status2; temp++; } else { record.military_service_status = -1; }
+                if (model.religion2 != -1 && model.religion2 != null) { record.religion = model.religion2; temp++; } else { record.religion = -1; }
+                record.weight = model.weight;
+                if (model.weight != 0 && model.weight != null)
+                    temp++;
+                record.Height = model.Height;
+                if (model.Height != 0 && model.Height != null)
+                    temp++;
+                record.job = model.job;
+                if (model.job != "" && model.job != null)
+                    temp++;
+                record.coach = model.coach;
+                if (model.coach != "" && model.coach != null)
+                    temp++;
+                record.description = model.description;
+                if (model.description != "" && model.description != null)
+                    temp++;
+                record.complete_percent = (100 * temp) / 22;
+                conect_db.SubmitChanges();
+
+                //////////////////////////////////////////
+                // edit user table 
+                /////////////////////////////////////////
+
+                tbl_user record_user = conect_db.tbl_users.Single(p => p.user_id == model.user_id_FK);
+                record_user.user_name = model.international_id;
+                record_user.first_name = model.name;
+                record_user.last_name = model.family;
+                int filevolume = 0;
+                string filename = "";
+                string pathToSave = Server.MapPath("/Uploadfiles/Images/");
+                string pathToSave2 = "/Uploadfiles/Images/";
+                DocController doc = new DocController();
+                //var file = Request.Files[0];
+                foreach (string upload in Request.Files)
+                {
+                    if (Request.Files[upload].ContentLength == 0) continue;
+                    filevolume = Request.Files[upload].ContentLength;
+
+                    filename = Path.GetFileName(Request.Files[upload].FileName);
+                    string str_temp = doc.validate_file(filename, filevolume);
+                    if (str_temp != "")
+                    {
+                        var str_arr = str_temp.Split('|');
+                        Session["alarmclass"] = "alarm_box";
+                        Session["alarmText_title"] = str_arr[0];
+                        Session["btn_class"] = "btn-Pcustome-alarm";
+                        Session["td_class"] = "red";
+                        Session["alarmText"] = str_arr[1];
+                        Session["alarmpic"] = "/Content/images/Cancel-128.png";
+                        return Json(new { errorcode = "6" }, JsonRequestBehavior.AllowGet);
+                    }
+                    DateTime thisDate = DateTime.Now;
+                    var ext = filename.Split('.');
+                    filename = model.user_id_FK.ToString() + '-' + thisDate.Year + thisDate.Month + thisDate.Day + '-' + thisDate.Hour + thisDate.Minute + thisDate.Second + '.' + ext[1];
+                    Request.Files[upload].SaveAs(Path.Combine(pathToSave, filename));
+
+                }
+                if (filename != "") { record_user.pic = pathToSave2 + filename; }
+                record_user.first_name = model.name;
+                record_user.last_name = model.family;
+                conect_db.SubmitChanges();
+
+                //////////////////////////////////////////
+                // edit account description
+                /////////////////////////////////////////
+
+                tbl_acc_income record_acc_income = conect_db.tbl_acc_incomes.Where(p => p.user_id_FK == model.user_id_FK).First();
+                record_acc_income.income_desc = "حساب دریافتنی آقای " + model.name + " " + model.family + " ** " + model.international_id;
+                record_acc_income.description = "Auto Generate";
+                conect_db.SubmitChanges();
+                //////////////////////////////////////////14021214
+                set_personcombo();
+                String soccer_id = Request["soccer_id"];
+                fs_period fsp = new fs_period();
+                if (string.IsNullOrEmpty(System.Web.HttpContext.Current.Session["period_id"] as String))
+                    Session["period_id"] = fsp.last_fsperiod(long.Parse(Session["fschool_id"].ToString()));
+
+                //var result_soccer = conect_db.sp_fs_soccer_list(long.Parse(Session["fschool_id"].ToString())
+                //                                                    , long.Parse(Session["userid"].ToString())
+                //                                                    , long.Parse(Session["period_id"].ToString())
+                //                                                    , "");
+
+                //List<SelectListItem> soccer = new List<SelectListItem>();
+                //foreach (var item in result_soccer)
+                //{
+                //    SelectListItem temp_soccer = new SelectListItem();
+                //    temp_soccer.Text = item.soccer_name;
+                //    temp_soccer.Value = item.user_id_FK.ToString();
+                //    soccer.Add(temp_soccer);
+                //}
+
+                //ViewBag.soccer = soccer;
+
+
+                person rec = new person();
+                rec = model;
+                Session["selectsoccer"] = rec.user_id_FK.ToString();
+                //return View("view_person", rec);
+
+                return Json(new { errorcode = "0", file_logo = filename }, JsonRequestBehavior.AllowGet);
+                //////////////////////////////////////
+            }
+            catch
+            {
+                return Json(new { errorcode = "10", file_logo = "" }, JsonRequestBehavior.AllowGet);
+            }
+        }

@@ -1,0 +1,91 @@
+﻿Sidebar.tsx:5: const navigate = useNavigate();
+Topbar.tsx:14: const navigate = useNavigate();
+Topbar.tsx:31: navigate('/login');
+Topbar.tsx:71: <div style={{ "marginRight": "auto", "marginBottom": "12px", "display": "flex", "justifyContent": "center" }} onClick={() => navigate('/verification')}>
+Topbar.tsx:90: <a href="#" style={{ "color": "#334155" }} onClick={() => navigate('/verification')}><i className="fa fa-shield"></i>
+Topbar.tsx:99: <button className="btn-noti" title="اعلان‌ها" onClick={() => navigate('/bulletin')}>
+Attendance.tsx:18: const navigate = useNavigate();
+Attendance.tsx:56: <button className="btn-top-action btn-back-top" onClick={() => navigate('/specialized-hub')}>
+BankInfo.tsx:36: const navigate = useNavigate();
+BankInfo.tsx:127: <button className="btn-top-action btn-back-top" onClick={() => navigate('/financial-hub')}>
+Bulletin.tsx:5: const navigate = useNavigate();
+Bulletin.tsx:8: <div className="sticky-top-bar"><button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Certificate.tsx:17: const navigate = useNavigate();
+Certificate.tsx:37: <button className="btn-top-action btn-back-top" onClick={() => navigate('/documents')}>
+ClothingInfo.tsx:8: const navigate = useNavigate();
+ClothingInfo.tsx:50: <div className="sticky-top-bar"><button className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+ClubInfo.tsx:6: const navigate = useNavigate();
+ClubInfo.tsx:11: <div className="sticky-top-bar"><button className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+ContactInfo.tsx:94: const navigate = useNavigate();
+ContactInfo.tsx:225: <button type="button" className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}>
+Dashboard.tsx:9: const navigate = useNavigate();
+Dashboard.tsx:83: <button className="btn-mini" onClick={(e) => { e.stopPropagation(); navigate('/profile-hub'); }}>تکمیل اطلاعات</button>
+Dashboard.tsx:93: <div className="card registration-card school-registration-card" style={{ flex: 1, margin: 0, cursor: 'pointer', border: '1px solid var(--primary)' }} onClick={() => navigate('/registration')}>
+Dashboard.tsx:143: <div className="stat-card school-stat-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/attendance')}>
+Dashboard.tsx:147: <div className="stat-card school-stat-card school-kpi-bmi" style={{ cursor: 'pointer' }} onClick={() => navigate('/bmi-history')}>
+Dashboard.tsx:153: <div className="stat-card school-stat-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/talent')}>
+Dashboard.tsx:157: <div className="stat-card school-stat-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/insurance-status')}>
+Dashboard.tsx:166: <div className="dash-action-card card-store" onClick={() => navigate('/store')}>
+Dashboard.tsx:170: <div className="dash-action-card card-gallery" onClick={() => navigate('/gallery')}>
+Dashboard.tsx:175: <div className="dash-action-card card-backpack" onClick={() => navigate('/training-backpack')}>
+Dashboard.tsx:180: <div className="card news-card" onClick={() => navigate('/bulletin')} style={{ "cursor": "pointer", "marginBottom": "0px" }}>
+Documents.tsx:13: const navigate = useNavigate();
+Documents.tsx:116: <button className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}>
+Documents.tsx:119: <button className="btn-top-action" style={{ background: 'transparent', color: 'var(--primary-color)', border: '1px solid var(--primary-color)' }} onClick={() => navigate('/certificates')}>
+FinancialHub.tsx:5: const navigate = useNavigate();
+FinancialHub.tsx:9: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+FinancialHub.tsx:29: <div className="hub-btn" onClick={() => navigate('/bank-info')}>
+FinancialHub.tsx:42: <div className="hub-btn" onClick={() => navigate('/financial-timeline')}>
+FinancialTimeline.tsx:16: const navigate = useNavigate();
+FinancialTimeline.tsx:63: <button className="btn-top-action btn-back-top" onClick={() => navigate('/financial-hub')}>
+Gallery.tsx:5: const navigate = useNavigate();
+Gallery.tsx:9: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Insurance.tsx:7: const navigate = useNavigate();
+Insurance.tsx:47: <div className="sticky-top-bar"><button className="btn-top-action btn-back-top" onClick={() => navigate('/specialized-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+InsuranceStatus.tsx:15: const navigate = useNavigate();
+InsuranceStatus.tsx:42: <button className="btn-top-action btn-back-top" onClick={() => navigate('/specialized-hub')}>
+PassportInfo.tsx:43: const navigate = useNavigate();
+PassportInfo.tsx:111: <button type="button" className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}>
+Password.tsx:7: const navigate = useNavigate();
+Password.tsx:43: <button className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+PersonalInfo.tsx:53: const navigate = useNavigate();
+PersonalInfo.tsx:133: <button type="button" className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}>
+ProfileHub.tsx:8: const navigate = useNavigate();
+ProfileHub.tsx:36: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+ProfileHub.tsx:89: <button className="btn-verify-action" onClick={() => navigate('/verification')}>تکمیل هویت</button>
+ProfileHub.tsx:97: <div className="frame-item" onClick={() => navigate('/personal-info')}>
+ProfileHub.tsx:101: <div className="frame-item" onClick={() => navigate('/contact-info')}>
+ProfileHub.tsx:105: <div className="frame-item" onClick={() => navigate('/passport-info')}>
+ProfileHub.tsx:117: <div className="frame-item" onClick={() => navigate('/sports-info')}>
+ProfileHub.tsx:121: <div className="frame-item" onClick={() => navigate('/club-info')}>
+ProfileHub.tsx:134: <div className="frame-item" onClick={() => navigate('/documents')}>
+ProfileHub.tsx:138: <div className="frame-item" onClick={() => navigate('/documents')}>
+ProfileHub.tsx:142: <div className="frame-item" onClick={() => navigate('/documents')}>
+ProfileHub.tsx:146: <div className="frame-item" onClick={() => navigate('/documents')}>
+ProfileHub.tsx:158: <div className="frame-item" onClick={() => navigate('/password')}>
+Registration.tsx:9: const navigate = useNavigate();
+Registration.tsx:54: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Registration.tsx:103: <button onClick={() => navigate('/financial-timeline')} style={{ "width": "100%", "background": "#f8fafc", "color": "var(--text-dark)", "border": "1px solid var(--border)", "padding": "12px", "borderRadius": "var(--radius-sm)", "fontWeight": "800", "fontFamily": "inherit", "cursor": "pointer", "transition": "0.2s" }}>
+RegistrationHistory.tsx:9: const navigate = useNavigate();
+RegistrationHistory.tsx:13: <button className="btn-top-action btn-back-top" onClick={() => navigate('/specialized-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+SpecializedHub.tsx:5: const navigate = useNavigate();
+SpecializedHub.tsx:26: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+SpecializedHub.tsx:35: <button className="btn-primary" style={{ fontSize: '0.8rem', padding: '4px 12px', borderRadius: '4px' }} onClick={() => navigate('/attendance')}>مشاهده</button>
+SpecializedHub.tsx:60: <div className="spec-item" onClick={() => navigate('/attendance')}>
+SpecializedHub.tsx:68: <div className="spec-item" onClick={() => navigate('/registration-history')}>
+SpecializedHub.tsx:72: <div className="spec-item" onClick={() => navigate('/talent')}>
+SpecializedHub.tsx:85: <div className="spec-item" onClick={() => navigate('/insurance-status')}>
+SpecializedHub.tsx:89: <div className="spec-item" onClick={() => navigate('/certificate')}>
+SportsInfo.tsx:30: const navigate = useNavigate();
+SportsInfo.tsx:125: <button type="button" className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}>
+Store.tsx:5: const navigate = useNavigate();
+Store.tsx:9: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Talent.tsx:17: const navigate = useNavigate();
+Talent.tsx:53: <button className="btn-top-action btn-back-top" onClick={() => navigate('/specialized-hub')}>
+TrainingBackpack.tsx:9: const navigate = useNavigate();
+TrainingBackpack.tsx:54: <button className="btn-top-action btn-back-top" onClick={() => navigate('/dashboard')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Verification.tsx:35: const navigate = useNavigate();
+Verification.tsx:103: <button type="button" className="btn-top-action btn-back-top" onClick={() => navigate('/profile-hub')}><i className="fa fa-arrow-right"></i> بازگشت</button>
+Verification.tsx:199: <button className="btn-app-primary" onClick={() => navigate('/profile-hub')} style={{ width: '100%', padding: '12px' }}>بازگشت به پروفایل</button>
+Login.tsx:8: const navigate = useNavigate();
+Login.tsx:37: navigate('/dashboard');

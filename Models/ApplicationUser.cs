@@ -167,5 +167,6 @@ namespace FootballSchool.Web.Models
 
         public ICollection<RegistrationRecord> RegistrationRecords { get; set; } = new List<RegistrationRecord>();
         public ICollection<FinancialTransaction> FinancialTransactions { get; set; } = new List<FinancialTransaction>();
+        public virtual tbl_user_personal_info? PersonalInfo { get; set; }
     }
 }

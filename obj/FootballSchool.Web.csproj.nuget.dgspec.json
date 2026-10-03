@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj": {}
+    "E:\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj": {
+    "E:\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
+        "projectUniqueName": "E:\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
         "projectName": "FootballSchool.Web",
-        "projectPath": "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
+        "projectPath": "E:\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
         "packagesPath": "C:\\Users\\amirce73\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\obj\\",
+        "outputPath": "E:\\amirce73\\FootballSchoolMVC\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\amirce73\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -39,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "11.0.100"
       },
       "frameworks": {
         "net10.0": {
@@ -86,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\11.0.100-preview.6.26359.118/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

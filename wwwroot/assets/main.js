@@ -1,217 +1,358 @@
-﻿// =====================================================
-// STATIC ROUTING LAYER
-// Maps React Router paths → static .html files
+// =====================================================
+// FOOTBALL SCHOOL MVC - FRONTEND ROUTING & INTERACTION LAYER
+// Matches React Router navigation and UI actions 100%
 // =====================================================
 (function () {
-    const ROUTE_MAP = {
-        '/': './index.html',
-        '/dashboard': './dashboard.html',
-        '/profile-hub': './profile-hub.html',
-        '/financial-hub': './financial-hub.html',
-        '/specialized-hub': './specialized-hub.html',
-        '/registration': '/registration',
-        '/store': '/store',
-        '/gallery': '/gallery',
-        '/training-backpack': '/training-backpack',
-        '/financial-timeline': './financial-timeline.html',
-        '/verification': './verification.html',
-        '/registration-history': './registration-history.html',
-        '/personal-info': '/personal-info',
-        '/contact-info': '/contact-info',
-        '/passport-info': '/passport-info',
-        '/bank-info': './bank-info.html',
-        '/sports-info': '/sports-info',
-        '/club-info': '/club-info',
-        '/clothing-info': '/clothing-info',
-        '/documents': '/documents',
-        '/password': '/password',
-        '/attendance': './attendance.html',
-        '/talent': './talent.html',
-        '/insurance': './insurance.html',
-        '/insurance-status': './insurance-status.html',
-        '/certificate': './certificate.html',
-        '/bulletin': '/bulletin',
-    };
+    'use strict';
 
-    // Back-button destinations per page (derived from React source navigate() calls)
     const BACK_MAP = {
-        'dashboard': './index.html',
-        'profile-hub': './dashboard.html',
-        'financial-hub': './dashboard.html',
-        'specialized-hub': './dashboard.html',
-        'registration': './dashboard.html',
-        'store': './dashboard.html',
-        'gallery': './dashboard.html',
-        'training-backpack': './dashboard.html',
-        'financial-timeline': './financial-hub.html',
-        'verification': './profile-hub.html',
-        'registration-history': './specialized-hub.html',
-        'personal-info': './profile-hub.html',
-        'contact-info': './profile-hub.html',
-        'passport-info': './profile-hub.html',
-        'bank-info': './financial-hub.html',
-        'sports-info': './profile-hub.html',
-        'club-info': './specialized-hub.html',
-        'clothing-info': './profile-hub.html',
-        'documents': './profile-hub.html',
-        'password': './profile-hub.html',
-        'attendance': './specialized-hub.html',
-        'talent': './specialized-hub.html',
-        'insurance': './specialized-hub.html',
-        'insurance-status': './specialized-hub.html',
-        'certificate': './specialized-hub.html',
-        'bulletin': './dashboard.html',
+        'dashboard': '/dashboard',
+        'profile-hub': '/dashboard',
+        'financial-hub': '/dashboard',
+        'specialized-hub': '/dashboard',
+        'registration': '/dashboard',
+        'store': '/dashboard',
+        'gallery': '/dashboard',
+        'training-backpack': '/dashboard',
+        'bulletin': '/dashboard',
+        'financial-timeline': '/financial-hub',
+        'bank-info': '/financial-hub',
+        'verification': '/profile-hub',
+        'personal-info': '/profile-hub',
+        'contact-info': '/profile-hub',
+        'passport-info': '/profile-hub',
+        'sports-info': '/profile-hub',
+        'club-info': '/profile-hub',
+        'clothing-info': '/profile-hub',
+        'documents': '/profile-hub',
+        'password': '/profile-hub',
+        'attendance': '/specialized-hub',
+        'registration-history': '/specialized-hub',
+        'talent': '/specialized-hub',
+        'insurance': '/specialized-hub',
+        'insurance-status': '/specialized-hub',
+        'certificate': '/documents',
+        'certificates': '/documents'
     };
-
-    function resolveRoute(path) {
-        return ROUTE_MAP[path] || null;
-    }
 
     function getCurrentPage() {
-        const parts = window.location.pathname.split('/');
-        const file = parts[parts.length - 1].replace('.html', '');
-        return file || 'index';
+        const clean = window.location.pathname.toLowerCase().replace(/^\/+|\/+$/g, '');
+        const parts = clean.split('/');
+        let page = parts[parts.length - 1] || 'dashboard';
+        page = page.replace('.html', '').replace('.cshtml', '');
+        return page || 'dashboard';
     }
 
-    function fixLinks() {
-        // Fix all <a href="/route"> links
-        document.querySelectorAll('a[href]').forEach(a => {
-            const href = a.getAttribute('href');
-            if (href && href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/assets')) {
-                const mapped = resolveRoute(href);
-                if (mapped) a.setAttribute('href', mapped);
-            }
-        });
-
-        // Fix back buttons
-        const page = getCurrentPage();
-        const backDest = BACK_MAP[page];
-        document.querySelectorAll('.btn-back-top').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (backDest) window.location.href = backDest;
-                else history.back();
-            });
-        });
-
-        // Fix clickable divs: frame-item, spec-item, hub-btn, dash-action-card, stat-card, news-card, registration-card
-        // These are identified by their text label (فارسی)
-        const TEXT_ROUTE_MAP = {
-            // ProfileHub frame-items
-            'اطلاعات شخصی': '/personal-info',
-            'اطلاعات تماس': '/contact-info',
-            'گذرنامه': '/passport-info',
-            'مشخصات ورزشی': '/sports-info',
-            'اطلاعات باشگاهی': '/club-info',
-            'اطلاعات پوشاک': '/clothing-info',
-            'کارت ملی': '/documents',
-            'شناسنامه': '/documents',
-            'مجوز ورزشی': '/documents',
-            'مدارک و سایر': '/documents',
-            'تغییر رمز عبور': '/password',
-            // SpecializedHub spec-items (text from spec-title divs)
-            'گزارش حضور': './attendance.html',
-            'حضور و غیاب': './attendance.html',
-            'تاریخچه\nثبت‌نام': './registration-history.html',
-            'سوابق ثبت‌نام': './registration-history.html',
-            'استعداد': './talent.html',
-            'وضعیت\nبیمه': './insurance-status.html',
-            'بیمه ورزشی': './insurance-status.html',
-            'گواهی\nپایان': './certificate.html',
-            'گواهینامه': './certificate.html',
-            'گواهی': './certificate.html',
-            // FinancialHub hub-btns
-            'تاریخچه مالی': './financial-timeline.html',
-            'تایم‌لاین مالی': './financial-timeline.html',
-            'تایم لاین مالی': './financial-timeline.html',
-            'پرداخت آنلاین': './bank-info.html',
-            'حساب بانکی': './bank-info.html',
-            'اطلاعات بانکی': './bank-info.html',
-            // SpecializedHub spec-items with partial text match
-            'تاریخچه': './registration-history.html',
-        };
-
-
-        const clickableSelectors = [
-            '.frame-item', '.spec-item', '.hub-btn',
-            '.dash-action-card', '.stat-card', '.news-card',
-            '.registration-card', '.club-list-item'
-        ];
-
-        clickableSelectors.forEach(sel => {
-            document.querySelectorAll(sel).forEach(el => {
-                const text = (el.textContent || '').trim();
-                let dest = null;
-
-                // Check text-based routing first
-                for (const [label, url] of Object.entries(TEXT_ROUTE_MAP)) {
-                    if (text.includes(label)) { dest = url; break; }
+    function initNavigation() {
+        // 1. Back button global delegation
+        document.addEventListener('click', function (e) {
+            const backBtn = e.target.closest('.btn-back-top, .btn-back');
+            if (backBtn) {
+                const onclickAttr = backBtn.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes('window.location.href')) {
+                    return;
                 }
-
-                // Class-based routing for dash-action-cards
-                if (!dest && sel === '.dash-action-card') {
-                    if (el.classList.contains('card-store')) dest = '/store';
-                    else if (el.classList.contains('card-gallery')) dest = '/gallery';
-                    else if (el.classList.contains('card-backpack')) dest = '/training-backpack';
-                }
-                // news-card → bulletin
-                if (!dest && sel === '.news-card') dest = '/bulletin';
-                // registration-card → registration
-                if (!dest && sel === '.registration-card') dest = '/registration';
-
-                if (dest) {
-                    el.style.cursor = 'pointer';
-                    el.addEventListener('click', () => { window.location.href = dest; });
-                }
-            });
-        });
-
-
-        // Fix buttons with navigate() equivalents identified by text/class
-        // "تکمیل هویت" → verification
-        document.querySelectorAll('.btn-verify-action').forEach(btn => {
-            if (btn.textContent.includes('تکمیل هویت')) {
-                btn.addEventListener('click', () => { window.location.href = './verification.html'; });
+                e.preventDefault();
+                e.stopPropagation();
+                const page = getCurrentPage();
+                const dest = BACK_MAP[page] || '/dashboard';
+                window.location.href = dest;
             }
         });
 
-        // "بازگشت به پروفایل"
-        document.querySelectorAll('.btn-app-primary').forEach(btn => {
-            if (btn.textContent.includes('بازگشت به پروفایل')) {
-                btn.addEventListener('click', () => { window.location.href = './profile-hub.html'; });
+        // 2. Verification shield & badge
+        document.addEventListener('click', function (e) {
+            const verifyTrigger = e.target.closest('.badge-verify, .btn-verify-action, a[href="/verification"]');
+            if (verifyTrigger) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/verification';
+                return;
+            }
+
+            // Topbar shield link fallback (in case href is '#')
+            const shieldLink = e.target.closest('.profile-menu a');
+            if (shieldLink && (shieldLink.querySelector('.fa-shield') || shieldLink.textContent.includes('تایید هویت'))) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/verification';
+                return;
             }
         });
 
-        // "تکمیل اطلاعات" (btn-mini)
-        document.querySelectorAll('.btn-mini').forEach(btn => {
-            if (btn.textContent.includes('تکمیل اطلاعات')) {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = './profile-hub.html'; });
+        // 3. Notification bell
+        document.addEventListener('click', function (e) {
+            const bell = e.target.closest('.btn-noti');
+            if (bell) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/bulletin';
             }
         });
 
-        // "مشاهده" attendance btn (in charts/grades section of specialized-hub)
-        document.querySelectorAll('.btn-primary, button').forEach(btn => {
-            const t = (btn.textContent || '').trim();
-            if (t === 'مشاهده') {
-                btn.addEventListener('click', (e) => {
+        // 4. Dashboard interactive cards & buttons
+        document.addEventListener('click', function (e) {
+            // Complete info btn-mini
+            const btnMini = e.target.closest('.btn-mini');
+            if (btnMini) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/profile-hub';
+                return;
+            }
+
+            // Registration card
+            const regCard = e.target.closest('.registration-card');
+            if (regCard) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/registration';
+                return;
+            }
+
+            // BMI card (top mobile)
+            const bmiCard = e.target.closest('.bmi-card');
+            if (bmiCard) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/personal-info';
+                return;
+            }
+
+            // Stat cards
+            const statCard = e.target.closest('.stat-card');
+            if (statCard) {
+                const text = statCard.textContent || '';
+                if (statCard.querySelector('.fa-calendar-check-o') || text.includes('حضور در تمرین') || text.includes('حضور')) {
+                    e.preventDefault();
                     e.stopPropagation();
-                    window.location.href = './attendance.html';
-                });
+                    window.location.href = '/attendance';
+                    return;
+                }
+                if (statCard.querySelector('.fa-heartbeat') || text.includes('BMI') || statCard.classList.contains('school-kpi-bmi')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = '/personal-info';
+                    return;
+                }
+                if (statCard.querySelector('.fa-search') || text.includes('استعدادیابی')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = '/talent';
+                    return;
+                }
+                if (statCard.querySelector('.ic-orange') || text.includes('بیمه')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = '/insurance-status';
+                    return;
+                }
+            }
+
+            // Dash action cards
+            const dashAction = e.target.closest('.dash-action-card');
+            if (dashAction) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (dashAction.classList.contains('card-store') || dashAction.querySelector('.fa-shopping-cart')) {
+                    window.location.href = '/store';
+                } else if (dashAction.classList.contains('card-gallery') || dashAction.querySelector('.fa-picture-o')) {
+                    window.location.href = '/gallery';
+                } else if (dashAction.classList.contains('card-backpack') || dashAction.querySelector('.fa-briefcase')) {
+                    window.location.href = '/training-backpack';
+                }
+                return;
+            }
+
+            // News card
+            const newsCard = e.target.closest('.news-card');
+            if (newsCard) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/bulletin';
+                return;
             }
         });
 
-        // financial-timeline btn (registration page large button)
-        document.querySelectorAll('button').forEach(btn => {
-            const t = (btn.textContent || '').trim();
-            if (t.includes('تاریخچه مالی') || t.includes('سوابق مالی') || t.includes('تایم‌لاین مالی') || t.includes('تایم لاین مالی')) {
-                btn.addEventListener('click', () => { window.location.href = './financial-timeline.html'; });
+        // 5. Profile Hub frame items
+        document.addEventListener('click', function (e) {
+            const frameItem = e.target.closest('.frame-item');
+            if (frameItem) {
+                const onclickAttr = frameItem.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes('window.location.href')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                const text = (frameItem.textContent || '').trim();
+                const icon = frameItem.querySelector('i');
+                const iconClass = icon ? icon.className : '';
+
+                if (iconClass.includes('fa-id-card-o') || text.includes('اطلاعات شخصی')) {
+                    window.location.href = '/personal-info';
+                } else if (iconClass.includes('fa-phone') || text.includes('اطلاعات تماس')) {
+                    window.location.href = '/contact-info';
+                } else if (iconClass.includes('fa-globe') || text.includes('گذرنامه')) {
+                    window.location.href = '/passport-info';
+                } else if (iconClass.includes('fa-star') || text.includes('مشخصات ورزشی')) {
+                    window.location.href = '/sports-info';
+                } else if (iconClass.includes('fa-shield') || text.includes('اطلاعات باشگاهی')) {
+                    window.location.href = '/club-info';
+                } else if (iconClass.includes('fa-file-image-o') || iconClass.includes('fa-file-text-o') || 
+                           iconClass.includes('fa-certificate') || iconClass.includes('fa-plus-circle') || 
+                           text.includes('کارت ملی') || text.includes('شناسنامه') || text.includes('مجوز ورزشی') || text.includes('مدارک و سایر')) {
+                    window.location.href = '/documents';
+                } else if (iconClass.includes('fa-lock') || text.includes('تغییر رمز عبور')) {
+                    window.location.href = '/password';
+                }
+                return;
+            }
+        });
+
+        // 6. Specialized Hub spec items
+        document.addEventListener('click', function (e) {
+            // Chart "مشاهده" button
+            const specChartBtn = e.target.closest('#view-specialized-hub button');
+            if (specChartBtn && specChartBtn.textContent.trim() === 'مشاهده') {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/attendance';
+                return;
+            }
+
+            const specItem = e.target.closest('.spec-item');
+            if (specItem) {
+                const onclickAttr = specItem.getAttribute('onclick');
+                if (onclickAttr && (onclickAttr.includes('window.location.href') || onclickAttr.includes('alert'))) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                const text = (specItem.textContent || '').trim();
+                const icon = specItem.querySelector('i');
+                const iconClass = icon ? icon.className : '';
+
+                if (iconClass.includes('fa-calendar-check-o') || text.includes('گزارش حضور') || text.includes('حضور')) {
+                    window.location.href = '/attendance';
+                } else if (iconClass.includes('fa-map-marker') || text.includes('GPS')) {
+                    alert('باز کردن فرم اطلاعات GPS...');
+                } else if (iconClass.includes('fa-history') || text.includes('ثبت‌نام') || text.includes('سوابق ثبت‌نام')) {
+                    window.location.href = '/registration-history';
+                } else if (iconClass.includes('fa-search') || text.includes('استعداد')) {
+                    window.location.href = '/talent';
+                } else if (iconClass.includes('fa-trophy') || text.includes('مسابقه')) {
+                    alert('گزارش عملکرد مسابقه...');
+                } else if (iconClass.includes('fa-line-chart') || text.includes('تمرین')) {
+                    alert('گزارش عملکرد تمرین...');
+                } else if (iconClass.includes('fa-medkit') || text.includes('بیمه')) {
+                    window.location.href = '/insurance-status';
+                } else if (iconClass.includes('fa-graduation-cap') || text.includes('گواهی')) {
+                    window.location.href = '/certificate';
+                } else if (iconClass.includes('fa-user-md') || text.includes('پزشکی')) {
+                    alert('باز کردن فرم پزشکی...');
+                } else if (iconClass.includes('fa-id-card') || text.includes('کارت عضویت')) {
+                    alert('کارت عضویت شما در حال دانلود است...');
+                }
+                return;
+            }
+        });
+
+        // 7. Financial Hub items
+        document.addEventListener('click', function (e) {
+            const hubBtn = e.target.closest('.hub-btn');
+            if (hubBtn) {
+                const onclickAttr = hubBtn.getAttribute('onclick');
+                if (onclickAttr && (onclickAttr.includes('window.location.href') || onclickAttr.includes('alert'))) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                const text = (hubBtn.textContent || '').trim();
+                const icon = hubBtn.querySelector('i');
+                const iconClass = icon ? icon.className : '';
+
+                if (iconClass.includes('fa-bank') || text.includes('حساب‌های بانکی') || text.includes('حساب بانکی')) {
+                    window.location.href = '/bank-info';
+                } else if (iconClass.includes('fa-credit-card') || text.includes('پرداخت شهریه')) {
+                    alert('انتقال به درگاه پرداخت...');
+                } else if (iconClass.includes('fa-bar-chart') || text.includes('تایم‌لاین') || text.includes('گزارشات')) {
+                    window.location.href = '/financial-timeline';
+                }
+                return;
+            }
+        });
+
+        // 8. Other subpage buttons
+        document.addEventListener('click', function (e) {
+            // Documents: "ثبت سایر مدارک"
+            const docCertBtn = e.target.closest('#view-documents .btn-top-action:not(.btn-back-top)');
+            if (docCertBtn && docCertBtn.textContent.includes('ثبت سایر مدارک')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/certificate';
+                return;
+            }
+
+            // Registration: "مشاهده تایم‌لاین مالی تراکنش‌ها"
+            const regTimelineBtn = e.target.closest('#view-registration button');
+            if (regTimelineBtn && regTimelineBtn.textContent.includes('تایم‌لاین مالی')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/financial-timeline';
+                return;
+            }
+
+            // Verification: "بازگشت به پروفایل"
+            const verifBackProfile = e.target.closest('#view-verification .btn-app-primary');
+            if (verifBackProfile && verifBackProfile.textContent.includes('بازگشت به پروفایل')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/profile-hub';
+                return;
+            }
+
+            // Store: Add to cart button
+            const storeBuyBtn = e.target.closest('.btn-buy');
+            if (storeBuyBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('به سبد خرید اضافه شد.');
+                return;
+            }
+
+            // Talent: Print button
+            const talentPrintBtn = e.target.closest('#view-talent .btn-icon');
+            if (talentPrintBtn && talentPrintBtn.querySelector('.fa-print')) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('در حال آماده سازی فایل برای چاپ...');
+                return;
+            }
+
+            // Certificate: Add cert button
+            const certAddBtn = e.target.closest('#view-certificate .btn-submit-top');
+            if (certAddBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('فرم افزودن مدرک باز می‌شود');
+                return;
+            }
+
+            // Delete buttons (BankInfo, Certificate)
+            const trashBtn = e.target.closest('.btn-icon');
+            if (trashBtn && trashBtn.querySelector('.fa-trash')) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('حذف در این نسخه آزمایشی غیرفعال است');
+                return;
             }
         });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fixLinks);
+        document.addEventListener('DOMContentLoaded', initNavigation);
     } else {
-        fixLinks();
+        initNavigation();
     }
 })();
 
@@ -277,8 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
         const trigger = wrapper.querySelector('.custom-select-trigger');
         const nativeSelect = wrapper.querySelector('select');
-
-        if (!trigger || !nativeSelect) return;
+          if (!trigger || !nativeSelect) return;
+          if (nativeSelect.dataset.value) nativeSelect.value = nativeSelect.dataset.value;
 
         // Create dropdown
         let dropdown = wrapper.querySelector('.custom-select-dropdown');
@@ -297,6 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
             optionDiv.className = 'custom-select-option';
             if (nativeSelect.value === opt.value) {
                 optionDiv.classList.add('selected');
+                  trigger.textContent = opt.textContent;
             }
             optionDiv.textContent = opt.textContent;
             optionDiv.dataset.value = opt.value;
@@ -313,6 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update selected classes
                 dropdown.querySelectorAll('.custom-select-option').forEach(el => el.classList.remove('selected'));
                 optionDiv.classList.add('selected');
+                  trigger.textContent = opt.textContent;
 
                 // Close wrapper
                 wrapper.classList.remove('open');
@@ -360,6 +503,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 1.5 Form State Persistence
+    const isPersonalInfoPage = window.location.pathname.toLowerCase().includes("personal-info");
+    if (!isPersonalInfoPage) {
     const formElements = document.querySelectorAll('input:not([type="password"]):not([type="hidden"]):not([type="file"]), select, textarea');
     formElements.forEach(el => {
         const key = 'form_state_' + (el.name || el.id);
@@ -695,9 +840,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.hub-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const text = btn.textContent.trim();
-            if (text.includes('حساب‌های بانکی')) window.location.href = 'bank-info.html';
+            if (text.includes('حساب‌های بانکی') || text.includes('حساب بانکی')) window.location.href = '/bank-info';
             if (text.includes('پرداخت شهریه')) alert('انتقال به درگاه پرداخت (دمو)');
-            if (text.includes('گزارشات و تایم‌لاین مالی')) window.location.href = 'financial-timeline.html';
+            if (text.includes('گزارشات و تایم‌لاین مالی') || text.includes('تایم‌لاین') || text.includes('تاریخچه مالی')) window.location.href = '/financial-timeline';
         });
     });
 
@@ -1706,6 +1851,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
 
 
 

@@ -452,6 +452,216 @@ namespace FootballSchool.Web.Migrations
                     b.ToTable("Terms");
                 });
 
+            modelBuilder.Entity("FootballSchool.Web.Models.tbl_user_personal_info", b =>
+                {
+                    b.Property<long>("person_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("person_id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("address2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("alias_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("birth_date_miladi")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("birth_date_shamsi")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("blood_type")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("cell_phone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<long?>("citizenship")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("coach")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int?>("complete_percent")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("contact_complete_percent")
+                        .HasColumnType("int");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("essential_phone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("facebook")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("family")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("father_cell_phone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("father_job")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("father_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("gender")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("health_status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("id_no")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("instagram")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("international_id")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("job")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("landline_phone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("linkdin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("location_id")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("marital_status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("middel_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("military_service_status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("mother_cell_phone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<long?>("nationality_id_FK")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("parent_pohone")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("passport_description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("passport_eng_family")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("passport_eng_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("passport_expire_date")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("passport_export_date")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("passport_file")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("passport_no")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("pictuer")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("postal_code1")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("postal_code2")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("religion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("serial_id")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("site")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<long?>("stateIdFK")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("telegram")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("user_id_FK")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("weblog")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("weight")
+                        .HasColumnType("int");
+
+                    b.HasKey("person_id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique()
+                        .HasFilter("[ApplicationUserId] IS NOT NULL");
+
+                    b.ToTable("tbl_user_personal_info");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -634,6 +844,15 @@ namespace FootballSchool.Web.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FootballSchool.Web.Models.tbl_user_personal_info", b =>
+                {
+                    b.HasOne("FootballSchool.Web.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("PersonalInfo")
+                        .HasForeignKey("FootballSchool.Web.Models.tbl_user_personal_info", "ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -695,6 +914,8 @@ namespace FootballSchool.Web.Migrations
                     b.Navigation("BankAccounts");
 
                     b.Navigation("FinancialTransactions");
+
+                    b.Navigation("PersonalInfo");
 
                     b.Navigation("RegistrationRecords");
                 });

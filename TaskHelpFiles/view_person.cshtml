@@ -1,0 +1,645 @@
+﻿@model footbalit_project.Models.person
+@{
+    ViewBag.Title = "view_person";
+    Layout = "~/Views/Share/_MainlayoutFS.cshtml";
+}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+      href="~/Content/assets/css/style -footballit-new.css">
+<noscript>
+    <link rel="stylesheet"
+          href="~/Content/assets/css/style -footballit-new.css">
+</noscript>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+@using (Html.BeginForm("view_person", "FootballschoolPerson", FormMethod.Post, new { enctype = "multipart/form-data", id = "view_person", @style = "display:none;" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div id="divLoader" style="background-color:red;display:none;top: 30%;left: 50%;z-index:1000000;position:absolute;">
+        <div id="spin-wrap">
+            <div id="spin"></div>
+        </div>
+    </div>
+    <div class=@ViewBag.alarmclass style="top: 30%;left: 40%;width: 400px;height: 180px;z-index:1000" id="alaram_box">
+        <table style="width:100%; direction:rtl">
+            <tr>
+                <td style="background-color:@ViewBag.td_class;color:#fff;width:90%" id="td1">
+                    <label id="lbl1">@ViewBag.alarmText_title</label>
+                    <input type="hidden" id="hdn_alarm" value="" />
+                </td>
+                <td style="background-color:@ViewBag.td_class;color:#fff;width:10%" id="td2">
+                    <img src=@ViewBag.alarmpic id="alarm_pic" />
+                </td>
+            </tr>
+            <tr>
+                <td style="height:80px;" align="center" valign="middle" id="td3" colspan="2">
+                    <label id="lbl2">@ViewBag.alarmText</label>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle" colspan="2">
+                    <input type="button" value="تائید" class=@ViewBag.btn_class id="alarm_btn" style="width:80px;" onclick="close_alarm_box();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div align="center">
+        <div class="header-containe">
+            <ul class="breadcrumb-new">
+                <li><a href="#"><span class="icon icon-home"> </span></a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> اطلاعات فردی و ورزشی بازیکنان</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> مشخصات فردی بازیکنان</a></li>
+
+            </ul>
+        </div>
+        <div class="container-form">
+            <form class="form-horizontal">
+                <fieldset>
+                    <div class="row form-filter player-filter" style="max-height:initial;height:auto">
+                        <div class=" col-md-12 col-sm-12 col-xs-12" style="background: #ebeeee;font-size:12px;display: inherit;">
+                            <div class="col-sm-3" style="background: #ebeeee">
+                                <label class="control-label d-inline" style="font-size:12px;line-height:3.5;" for=""> انتخاب بازیکن :</label>
+                            </div>
+                            <div class="col-sm-9" style="background: #ebeeee; margin-bottom: 0.75rem;">
+                                @Html.DropDownListFor(model => model.user_id_FK, ViewBag.soccer as List<SelectListItem>, null, new { @class = "form-control dropdown-toggle_custome select2", id = "cmb_soccer", @style = "width: 100%;", onchange = "set_data(1);" })
+
+                            </div>
+                            @Html.HiddenFor(model => model.person_id, new { htmlAttributes = new { @class = "form-control", id = "hdn_person_id" } })
+                            @Html.HiddenFor(model => model.user_id_FK, new { htmlAttributes = new { @class = "form-control", id = "user_id_FK" } })
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <input type="hidden" id="soccer_id" name="soccer_id" />
+        <input type="hidden" id="flag" name="flag" />
+        <div class="container-form" style="padding: .5rem 2rem;">
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6 float-right">
+
+                    <div class="drop-zone">
+                        <span class="drop-zone__prompt">
+                            <img style="width:10rem;" id="doc_pic" name="doc_pic" src="~/Content/assets/images/up-gif.png" />
+                        </span>
+                        <input id="FileUpload" type="file" name="myFile" class="drop-zone__input">
+                    </div>
+                </div>
+                @*~/Content/assets/images/up-gif.gif*@
+                <div class="img-upload-detail col-lg-10 col-md-9 col-sm-6 col-xs-12 float-right">
+                    <div class="row up-load-detail ">
+                        <div class=" col-md-6 col-sm-12 col-xs-12 float-right">
+                            <p style="color: #808080;font-size: 12px;text-align: right;clear: both; font-weight:700">   لطفا عکس مورد نظر خود را بارگزاری کنید</p>
+                            <p style="color: #ff0000;font-size: 11px;text-align: right;clear: both;">   *لطفا فقط فایلهای با پسوند jpg , jpeg , png و یا tiff  بارگزاری شود.</p>
+                        </div>
+                        <div class=" col-md-6 col-sm-12 col-xs-12 float-right">
+                            <button style="margin:.5rem auto !important;float: left;" class="btn btn-accept" ID="btn_FileUpload" onclick="document.getElementById('FileUpload').click(); return(false);">انتخاب فایل</button>
+                            <label id="lbl_FileUpload"></label>
+                            @Html.TextBox("file", "", new { type = "file", accept = "jpg/jpeg/tiff", style = "width:80%;display:none;", id = "FileUpload", onchange = "document.getElementById('lbl_FileUpload').innerHTML =document.getElementById('FileUpload').files[0].name;" })
+                        </div>
+                    </div>
+                    <input id="FileData" name="FileData" type="hidden" />
+                </div>
+            </div>
+            <div class="row">
+                <br>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        نام:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id = "txt_name", onkeydown = "enter_to_tab2('txt_family');" } })
+                    @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        نام خانوادگی:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    @Html.EditorFor(model => model.family, new { htmlAttributes = new { @class = "form-control", id = "txt_family", onkeydown = "enter_to_tab2('txt_international_id');" } })
+                    @Html.ValidationMessageFor(model => model.family, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        کد ملی:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    @*@Html.HiddenFor(m => m.hdn_international_id_flag , new { htmlAttributes = new { id = "hdn_birth_date_miladi_flag" } })*@
+                    @Html.EditorFor(model => model.international_id, new { htmlAttributes = new { @class = "form-control", id = "txt_international_id", onkeydown = "enter_to_tab2('txt_id_no');", onblur = "CheckMeliCode('txt_international_id');", Title = "ورود شماره پاسپورت برای بازیکنان خارجی" } })
+                    @Html.ValidationMessageFor(model => model.international_id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        Name:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @Html.EditorFor(model => model.eng_name, new { htmlAttributes = new { @class = "form-control input-padding", id = "txt_eng_name", onkeydown = "enter_to_tab2('txt_eng_family');", title = "نام با حروف انگلیسی" } })
+
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        Family:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @Html.EditorFor(model => model.eng_family, new { htmlAttributes = new { @class = "form-control input-padding", id = "txt_eng_family", onkeydown = "enter_to_tab2('txt_international_id');", title = "نام خانوادگی با حروف انگلیسی" } })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        جنسیت:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.gender2, (IEnumerable<SelectListItem>
+                        )ViewBag.gender, null, new { @class = "dropdown-toggle_custome", id = "cmd_gender", onkeydown = "enter_to_tab2('cmd_marital_status');" })
+                    @Html.ValidationMessageFor(model => model.gender2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form"> شماره شناسنامه:</lable>
+                    @Html.EditorFor(model => model.id_no, new { htmlAttributes = new { @class = "form-control", id = "txt_id_no", onkeydown = "enter_to_tab2('txt_serial_id');" } })
+                    @Html.ValidationMessageFor(model => model.id_no, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        شماره سریال شناسنامه:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @Html.EditorFor(model => model.serial_id, new { htmlAttributes = new { @class = "form-control", id = "txt_serial_id", onkeydown = "enter_to_tab2('txt_location_id');" } })
+                    @Html.ValidationMessageFor(model => model.serial_id, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form"> محل  صدور:</lable>
+                    @Html.EditorFor(model => model.location_id, new { htmlAttributes = new { @class = "form-control", id = "txt_location_id", onkeydown = "enter_to_tab2('txt_father_name');" } })
+                    @Html.ValidationMessageFor(model => model.location_id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        نام پدر:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.father_name, new { htmlAttributes = new { @class = "form-control", id = "txt_father_name", onkeydown = "enter_to_tab2('txt_father_job');" } })
+                    @Html.ValidationMessageFor(model => model.father_name, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        شغل پدر:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.father_job, new { htmlAttributes = new { @class = "form-control", id = "txt_father_job", onkeydown = "enter_to_tab2('birth_date_shamsi');" } })
+                    @Html.ValidationMessageFor(model => model.father_job, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        شغل بازیکن:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.job, new { htmlAttributes = new { @class = "form-control", id = "txt_job", onkeydown = "enter_to_tab2('cmd_religion');" } })
+                    @Html.ValidationMessageFor(model => model.job, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        تاریخ تولد شمسی:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    <div class="input-group" style="width:100%">
+                        @*@Html.HiddenFor(m => m.hdn_birth_date_shamsi_flag, new { htmlAttributes = new { id = "hdn_birth_date_shamsi_flag" } })*@
+                        @Html.EditorFor(model => model.birth_date_shamsi, new { htmlAttributes = new { @class = "form-control", onkeydown = "enter_to_tab2('txt_birth_date_miladi');", id = "birth_date_shamsi", style = "width:100%", oninput = "jalali_to_gregorian('birth_date_shamsi','txt_birth_date_miladi');", onfocus = "jalali_to_gregorian('birth_date_shamsi','txt_birth_date_miladi');", onblur = "checkdate('birth_date_shamsi');set_age_param();" } })
+                        <div class="input-group-addon" data-MdDateTimePicker="true" data-trigger="click" data-targetselector="#birth_date_shamsi">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.birth_date_shamsi, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        تاریخ تولد میلادی:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    <div class="input-group" style="width:100%">
+                        @*@Html.HiddenFor(m => m.hdn_birth_date_miladi_flag, new { htmlAttributes = new { id = "hdn_birth_date_miladi_flag" } })*@
+                        @Html.EditorFor(model => model.birth_date_miladi, new { htmlAttributes = new { @class = "form-control", style = "direction:rtl", onkeydown = "enter_to_tab2('cmd_nationality_id');", id = "txt_birth_date_miladi", onfocus = "jalali_to_gregorian('birth_date_shamsi','txt_birth_date_miladi');set_age_param();", onblur = "checkdate_miladi('txt_birth_date_miladi');" } })
+                        @Html.ValidationMessageFor(model => model.birth_date_miladi, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">   سن:</lable>
+                    <label id="lbl_age" class="form-control form-control-right" style="line-height: 1.5 !important;"></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        ملیت:
+                        <span style="color:red;direction:ltr;width:4%" align="right">*</span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.nationality_id_FK2, ViewBag.nationality as List<SelectListItem>
+                        , null, new { @class = "dropdown-toggle_custome", id = "cmd_nationality_id", onkeydown = "enter_to_tab2('cmd_citizenship');" })
+                    @Html.ValidationMessageFor(model => model.nationality_id_FK2, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        تابعیت:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.citizenship2, (IEnumerable<SelectListItem>
+                        )ViewBag.nationality, null, new { @class = "dropdown-toggle_custome", id = "cmd_citizenship", onkeydown = "enter_to_tab2('cmd_health_status');" })
+                    @Html.ValidationMessageFor(model => model.citizenship2, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        وضعیت سلامت:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.health_status2, (IEnumerable<SelectListItem>
+                        )ViewBag.health_status, new { @class = "dropdown-toggle_custome", id = "cmd_health_status", onkeydown = "enter_to_tab2('cmd_blood_type');" })
+                    @Html.ValidationMessageFor(model => model.health_status2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        گروه خونی:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.blood_type2, (IEnumerable<SelectListItem>
+                        )ViewBag.blood_type, null, new { @class = "dropdown-toggle_custome", id = "cmd_blood_type", onkeydown = "enter_to_tab2('txt_Height');" })
+                    @Html.ValidationMessageFor(model => model.blood_type2, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        (قد(سانتی‌متر:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @class = "form-control", @type = "text", id = "txt_Height", onkeydown = "enter_to_tab2('txt_weight');", onkeyup = "Set_value_numeric('txt_Height',3);" } })
+                    @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        (وزن(کیلوگرم:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.weight, new { htmlAttributes = new { @class = "form-control", @type = "text", id = "txt_weight", onkeydown = "enter_to_tab2('cmd_gender');", onkeyup = "Set_value_numeric('txt_weight',3);" } })
+                    @Html.ValidationMessageFor(model => model.weight, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        وضعیت تاهل:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.marital_status2, (IEnumerable<SelectListItem>
+                        )ViewBag.marital_status, null, new { @class = "dropdown-toggle_custome", id = "cmd_marital_status", onkeydown = "enter_to_tab2('cmd_military_service_status');" })
+                    @Html.ValidationMessageFor(model => model.marital_status2, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        وضعیت نظام وظیفه:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.military_service_status2, (IEnumerable<SelectListItem>
+                        )ViewBag.military_service_status, null, new { @class = "dropdown-toggle_custome", id = "cmd_military_service_status", onkeydown = "enter_to_tab2('cmd_religion');" })
+                    @Html.ValidationMessageFor(model => model.military_service_status2, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        دین:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.DropDownListFor(model => model.religion2, (IEnumerable<SelectListItem>
+                        )ViewBag.religion, null, new { @class = "dropdown-toggle_custome", id = "cmd_religion", onkeydown = "enter_to_tab2('cmd_study');" })
+                    @Html.ValidationMessageFor(model => model.religion2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+
+                <!--<div class="col-md-4 col-sm-4 col-xs-12 float-right row-flex mb-1-5">
+            <lable class="lable-form">-->
+                @*تحصیلات:*@
+                <!--<span style="color:red;direction:ltr;width:4%" align="right"></span>
+        </lable>-->
+                @*<label id="lbl_team" class="form-control"></label>*@
+                @*@Html.DropDownListFor(model => model.study_id2, (IEnumerable<SelectListItem>
+                )ViewBag.study, null, new { @class = "dropdown-toggle_custome", id = "cmd_study", onkeydown = "enter_to_tab2('txt_description');" })
+            @Html.ValidationMessageFor(model => model.study_id2, "", new { @class = "text-danger" })*@
+                <!--</div>-->
+                <div class="col-md-12 col-sm-12 col-xs-12 float-right row-flex mb-1-5">
+                    <lable class="lable-form">
+                        توضیحات:
+                        <span style="color:red;direction:ltr;width:4%" align="right"></span>
+                    </lable>
+                    @*<label id="lbl_team" class="form-control"></label>*@
+                    @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control", id = "txt_description", onkeydown = "enter_to_tab2('btn_save');" } })
+                    @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="footer-containe">
+            <div class="col-md-2 col-xs-12 offset-md-6 d-inline mb-1-5">
+                <input type="button" value="ذخیره" class="btn btn-accept" id="btn_save" style="width: 100%;" , onkeydown="enter_to_tab('btn_cancel');" onclick="if (check_data()) { save_data(); }" />
+                @*save_date();*@
+            </div>
+            <div class="col-md-2 col-xs-12 d-inline mb-1-5">
+                @Html.ActionLink("خروج", "../home/main_pageFS", null, htmlAttributes: new { @class = "btn btn-cancel", style = "width:100%;", id = "btn_cancel", onkeydown = "enter_to_tab('txt_name');" })
+            </div>
+        </div>
+
+    </div>
+}
+<script src="~/Content/assets/js/script-upload.js"></script>
+
+<script type="text/jscript">
+    window.onmouseover = function () {
+        jalali_to_gregorian('birth_date_shamsi', 'txt_birth_date_miladi');
+        set_age_param();
+    }
+    window.onload = function ()
+    {
+        if ('@ViewData["name"]' != '') { document.getElementById("txt_name").disabled = true; }
+        if ('@ViewData["family"]' != '') { document.getElementById("txt_family").disabled = true; }
+        if ('@ViewData["international_id"]' != '') { document.getElementById("txt_international_id").disabled = true; }
+        if (document.getElementById("birth_date_shamsi").value != '')
+        {
+            set_age_param();
+        }
+        var test = '@Session["selectsoccer"]';
+       if (test != '') {
+            //document.getElementById('cmb_soccer').value = test;
+            //$(".select2").select2();
+           //set_data(1);
+           @*alert('dd');
+           '@{ 
+               var temp = "";
+               try
+               {
+                   temp = Model.pictuer;
+
+               }
+               catch
+               {
+                   temp = "";
+               }
+       }
+           document.getElementById('doc_pic').src = '@temp';*@
+
+       }
+        var alarm = '@ViewBag.alarmText';
+   //alert(alarm);
+        if (alarm != '') {
+            $('#view_person').show();
+            $('#alaram_box').hide().fadeIn(1000);
+
+        }
+        else {
+            $('#view_person').hide().fadeIn(1000);
+            document.getElementById("hdn_alarm").value = "";
+        }
+        $(function () {
+            $(".select2").select2();
+        });
+    }
+    $(function () {
+        $(".select2").select2();
+    });
+    function set_age_param()
+    {
+        set_age('birth_date_shamsi', 'lbl_age');
+        var temp= parseInt(document.getElementById('lbl_age').innerHTML);
+        if(temp<18)
+        {
+            if(document.getElementById("cmd_military_service_status").value=='0' || document.getElementById("cmd_military_service_status").value=='')
+                document.getElementById("cmd_military_service_status").value = 5;
+            if (document.getElementById("cmd_marital_status").value == '0' || document.getElementById("cmd_marital_status").value == '')
+                document.getElementById("cmd_marital_status").value = 1;
+       }
+    }
+    function save_data()
+    {
+        document.getElementById('soccer_id').value = document.getElementById('cmb_soccer').value;
+
+
+           var formData = new FormData();
+        var totalFiles = document.getElementById("FileUpload").files.length;
+        for (var i = 0; i < totalFiles; i++) {
+            var file = document.getElementById("FileUpload").files[i];
+            formData.append("FileUpload", file);
+        }
+
+
+        formData.append("name", $("#txt_name").val());
+        formData.append("family", $("#txt_family").val());
+        formData.append("eng_name", $("#txt_eng_name").val());
+        formData.append("eng_family", $("#txt_eng_family").val());
+        formData.append("international_id", $("#txt_international_id").val());
+        formData.append("person_id", $("#person_id").val());
+        formData.append("id_no", $("#txt_id_no").val());
+        formData.append("serial_id", $("#txt_serial_id").val());
+        formData.append("location_id", $("#txt_location_id").val());
+        formData.append("father_name", $("#txt_father_name").val());
+        formData.append("father_job", $("#txt_father_job").val());
+        formData.append("birth_date_shamsi", $("#birth_date_shamsi").val());
+        formData.append("birth_date_miladi", $("#txt_birth_date_miladi").val());
+        formData.append("nationality_id_FK2", $("#cmd_nationality_id").val());
+        formData.append("citizenship2", $("#cmd_citizenship").val());
+        formData.append("health_status2", $("#cmd_health_status").val());
+        formData.append("blood_type2", $("#cmd_blood_type").val());
+        formData.append("Height", $("#txt_Height").val());
+        formData.append("weight", $("#txt_weight").val());
+        formData.append("gender2", $("#cmd_gender").val());
+        formData.append("marital_status2", $("#cmd_marital_status").val());
+        formData.append("military_service_status2", $("#cmd_military_service_status").val());
+        formData.append("job", $("#txt_job").val());
+        formData.append("religion2", $("#cmd_religion").val());
+        formData.append("user_id_FK", $("#soccer_id").val());
+        formData.append("description", $("#txt_description").val());
+        //alert('ss');
+        $.ajax({
+            url: "/FootballschoolPerson/view_person",
+            type: "POST",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response,data) {
+                //alert(response.errorcode);
+                if (response.errorcode != "0") {
+                    document.getElementById("td1").style.backgroundColor = "red";
+                    document.getElementById("td2").style.backgroundColor = "red";
+                    document.getElementById("alarm_btn").className = "btn-Pcustome-alarm";
+                    document.getElementById("alaram_box").className = "alarm_box";
+                    //document.getElementById('alarm_pic').src = '/Content/images/Cancel-128.png';
+                    document.getElementById("lbl1").innerText = "خطا در ثبت اطلاعات";
+                }
+                switch (response.errorcode)
+                {
+                    case "1": document.getElementById("lbl2").innerText = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
+                    case "2": document.getElementById("lbl2").innerText = "کد ملی وارد شده تکراری است!"; break;
+                    case "3": document.getElementById("lbl2").innerText = "لازم است شما مجددا در سیستم وارد شوید."; break;
+                    case "6": document.getElementById("lbl2").innerText = "خطا در بارگذاری تصویر بازیکن."; break;
+                    case "10": document.getElementById("lbl2").innerText = "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                    case "0": document.getElementById("td1").style.backgroundColor = "green";
+                        document.getElementById("td2").style.backgroundColor = "green";
+                        document.getElementById("alarm_btn").className = "btn-success"
+                        document.getElementById("alaram_box").className = "inform_box"
+                        //document.getElementById('alarm_pic').src = '/Content/images/ok1.jpg';
+                        document.getElementById("lbl1").innerText = "ثبت اطلاعات";
+                        document.getElementById("lbl2").innerText = "اطلاعات با موفقیت ذخیره شد"; break;
+
+                }
+
+                //alert(response.errorcode);
+                $('#alaram_box').hide().fadeIn(1000);
+            },
+            error: function (response,jqXHR, errorThrown) {
+
+                document.getElementById("td1").style.backgroundColor = "red";
+                document.getElementById("td2").style.backgroundColor = "red";
+                document.getElementById("alarm_btn").className = "btn-Pcustome-alarm";
+                document.getElementById("alaram_box").className = "alarm_box";
+                //document.getElementById('alarm_pic').src = '/Content/images/Cancel-128.png';
+                document.getElementById("lbl1").innerText = "خطا در ثبت اطلاعات";
+                document.getElementById("lbl2").innerText = "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
+                $('#alaram_box').hide().fadeIn(1000);
+
+            },
+            // callback handler that will be called on completion
+            // which means, either on success or error
+            complete: function () {
+            }
+        });
+    }
+    function set_data(flag) {
+
+        document.getElementById('divLoader').style.display = 'block';
+        document.getElementById('flag').value = flag;
+        document.getElementById('soccer_id').value = document.getElementById('cmb_soccer').value;
+
+        var soccer_id = $("#cmb_soccer").val();
+        var obj = { soccer_id: soccer_id, flag: flag };
+
+        $.ajax({
+            url: "/FootballschoolPerson/view_person2",
+            type: "get",
+            data: obj,
+            success: function (response, data) {
+                //
+                document.getElementById('soccer_id').value = response.model.user_id_FK;
+                document.getElementById('person_id').value = response.model.person_id;
+                document.getElementById('txt_name').value = response.model.name;
+                document.getElementById('txt_family').value = response.model.family;
+                document.getElementById('txt_eng_name').value = response.model.eng_name;
+                document.getElementById('txt_eng_family').value = response.model.eng_family;
+                document.getElementById('txt_international_id').value = response.model.international_id;
+                document.getElementById('txt_id_no').value = response.model.id_no;
+                document.getElementById('txt_serial_id').value = response.model.serial_id;
+                document.getElementById('txt_location_id').value = response.model.location_id;
+                document.getElementById('txt_father_name').value = response.model.father_name;
+                document.getElementById('txt_father_job').value = response.model.father_job;
+                document.getElementById('birth_date_shamsi').value = response.model.birth_date_shamsi;
+                document.getElementById('txt_birth_date_miladi').value = response.model.birth_date_miladi;
+                document.getElementById('cmd_nationality_id').value = response.model.nationality_id_FK2;
+                document.getElementById('cmd_citizenship').value = response.model.citizenship2;
+                document.getElementById('cmd_health_status').value = response.model.health_status2;
+                document.getElementById('cmd_blood_type').value = response.model.blood_type2;
+                document.getElementById('txt_Height').value = response.model.Height;
+                document.getElementById('txt_weight').value = response.model.weight;
+                document.getElementById('cmd_gender').value = response.model.gender2;
+                document.getElementById('cmd_marital_status').value = response.model.marital_status2;
+                document.getElementById('cmd_military_service_status').value = response.model.military_service_status2;
+                document.getElementById('txt_job').value = response.model.job;
+                document.getElementById('cmd_religion').value = response.model.religion2;
+                document.getElementById('txt_description').value = response.model.description;
+                document.getElementById('doc_pic').src = response.model.pictuer;
+                set_age_param();
+                document.getElementById('divLoader').style.display = 'none';
+
+           },
+            error: function (jqXHR, errorThrown) {
+                document.getElementById('divLoader').style.display = 'none';
+
+                alert('error');
+
+            }
+        });
+
+
+    }
+    function check_data()
+    {
+
+        jalali_to_gregorian('birth_date_shamsi', 'txt_birth_date_miladi');
+        set_age_param();
+        if (document.getElementById("txt_name" ).value == '') {
+            display_alarm2("نام بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "", 0);
+            return false;
+        }
+        if (document.getElementById("txt_family").value == '') {
+            display_alarm2("نام خانوادگی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "", 0);
+            return false;
+        }
+         if (document.getElementById("txt_international_id" ).value == '') {
+            display_alarm2("کد ملی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "", 0);
+            return false;
+        }
+
+
+         if (document.getElementById('cmd_nationality_id' ).value != '24') {
+            if (!CheckMeliCode('txt_international_id')) {
+                display_alarm('کد ملی وارد شده معتبر نمی‌باشد.', ''); return false;
+            }
+        }
+         if (document.getElementById('cmd_nationality_id' ).value == '24') {
+
+            if (!CheckfaragirCode('txt_international_id')) {
+                display_alarm('کد فراگیر را عددی وارد کنید کد وارد شده معتبر نمی‌باشد.', ''); return false;
+            }
+        }
+         if (!checkdate('birth_date_shamsi')
+                || document.getElementById("birth_date_shamsi").value.length < 10
+                || document.getElementById("birth_date_shamsi").value.length > 10
+                || document.getElementById("birth_date_shamsi" ).value.substr(4, 1) != '/'
+                || document.getElementById("birth_date_shamsi").value.substr(7, 1) != '/') {
+            display_alarm2("تاریخ وارد شده صحیح نیست . لطفا تاریخ تولد شمسی را با فرمت YYYY/MM/DD وارد کنید.", "خطا در ثبت تاریخ تولد شمسی", "", 0);
+            return false;
+
+         }
+        if (!checkdate_miladi('txt_birth_date_miladi' )
+                || document.getElementById("txt_birth_date_miladi").value.length < 10
+                || document.getElementById("txt_birth_date_miladi").value.length > 10
+                || document.getElementById("txt_birth_date_miladi").value.substr(4, 1) != '/'
+                || document.getElementById("txt_birth_date_miladi").value.substr(7, 1) != '/') {
+            display_alarm2("تاریخ وارد شده صحیح نیست . لطفا تاریخ تولد میلادی را با فرمت YYYY/MM/DD وارد کنید.", "خطا در ثبت تاریخ تولد میلادی", "", 0);
+            return false;
+        }
+        if (!CheckMeliCode('txt_international_id'))
+        {
+            display_alarm2("کد ملی وارد شده صحیح نیست . لطفا کد ملی را صحیح وارد کنید.", "خطا در ثبت کد ملی", "", 0);
+            return false;
+ }
+
+        return true;
+    }
+</script>

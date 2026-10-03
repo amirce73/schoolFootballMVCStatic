@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FootballSchool.Web.Data;
 using FootballSchool.Web.Models;
 using FootballSchool.Web.Models.ViewModels;
+using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
@@ -56,47 +57,69 @@ namespace FootballSchoolMVC.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Redirect("/");
 
+            var fpController = new FootballschoolPersonController(_userManager, _db, _env);
+            var info = await fpController.GetOrInitPersonalInfoAsync(user);
+
+            DateTime? bdate = user.BirthDate;
+            if (bdate == null && !string.IsNullOrEmpty(info.birth_date_miladi) && DateTime.TryParse(info.birth_date_miladi.Replace('/', '-'), out var dt))
+            {
+                bdate = dt;
+            }
+
             var vm = new PersonalInfoViewModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                NationalId = user.NationalId,
-                BirthDate = user.BirthDate,
-                BirthCertificateNo = user.BirthCertificateNo,
-                FatherName = user.FatherName,
-                Weight = user.Weight,
-                Height = user.Height,
-                Gender = user.Gender,
-                BloodGroup = user.BloodGroup,
-                MaritalStatus = user.MaritalStatus,
-                MilitaryServiceStatus = user.MilitaryServiceStatus,
-                Religion = user.Religion,
+                FirstName = user.FirstName ?? info.name,
+                LastName = user.LastName ?? info.family,
+                NationalId = user.NationalId ?? info.international_id,
+                BirthDate = bdate,
+                BirthCertificateNo = user.BirthCertificateNo ?? info.id_no,
+                FatherName = user.FatherName ?? info.father_name,
+                Weight = user.Weight ?? info.weight,
+                Height = user.Height ?? info.Height,
+                Gender = user.Gender ?? (info.gender == 1 ? "مرد" : (info.gender == 0 ? "زن" : null)),
+                BloodGroup = user.BloodGroup ?? info.blood_type,
+                MaritalStatus = user.MaritalStatus ?? (info.marital_status == 0 ? "مجرد" : (info.marital_status == 1 ? "متاهل" : null)),
+                MilitaryServiceStatus = user.MilitaryServiceStatus ?? (info.military_service_status == 1 ? "پایان خدمت" : (info.military_service_status == 2 ? "معافیت دائم" : null)),
+                Religion = user.Religion ?? (info.religion == 1 ? "اسلام" : null),
                 Sect = user.Sect,
-                Occupation = user.Occupation,
-                HealthStatus = user.HealthStatus,
-                Description = user.Description
+                Occupation = user.Occupation ?? info.job,
+                HealthStatus = user.HealthStatus ?? (info.health_status == 1 ? "سالم" : null),
+                Description = user.Description ?? info.description
             };
 
+            ViewBag.User = user;
             return View("~/Views/Pages/personal-info.cshtml", vm);
         }
 
         [HttpPost("personal-info")]
         [HttpPost("personal-info.html")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePersonalInfo(PersonalInfoViewModel vm)
+        public async Task<IActionResult> UpdatePersonalInfo(PersonalInfoViewModel vm, [FromForm] string? birthDate)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Redirect("/");
 
+            // Parse Persian Date from date-picker if provided
+            if (!string.IsNullOrWhiteSpace(birthDate) && birthDate.Contains("/"))
+            {
+                var clean = birthDate.Replace("۰", "0").Replace("۱", "1").Replace("۲", "2").Replace("۳", "3").Replace("۴", "4")
+                                     .Replace("۵", "5").Replace("۶", "6").Replace("۷", "7").Replace("۸", "8").Replace("۹", "9");
+                var parts = clean.Split('/');
+                if (parts.Length == 3 && int.TryParse(parts[0], out int py) && int.TryParse(parts[1], out int pm) && int.TryParse(parts[2], out int pd))
+                {
+                    try
+                    {
+                        var pc = new System.Globalization.PersianCalendar();
+                        vm.BirthDate = pc.ToDateTime(py, pm, pd, 0, 0, 0, 0);
+                        ModelState.Remove(nameof(vm.BirthDate));
+                    }
+                    catch { }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"ModelState Error in {state.Key}: {error.ErrorMessage} (Exception: {error.Exception?.Message})");
-                    }
-                }
+                ViewBag.User = user;
                 return View("~/Views/Pages/personal-info.cshtml", vm);
             }
 
@@ -119,8 +142,47 @@ namespace FootballSchoolMVC.Controllers
             user.Description = vm.Description;
 
             await _userManager.UpdateAsync(user);
-            TempData["Success"] = "اطلاعات شخصی با موفقیت ذخیره شد.";
-            return Redirect("/profile-hub");
+
+            // Synchronize with tbl_user_personal_info
+            try
+            {
+                var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                if (info != null)
+                {
+                    info.name = vm.FirstName;
+                    info.family = vm.LastName;
+                    info.international_id = vm.NationalId;
+                    info.father_name = vm.FatherName;
+                    info.weight = vm.Weight;
+                    info.Height = vm.Height;
+                    info.job = vm.Occupation;
+                    info.description = vm.Description;
+                    info.blood_type = vm.BloodGroup;
+                    info.id_no = vm.BirthCertificateNo;
+                    if (vm.Gender == "مرد") info.gender = 1;
+                    else if (vm.Gender == "زن") info.gender = 0;
+                    if (vm.MaritalStatus == "مجرد") info.marital_status = 0;
+                    else if (vm.MaritalStatus == "متاهل") info.marital_status = 1;
+                    if (vm.Religion == "اسلام") info.religion = 1;
+                    if (vm.BirthDate != null)
+                    {
+                        info.birth_date_miladi = vm.BirthDate.Value.ToString("yyyy/MM/dd");
+                        var pc = new System.Globalization.PersianCalendar();
+                        info.birth_date_shamsi = $"{pc.GetYear(vm.BirthDate.Value):0000}/{pc.GetMonth(vm.BirthDate.Value):00}/{pc.GetDayOfMonth(vm.BirthDate.Value):00}";
+                    }
+                    await _db.SaveChangesAsync();
+                }
+            }
+            catch { }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                Request.Headers["Accept"].ToString().Contains("application/json"))
+            {
+                return Json(new { success = true, message = "اطلاعات فردی با موفقیت ذخیره شد." });
+            }
+
+            TempData["Success"] = "اطلاعات فردی با موفقیت ذخیره شد.";
+            return Redirect("/personal-info");
         }
 
         // ─── Contact Info ──────────────────────────────────────────────────────
@@ -387,7 +449,3 @@ namespace FootballSchoolMVC.Controllers
         }
     }
 }
-
-
-
-

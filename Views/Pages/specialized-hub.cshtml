@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
 <head>
@@ -5460,7 +5460,7 @@
                                     style="font-weight: 800; color: var(--text-dark); margin-bottom: 12px; font-size: 1.05rem; text-align: center; display: flex; justify-content: center; align-items: center;">
                                 </div>
                                 <div
-                                    style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center;">
+                                    style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center; cursor: pointer;" onclick="window.location.href='/verification'">
                                     <span class="badge-verify unverified" style="border-color: rgb(51, 65, 85);"><i
                                             class="fa fa-exclamation-circle"></i>استعلام هویت نشده</span>
                                 </div>
@@ -5481,12 +5481,12 @@
                                 style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
                                 <span>رده سنی:</span> <strong>- - - - - - -</strong>
                             </div>
-                        </div><a href="#" style="color: rgb(51, 65, 85);"><i class="fa fa-shield"></i>تایید هویت و
-                            مدارک</a><a href="#" style="color: var(--danger); padding: 12px 16px;"><i
+                        </div><a href="/verification" style="color: rgb(51, 65, 85);"><i class="fa fa-shield"></i>تایید هویت و
+                            مدارک</a><a href="/logout" style="color: var(--danger); padding: 12px 16px;"><i
                                 class="fa fa-sign-out"></i> خروج از حساب</a>
                     </div>
                 </div>
-                <div class="header-actions"><button class="btn-noti" title="اعلان‌ها"><i class="fa fa-bell-o"></i><span
+                <div class="header-actions"><button class="btn-noti" title="اعلان‌ها" onclick="window.location.href='/bulletin'" style="cursor: pointer;"><i class="fa fa-bell-o"></i><span
                             class="badge">۳</span></button><a href="#" class="btn-app-header" title="دانلود اپلیکیشن"><i
                             class="fa fa-android"></i> <span>دانلود اپ</span></a></div>
             </div>
@@ -5503,7 +5503,7 @@
         </aside>
         <main class="main-wrapper">
             <div id="view-specialized-hub" class="view-section fade-in">
-                <div class="sticky-top-bar"><button class="btn-top-action btn-back-top"><i
+                <div class="sticky-top-bar"><button class="btn-top-action btn-back-top"/dashboard'" onclick="window.location.href='/dashboard'"><i
                             class="fa fa-arrow-right"></i> بازگشت</button>
                     <h3 class="sticky-title">اطلاعات تخصصی</h3>
                     <div style="width: 80px;"></div>
@@ -5514,8 +5514,8 @@
                             style="margin-top: 0px; display: flex; justify-content: space-between; align-items: center;">
                             <div><i class="fa fa-line-chart" style="color: var(--primary);"></i> نمرات در تمرینات (از ۱
                                 تا ۱۰) - هفته اخیر</div><button class="btn-primary"
-                                onclick="window.location.href='./attendance.html'"
-                                style="font-size: 0.8rem; padding: 4px 12px; border-radius: 4px;">مشاهده</button>
+                                onclick="window.location.href='/attendance'"
+                                style="font-size: 0.8rem; padding: 4px 12px; border-radius: 4px; cursor: pointer;">مشاهده</button>
                         </div>
                         <div class="css-chart-wrap">
                             <div class="css-bar-col">
@@ -5566,52 +5566,52 @@
                     <div class="section-title" style="padding: 0px 16px; margin-top: 16px;"><i class="fa fa-folder-open"
                             style="color: var(--danger);"></i> فرم‌ها و گزارش‌ها</div>
                     <div class="spec-grid">
-                        <div class="spec-item" onclick="window.location.href='./attendance.html'">
+                        <div class="spec-item" onclick="window.location.href='/attendance'" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(16, 185, 129); background: rgb(220, 252, 231);"><i
                                     class="fa fa-check-square-o"></i></div>
                             <div class="spec-title">گزارش حضور و غیاب<br>در تمرینات</div>
                         </div>
-                        <div class="spec-item">
+                        <div class="spec-item" onclick="alert('باز کردن فرم اطلاعات GPS...')" style="cursor: pointer;">
                             <div class="spec-icon" style="color: var(--warning); background: rgb(254, 243, 199);"><i
                                     class="fa fa-map-marker"></i></div>
                             <div class="spec-title">فرم داده‌های<br>GPS</div>
                         </div>
-                        <div class="spec-item" onclick="window.location.href='./registration-history.html'">
+                        <div class="spec-item" onclick="window.location.href='/registration-history'" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(29, 78, 216); background: var(--primary-light);"><i
                                     class="fa fa-history"></i></div>
                             <div class="spec-title">تاریخچه<br>ثبت‌نام‌ها</div>
                         </div>
-                        <div class="spec-item" onclick="window.location.href='./talent.html'">
+                        <div class="spec-item" onclick="window.location.href='/talent'" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(147, 51, 234); background: rgb(243, 232, 255);"><i
                                     class="fa fa-search"></i></div>
                             <div class="spec-title">فرم<br>استعدادیابی</div>
                         </div>
-                        <div class="spec-item">
+                        <div class="spec-item" onclick="alert('گزارش عملکرد مسابقه...')" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(245, 158, 11); background: rgb(254, 243, 199);"><i
                                     class="fa fa-line-chart"></i></div>
                             <div class="spec-title">تحلیل عملکرد<br>در مسابقه</div>
                         </div>
-                        <div class="spec-item">
+                        <div class="spec-item" onclick="alert('گزارش عملکرد تمرین...')" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(59, 130, 246); background: rgb(224, 231, 255);"><i
                                     class="fa fa-area-chart"></i></div>
                             <div class="spec-title">تحلیل عملکرد<br>در تمرینات</div>
                         </div>
-                        <div class="spec-item" onclick="window.location.href='./insurance-status.html'">
+                        <div class="spec-item" onclick="window.location.href='/insurance-status'" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(14, 165, 233); background: rgb(224, 242, 254);"><i
                                     class="fa fa-heartbeat"></i></div>
                             <div class="spec-title">وضعیت<br>بیمه ورزشی</div>
                         </div>
-                        <div class="spec-item" onclick="window.location.href='./certificate.html'">
+                        <div class="spec-item" onclick="window.location.href='/certificate'" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(245, 158, 11); background: rgb(254, 243, 199);"><i
                                     class="fa fa-certificate"></i></div>
                             <div class="spec-title">گواهی<br>پایان دوره</div>
                         </div>
-                        <div class="spec-item">
+                        <div class="spec-item" onclick="alert('باز کردن فرم پزشکی...')" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(239, 68, 68); background: rgb(254, 226, 226);"><i
                                     class="fa fa-medkit"></i></div>
                             <div class="spec-title">فرم<br>پزشکی</div>
                         </div>
-                        <div class="spec-item">
+                        <div class="spec-item" onclick="alert('کارت عضویت شما در حال دانلود است...')" style="cursor: pointer;">
                             <div class="spec-icon" style="color: rgb(100, 116, 139); background: rgb(241, 245, 249);"><i
                                     class="fa fa-id-badge"></i></div>
                             <div class="spec-title">دریافت کارت<br>عضویت</div>

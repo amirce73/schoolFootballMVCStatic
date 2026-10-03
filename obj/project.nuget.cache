@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "I9F0h6D3vRo=",
+  "dgSpecHash": "PjTe8ywevYc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\amirce73\\Desktop\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
+  "projectFilePath": "E:\\amirce73\\FootballSchoolMVC\\FootballSchool.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\amirce73\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\amirce73\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

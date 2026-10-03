@@ -16,6 +16,7 @@ namespace FootballSchool.Web.Data
         public DbSet<AgeCategory> AgeCategories { get; set; }
         public DbSet<RegistrationRecord> RegistrationRecords { get; set; }
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+        public DbSet<tbl_user_personal_info> tbl_user_personal_infos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
