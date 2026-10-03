@@ -13,6 +13,12 @@ namespace FootballSchool.Web.Models.ViewModels
         [StringLength(50)]
         public string? LastName { get; set; }
 
+        [StringLength(50)]
+        public string? EnglishName { get; set; }
+
+        [StringLength(50)]
+        public string? EnglishSurname { get; set; }
+
         [Required(ErrorMessage = "وارد کردن کد ملی الزامی است")]
         [StringLength(10)]
         public string? NationalId { get; set; }
@@ -20,11 +26,25 @@ namespace FootballSchool.Web.Models.ViewModels
         [Required(ErrorMessage = "وارد کردن تاریخ تولد الزامی است")]
         public DateTime? BirthDate { get; set; }
 
+        [StringLength(20)]
+        public string? BirthDateMiladi { get; set; }
+
+        public int? Age { get; set; }
+
         [StringLength(10)]
         public string? BirthCertificateNo { get; set; }
 
         [StringLength(50)]
+        public string? SerialId { get; set; }
+
+        [StringLength(50)]
+        public string? IssuePlace { get; set; }
+
+        [StringLength(50)]
         public string? FatherName { get; set; }
+
+        [StringLength(50)]
+        public string? FatherJob { get; set; }
 
         public int? Weight { get; set; }
 
@@ -33,6 +53,12 @@ namespace FootballSchool.Web.Models.ViewModels
         [Required(ErrorMessage = "انتخاب جنسیت الزامی است")]
         [StringLength(10)]
         public string? Gender { get; set; }
+
+        [StringLength(50)]
+        public string? Nationality { get; set; }
+
+        [StringLength(50)]
+        public string? Citizenship { get; set; }
 
         [StringLength(10)]
         public string? BloodGroup { get; set; }

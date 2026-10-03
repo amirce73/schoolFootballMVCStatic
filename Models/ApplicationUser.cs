@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
 namespace FootballSchool.Web.Models
@@ -55,6 +55,30 @@ namespace FootballSchool.Web.Models
 
         [StringLength(500)]
         public string? Description { get; set; }
+
+        [NotMapped]
+        [StringLength(50)]
+        public string? SerialId { get; set; }
+
+        [NotMapped]
+        [StringLength(50)]
+        public string? IssuePlace { get; set; }
+
+        [NotMapped]
+        [StringLength(50)]
+        public string? FatherJob { get; set; }
+
+        [NotMapped]
+        [StringLength(20)]
+        public string? BirthDateMiladi { get; set; }
+
+        [NotMapped]
+        [StringLength(50)]
+        public string? Nationality { get; set; }
+
+        [NotMapped]
+        [StringLength(50)]
+        public string? Citizenship { get; set; }
 
         // Contact Info Fields
         [StringLength(20)]

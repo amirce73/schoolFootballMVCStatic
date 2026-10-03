@@ -551,6 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem(key, val);
         });
     });
+    }
 
     // 2. Custom Scroll DatePicker
     const PERSIAN_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];

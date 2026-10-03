@@ -66,21 +66,59 @@ namespace FootballSchoolMVC.Controllers
                 bdate = dt;
             }
 
+            int? calculatedAge = null;
+            if (bdate != null)
+            {
+                var today = DateTime.Today;
+                var age = today.Year - bdate.Value.Year;
+                if (bdate.Value.Date > today.AddYears(-age)) age--;
+                calculatedAge = age;
+            }
+
             var vm = new PersonalInfoViewModel
             {
                 FirstName = user.FirstName ?? info.name,
                 LastName = user.LastName ?? info.family,
+                EnglishName = user.EnglishName ?? info.passport_eng_name,
+                EnglishSurname = user.EnglishSurname ?? info.passport_eng_family,
                 NationalId = user.NationalId ?? info.international_id,
                 BirthDate = bdate,
+                BirthDateMiladi = user.BirthDateMiladi ?? info.birth_date_miladi ?? (bdate != null ? bdate.Value.ToString("yyyy/MM/dd") : null),
+                Age = calculatedAge,
                 BirthCertificateNo = user.BirthCertificateNo ?? info.id_no,
+                SerialId = user.SerialId ?? info.serial_id,
+                IssuePlace = user.IssuePlace ?? info.location_id,
                 FatherName = user.FatherName ?? info.father_name,
+                FatherJob = user.FatherJob ?? info.father_job,
                 Weight = user.Weight ?? info.weight,
                 Height = user.Height ?? info.Height,
                 Gender = user.Gender ?? (info.gender == 1 ? "مرد" : (info.gender == 0 ? "زن" : null)),
+                Nationality = user.Nationality ?? (info.nationality_id_FK == 24 ? "اتباع خارجی" : (info.nationality_id_FK == 2 ? "افغانستان" : (info.nationality_id_FK == 3 ? "عراق" : (info.nationality_id_FK == 4 ? "ترکیه" : "ایران")))),
+                Citizenship = user.Citizenship ?? (info.citizenship == 2 ? "افغانستان" : (info.citizenship == 3 ? "عراق" : "ایران")),
                 BloodGroup = user.BloodGroup ?? info.blood_type,
                 MaritalStatus = user.MaritalStatus ?? (info.marital_status == 0 ? "مجرد" : (info.marital_status == 1 ? "متاهل" : null)),
-                MilitaryServiceStatus = user.MilitaryServiceStatus ?? (info.military_service_status == 1 ? "پایان خدمت" : (info.military_service_status == 2 ? "معافیت دائم" : null)),
-                Religion = user.Religion ?? (info.religion == 1 ? "اسلام" : null),
+                MilitaryServiceStatus = user.MilitaryServiceStatus ?? (info.military_service_status switch
+                {
+                    1 => "پایان خدمت",
+                    2 => "معافیت دائم",
+                    3 => "معافیت تحصیلی",
+                    4 => "خرید خدمت",
+                    5 => "محصل",
+                    6 => "درحال خدمت",
+                    7 => "کادر نظامی",
+                    8 => "مشمول",
+                    _ => null
+                }),
+                Religion = user.Religion ?? (info.religion switch
+                {
+                    1 => "اسلام",
+                    3 => "مسیحیت",
+                    4 => "یهودیت",
+                    5 => "زرتشتی",
+                    6 => "سایر",
+                    2 => "غیراسلام",
+                    _ => null
+                }),
                 Sect = user.Sect,
                 Occupation = user.Occupation ?? info.job,
                 HealthStatus = user.HealthStatus ?? (info.health_status == 1 ? "سالم" : null),
@@ -125,10 +163,18 @@ namespace FootballSchoolMVC.Controllers
 
             user.FirstName = vm.FirstName;
             user.LastName = vm.LastName;
+            user.EnglishName = vm.EnglishName;
+            user.EnglishSurname = vm.EnglishSurname;
             user.NationalId = vm.NationalId;
             user.BirthDate = vm.BirthDate;
             user.BirthCertificateNo = vm.BirthCertificateNo;
+            user.SerialId = vm.SerialId;
+            user.IssuePlace = vm.IssuePlace;
             user.FatherName = vm.FatherName;
+            user.FatherJob = vm.FatherJob;
+            user.BirthDateMiladi = vm.BirthDateMiladi ?? (vm.BirthDate != null ? vm.BirthDate.Value.ToString("yyyy/MM/dd") : null);
+            user.Nationality = vm.Nationality;
+            user.Citizenship = vm.Citizenship;
             user.Weight = vm.Weight;
             user.Height = vm.Height;
             user.Gender = vm.Gender;
@@ -147,29 +193,100 @@ namespace FootballSchoolMVC.Controllers
             try
             {
                 var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                if (info == null)
+                {
+                    var fpController = new FootballschoolPersonController(_userManager, _db, _env);
+                    info = await fpController.GetOrInitPersonalInfoAsync(user);
+                }
                 if (info != null)
                 {
                     info.name = vm.FirstName;
                     info.family = vm.LastName;
+                    info.passport_eng_name = vm.EnglishName;
+                    info.passport_eng_family = vm.EnglishSurname;
                     info.international_id = vm.NationalId;
+                    info.id_no = vm.BirthCertificateNo;
+                    info.serial_id = vm.SerialId;
+                    info.location_id = vm.IssuePlace;
                     info.father_name = vm.FatherName;
+                    info.father_job = vm.FatherJob;
                     info.weight = vm.Weight;
                     info.Height = vm.Height;
                     info.job = vm.Occupation;
                     info.description = vm.Description;
                     info.blood_type = vm.BloodGroup;
-                    info.id_no = vm.BirthCertificateNo;
+
+                    if (vm.Nationality == "اتباع خارجی") info.nationality_id_FK = 24;
+                    else if (vm.Nationality == "افغانستان") info.nationality_id_FK = 2;
+                    else if (vm.Nationality == "عراق") info.nationality_id_FK = 3;
+                    else if (vm.Nationality == "ترکیه") info.nationality_id_FK = 4;
+                    else info.nationality_id_FK = 1;
+
+                    if (vm.Citizenship == "افغانستان") info.citizenship = 2;
+                    else if (vm.Citizenship == "عراق") info.citizenship = 3;
+                    else info.citizenship = 1;
+
                     if (vm.Gender == "مرد") info.gender = 1;
                     else if (vm.Gender == "زن") info.gender = 0;
                     if (vm.MaritalStatus == "مجرد") info.marital_status = 0;
                     else if (vm.MaritalStatus == "متاهل") info.marital_status = 1;
+
+                    if (vm.MilitaryServiceStatus == "پایان خدمت") info.military_service_status = 1;
+                    else if (vm.MilitaryServiceStatus == "معافیت دائم" || vm.MilitaryServiceStatus == "معاف از خدمت") info.military_service_status = 2;
+                    else if (vm.MilitaryServiceStatus == "معافیت تحصیلی" || vm.MilitaryServiceStatus == "دانشجو") info.military_service_status = 3;
+                    else if (vm.MilitaryServiceStatus == "خرید خدمت") info.military_service_status = 4;
+                    else if (vm.MilitaryServiceStatus == "محصل") info.military_service_status = 5;
+                    else if (vm.MilitaryServiceStatus == "درحال خدمت") info.military_service_status = 6;
+                    else if (vm.MilitaryServiceStatus == "کادر نظامی") info.military_service_status = 7;
+                    else if (vm.MilitaryServiceStatus == "مشمول") info.military_service_status = 8;
+
                     if (vm.Religion == "اسلام") info.religion = 1;
+                    else if (vm.Religion == "مسیحیت") info.religion = 3;
+                    else if (vm.Religion == "یهودیت") info.religion = 4;
+                    else if (vm.Religion == "زرتشتی") info.religion = 5;
+                    else if (vm.Religion == "سایر") info.religion = 6;
+                    else if (!string.IsNullOrEmpty(vm.Religion)) info.religion = 2;
+
+                    if (vm.HealthStatus == "سالم") info.health_status = 1;
+                    else if (!string.IsNullOrEmpty(vm.HealthStatus)) info.health_status = 2;
                     if (vm.BirthDate != null)
                     {
-                        info.birth_date_miladi = vm.BirthDate.Value.ToString("yyyy/MM/dd");
+                        info.birth_date_miladi = vm.BirthDateMiladi ?? vm.BirthDate.Value.ToString("yyyy/MM/dd");
                         var pc = new System.Globalization.PersianCalendar();
                         info.birth_date_shamsi = $"{pc.GetYear(vm.BirthDate.Value):0000}/{pc.GetMonth(vm.BirthDate.Value):00}/{pc.GetDayOfMonth(vm.BirthDate.Value):00}";
                     }
+                    else if (!string.IsNullOrEmpty(vm.BirthDateMiladi))
+                    {
+                        info.birth_date_miladi = vm.BirthDateMiladi;
+                    }
+
+                    int temp = 0;
+                    if (!string.IsNullOrEmpty(info.name)) temp++;
+                    if (!string.IsNullOrEmpty(info.family)) temp++;
+                    if (!string.IsNullOrEmpty(info.passport_eng_name)) temp++;
+                    if (!string.IsNullOrEmpty(info.passport_eng_family)) temp++;
+                    if (!string.IsNullOrEmpty(info.father_job)) temp++;
+                    if (!string.IsNullOrEmpty(info.father_name)) temp++;
+                    if (!string.IsNullOrEmpty(info.international_id)) temp++;
+                    if (!string.IsNullOrEmpty(info.id_no)) temp++;
+                    if (!string.IsNullOrEmpty(info.location_id)) temp++;
+                    if (!string.IsNullOrEmpty(info.serial_id)) temp++;
+                    if (!string.IsNullOrEmpty(info.birth_date_miladi)) temp++;
+                    if (!string.IsNullOrEmpty(info.birth_date_shamsi)) temp++;
+                    if (info.nationality_id_FK != null && info.nationality_id_FK > 0) temp++;
+                    if (info.citizenship != null && info.citizenship > 0) temp++;
+                    if (info.health_status != null && info.health_status > 0) temp++;
+                    if (!string.IsNullOrEmpty(info.blood_type) && info.blood_type != "-1") temp++;
+                    if (info.gender != null) temp++;
+                    if (info.marital_status != null && info.marital_status >= 0) temp++;
+                    if (info.military_service_status != null && info.military_service_status > 0) temp++;
+                    if (info.religion != null && info.religion > 0) temp++;
+                    if (info.weight != null && info.weight > 0) temp++;
+                    if (info.Height != null && info.Height > 0) temp++;
+                    if (!string.IsNullOrEmpty(info.job)) temp++;
+                    if (!string.IsNullOrEmpty(info.description)) temp++;
+                    info.complete_percent = Math.Min(100, (100 * temp) / 22);
+
                     await _db.SaveChangesAsync();
                 }
             }
