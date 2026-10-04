@@ -5452,7 +5452,7 @@
                 <div class="header-profile">
                     <div class="header-profile-avatar"><img alt="user" src="/assets/images/messi-profile.jpg"></div>
                     <div>
-                        <div class="header-profile-info"><span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) ? "کاربر" : Model.User.FirstName) @Model.User.LastName</span><span class="meta"><i
+                        <div class="header-profile-info"><span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())</span><span class="meta"><i
                                     class="fa fa-calendar-check-o" style="margin-left: 4px;"></i>عضویت:<strong
                                     class="dir-ltr" style="margin-right: 4px;">@(Model.User.RegistrationRecords?.FirstOrDefault()?.Term?.Title ?? "- - -")</strong></span></div>
                     </div><i class="fa fa-angle-down"
@@ -5462,6 +5462,7 @@
                             <div style="display: flex; flex-direction: row;">
                                 <div
                                     style="font-weight: 800; color: var(--text-dark); margin-bottom: 12px; font-size: 1.05rem; text-align: center; display: flex; justify-content: center; align-items: center;">
+                                    @(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())
                                 </div>
                                 <div
                                     style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center;">
@@ -5475,11 +5476,11 @@
                             </div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
-                                <span>تاریخ تولد:</span> <strong class="dir-ltr">@(Model.User.BirthDate?.ToString("yyyy/MM/dd") ?? "- - / - - / - - - -")</strong>
+                                <span>تاریخ تولد:</span> <strong class="dir-ltr">@(Model.User.BirthDate != null ? Model.User.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "- - / - - / - - - -")</strong>
                             </div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
-                                <span>سن:</span> <strong>۰ سال</strong>
+                                <span>سن:</span> <strong>@(Model.Age > 0 ? Model.Age + " سال" : "۰ سال")</strong>
                             </div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
@@ -5521,7 +5522,7 @@
                                 style="position: absolute; bottom: 0px; right: 0px; background: var(--primary); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 5px;"><i
                                     class="fa fa-camera"></i></button><input accept="image/*" type="file"
                                 style="display: none;"></div>
-                        <h3 style="margin-top: 16px; margin-bottom: 4px; color: var(--text-dark);">@(string.IsNullOrEmpty(Model.User.FirstName) ? "کاربر" : Model.User.FirstName) @Model.User.LastName</h3>
+                        <h3 style="margin-top: 16px; margin-bottom: 4px; color: var(--text-dark);">@(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())</h3>
                         <p style="margin: 0px; color: var(--text-muted); font-size: 0.9rem;">@(Model.User.NationalId ?? "کد ملی ثبت نشده")</p>
                     </div>
                     <div class="verify-banner unverified">

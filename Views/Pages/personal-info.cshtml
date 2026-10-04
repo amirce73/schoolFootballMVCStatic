@@ -25,7 +25,7 @@
                     </div>
                     <div>
                         <div class="header-profile-info">
-                            <span class="name">@(string.IsNullOrEmpty(user?.FirstName) && string.IsNullOrEmpty(user?.LastName) ? "نام نام خانوادگی" : $"{user?.FirstName} {user?.LastName}")</span>
+                            <span class="name">@(string.IsNullOrEmpty(user?.FirstName) && string.IsNullOrEmpty(user?.LastName) ? (string.IsNullOrEmpty(Model?.FirstName) && string.IsNullOrEmpty(Model?.LastName) ? "کاربر گرامی" : $"{Model?.FirstName} {Model?.LastName}".Trim()) : $"{user?.FirstName} {user?.LastName}".Trim())</span>
                             <span class="meta">
                                 <i class="fa fa-calendar-check-o" style="margin-left: 4px;"></i>عضویت:
                                 <strong class="dir-ltr" style="margin-right: 4px;">- - - - / - - / - -</strong>
@@ -37,20 +37,20 @@
                         <div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 20px;">
                             <div style="display: flex; flex-direction: row;">
                                 <div style="font-weight: 800; color: var(--text-dark); margin-bottom: 12px; font-size: 1.05rem; text-align: center; display: flex; justify-content: center; align-items: center;">
-                                    @(user?.FirstName) @(user?.LastName)
+                                    @(string.IsNullOrEmpty(user?.FirstName) && string.IsNullOrEmpty(user?.LastName) ? (string.IsNullOrEmpty(Model?.FirstName) && string.IsNullOrEmpty(Model?.LastName) ? "کاربر گرامی" : $"{Model?.FirstName} {Model?.LastName}".Trim()) : $"{user?.FirstName} {user?.LastName}".Trim())
                                 </div>
                                 <div style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center;">
                                     <span class="badge-verify unverified" style="border-color: rgb(51, 65, 85);"><i class="fa fa-exclamation-circle"></i>استعلام هویت نشده</span>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
-                                <span>کد ملی:</span> <strong>@(user?.NationalId ?? "- - - - - - - - - -")</strong>
+                                <span>کد ملی:</span> <strong>@(user?.NationalId ?? Model?.NationalId ?? "- - - - - - - - - -")</strong>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
-                                <span>تاریخ تولد:</span> <strong class="dir-ltr">@(user?.BirthDate != null ? user.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "- - / - - / - - - -")</strong>
+                                <span>تاریخ تولد:</span> <strong class="dir-ltr">@(user?.BirthDate != null ? user.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : (Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "- - / - - / - - - -"))</strong>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
-                                <span>سن:</span> <strong>@(user?.BirthDate != null ? (DateTime.Now.Year - user.BirthDate.Value.Year) + " سال" : "۰ سال")</strong>
+                                <span>سن:</span> <strong>@(int.TryParse(Model?.Age, out var aInt) && aInt > 0 ? aInt + " سال" : (user?.BirthDate != null ? (DateTime.Now.Year - user.BirthDate.Value.Year) + " سال" : "۰ سال"))</strong>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
                                 <span>رده سنی:</span> <strong>- - - - - - -</strong>
@@ -188,7 +188,7 @@
 
                         <div class="input-group">
                             <label class="">سن</label>
-                            <input class="" type="text" id="lbl_age" name="age" value="@(Model?.Age != null ? Model.Age + " سال" : "")" readonly style="background-color: var(--bg-hover, #f8fafc); cursor: default;">
+                            <input class="" type="text" id="lbl_age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly style="background-color: var(--bg-hover, #f8fafc); cursor: default;">
                         </div>
 
                         <div class="input-group">
@@ -369,9 +369,8 @@
                         if (jy > 1300 && jm >= 1 && jm <= 12 && jd >= 1 && jd <= 31) {
                             var g = jalaliToGregorianCalc(jy, jm, jd);
                             var miladiInput = document.getElementById('txt_birth_date_miladi');
-                            if (miladiInput && (!miladiInput.value || miladiInput.dataset.autofilled === "true")) {
+                            if (miladiInput) {
                                 miladiInput.value = g.year + '/' + String(g.month).padStart(2, '0') + '/' + String(g.day).padStart(2, '0');
-                                miladiInput.dataset.autofilled = "true";
                             }
                             var today = new Date();
                             var age = today.getFullYear() - g.year;

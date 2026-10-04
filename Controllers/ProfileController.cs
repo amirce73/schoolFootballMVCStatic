@@ -44,7 +44,19 @@ namespace FootballSchoolMVC.Controllers
 
             if (user == null) return Redirect("/");
 
+            if (string.IsNullOrEmpty(user.FirstName))
+            {
+                var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                if (info != null && !string.IsNullOrEmpty(info.name))
+                {
+                    user.FirstName = info.name;
+                    user.LastName = info.family;
+                    if (string.IsNullOrEmpty(user.NationalId)) user.NationalId = info.international_id;
+                }
+            }
+
             var model = new ProfileHubViewModel(user);
+            ViewBag.User = user;
             return View("~/Views/Pages/profile-hub.cshtml", model);
         }
 
@@ -59,6 +71,10 @@ namespace FootballSchoolMVC.Controllers
 
             var fpController = new FootballschoolPersonController(_userManager, _db, _env);
             var info = await fpController.GetOrInitPersonalInfoAsync(user);
+
+            if (string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(info.name)) user.FirstName = info.name;
+            if (string.IsNullOrEmpty(user.LastName) && !string.IsNullOrEmpty(info.family)) user.LastName = info.family;
+            if (string.IsNullOrEmpty(user.NationalId) && !string.IsNullOrEmpty(info.international_id)) user.NationalId = info.international_id;
 
             DateTime? bdate = user.BirthDate;
             if (bdate == null && !string.IsNullOrEmpty(info.birth_date_miladi) && DateTime.TryParse(info.birth_date_miladi.Replace('/', '-'), out var dt))
@@ -84,7 +100,7 @@ namespace FootballSchoolMVC.Controllers
                 NationalId = user.NationalId ?? info.international_id,
                 BirthDate = bdate,
                 BirthDateMiladi = user.BirthDateMiladi ?? info.birth_date_miladi ?? (bdate != null ? bdate.Value.ToString("yyyy/MM/dd") : null),
-                Age = calculatedAge,
+                Age = calculatedAge?.ToString(),
                 BirthCertificateNo = user.BirthCertificateNo ?? info.id_no,
                 SerialId = user.SerialId ?? info.serial_id,
                 IssuePlace = user.IssuePlace ?? info.location_id,
@@ -150,13 +166,46 @@ namespace FootballSchoolMVC.Controllers
                         var pc = new System.Globalization.PersianCalendar();
                         vm.BirthDate = pc.ToDateTime(py, pm, pd, 0, 0, 0, 0);
                         ModelState.Remove(nameof(vm.BirthDate));
+                        ModelState.Remove("birthDate");
+                        ModelState.Remove("vm.BirthDate");
                     }
                     catch { }
                 }
             }
+            else if (vm.BirthDate == null && !string.IsNullOrWhiteSpace(vm.BirthDateMiladi) && DateTime.TryParse(vm.BirthDateMiladi.Replace('/', '-'), out var gdt))
+            {
+                vm.BirthDate = gdt;
+                ModelState.Remove(nameof(vm.BirthDate));
+                ModelState.Remove("birthDate");
+                ModelState.Remove("vm.BirthDate");
+            }
+
+            if (vm.BirthDate != null)
+            {
+                ModelState.Remove(nameof(vm.BirthDate));
+                ModelState.Remove("birthDate");
+                ModelState.Remove("vm.BirthDate");
+
+                var today = DateTime.Today;
+                var a = today.Year - vm.BirthDate.Value.Year;
+                if (vm.BirthDate.Value.Date > today.AddYears(-a)) a--;
+                vm.Age = a.ToString();
+            }
+
+            ModelState.Remove(nameof(vm.Age));
+            ModelState.Remove("Age");
+            ModelState.Remove("age");
+            ModelState.Remove("vm.Age");
 
             if (!ModelState.IsValid)
             {
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"[PersonalInfo ModelState Error] Key: {state.Key}, Error: {error.ErrorMessage}");
+                    }
+                }
                 ViewBag.User = user;
                 return View("~/Views/Pages/personal-info.cshtml", vm);
             }
@@ -187,7 +236,17 @@ namespace FootballSchoolMVC.Controllers
             user.HealthStatus = vm.HealthStatus;
             user.Description = vm.Description;
 
-            await _userManager.UpdateAsync(user);
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                foreach (var err in updateResult.Errors)
+                {
+                    Console.WriteLine($"[UserManager Update Error] {err.Code}: {err.Description}");
+                    ModelState.AddModelError("", err.Description);
+                }
+                ViewBag.User = user;
+                return View("~/Views/Pages/personal-info.cshtml", vm);
+            }
 
             // Synchronize with tbl_user_personal_info
             try
@@ -290,7 +349,10 @@ namespace FootballSchoolMVC.Controllers
                     await _db.SaveChangesAsync();
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[tbl_user_personal_info Save Error] {ex}");
+            }
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                 Request.Headers["Accept"].ToString().Contains("application/json"))
@@ -332,6 +394,7 @@ namespace FootballSchoolMVC.Controllers
                 ParentsWorkAddress = user.ParentsWorkAddress
             };
 
+            ViewBag.User = user;
             return View("~/Views/Pages/contact-info.cshtml", vm);
         }
 
@@ -381,6 +444,7 @@ namespace FootballSchoolMVC.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Redirect("/");
 
+            ViewBag.User = user;
             return View("~/Views/Pages/sports-info.cshtml", user);
         }
 
@@ -426,6 +490,7 @@ namespace FootballSchoolMVC.Controllers
                 ExistingPassportPhotoPath = user.PassportPhotoPath
             };
 
+            ViewBag.User = user;
             return View("~/Views/Pages/passport-info.cshtml", vm);
         }
 
@@ -480,6 +545,7 @@ namespace FootballSchoolMVC.Controllers
                 ShoesSize = user.ShoesSize ?? string.Empty
             };
 
+            ViewBag.User = user;
             return View("~/Views/Pages/clothing-info.cshtml", vm);
         }
 
@@ -506,13 +572,14 @@ namespace FootballSchoolMVC.Controllers
         [HttpGet("bank-info.html")]
         public async Task<IActionResult> BankInfo()
         {
-            var userId = _userManager.GetUserId(User);
-            if (userId == null) return Redirect("/");
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Redirect("/");
 
             var accounts = await _db.BankAccounts
-                .Where(b => b.UserId == userId)
+                .Where(b => b.UserId == user.Id)
                 .ToListAsync();
 
+            ViewBag.User = user;
             return View("~/Views/Pages/bank-info.cshtml", accounts);
         }
 

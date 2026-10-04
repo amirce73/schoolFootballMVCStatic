@@ -8,6 +8,18 @@ namespace FootballSchool.Web.Models.ViewModels
         public ApplicationUser User { get; set; } = null!;
         public int CompletionPercentage { get; set; }
         
+        public int Age
+        {
+            get
+            {
+                if (User?.BirthDate == null) return 0;
+                var today = System.DateTime.Today;
+                var age = today.Year - User.BirthDate.Value.Year;
+                if (User.BirthDate.Value.Date > today.AddYears(-age)) age--;
+                return age;
+            }
+        }
+        
         public ProfileHubViewModel(ApplicationUser user)
         {
             User = user;

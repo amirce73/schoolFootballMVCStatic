@@ -106,6 +106,17 @@ namespace FootballSchoolMVC.Controllers
 
             if (user == null) return Redirect("/");
 
+            if (string.IsNullOrEmpty(user.FirstName))
+            {
+                var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                if (info != null && !string.IsNullOrEmpty(info.name))
+                {
+                    user.FirstName = info.name;
+                    user.LastName = info.family;
+                    if (string.IsNullOrEmpty(user.NationalId)) user.NationalId = info.international_id;
+                }
+            }
+
             var model = new DashboardViewModel
             {
                 User = user,
@@ -116,6 +127,7 @@ namespace FootballSchoolMVC.Controllers
                 )
             };
 
+            ViewBag.User = user;
             return View("~/Views/Pages/dashboard.cshtml", model);
         }
 
@@ -125,8 +137,10 @@ namespace FootballSchoolMVC.Controllers
         [Route("specialized-hub.html")]
         [HttpGet]
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public IActionResult SpecializedHub()
+        public async Task<IActionResult> SpecializedHub()
         {
+            var user = await _userManager.GetUserAsync(User);
+            ViewBag.User = user;
             return View("~/Views/Pages/specialized-hub.cshtml");
         }
 
@@ -136,7 +150,7 @@ namespace FootballSchoolMVC.Controllers
         [Route("{page}.html")]
         [HttpGet]
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public IActionResult RenderPage(string page)
+        public async Task<IActionResult> RenderPage(string page)
         {
             if (string.IsNullOrWhiteSpace(page)) return NotFound();
             var lower = page.ToLower();
@@ -144,6 +158,18 @@ namespace FootballSchoolMVC.Controllers
 
             if (lower == "certificates") lower = "certificate";
             if (lower == "bmi-history") return Redirect("/personal-info");
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null && string.IsNullOrEmpty(user.FirstName))
+            {
+                var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                if (info != null && !string.IsNullOrEmpty(info.name))
+                {
+                    user.FirstName = info.name;
+                    user.LastName = info.family;
+                }
+            }
+            ViewBag.User = user;
 
             var viewPath = $"~/Views/Pages/{lower}.cshtml";
             return View(viewPath);
