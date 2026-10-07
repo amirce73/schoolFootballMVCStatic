@@ -13,6 +13,282 @@
     <title>فوتبالیت - داشبورد مدرن</title>
     <link rel="stylesheet" href="/assets/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/index-dAlpofHF.css">
+    <style>
+        /* Scoped styles strictly respecting theme's yellow primary color and responsive form */
+        .photo-upload-container {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            background: rgba(234, 179, 8, 0.05);
+            border: 1.5px dashed var(--primary, #eab308);
+            border-radius: var(--radius-md, 12px);
+            margin-bottom: 6px;
+        }
+        .photo-avatar-box {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2.5px solid var(--primary, #eab308);
+            background: #fff;
+            flex-shrink: 0;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .photo-avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .photo-avatar-box:hover .photo-avatar-overlay {
+            opacity: 1;
+        }
+        .photo-upload-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+        .photo-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark, #0f172a);
+        }
+        .photo-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted, #64748b);
+        }
+        .photo-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .btn-select-photo {
+            padding: 6px 14px;
+            background: var(--primary, #eab308);
+            color: #000;
+            border: none;
+            border-radius: var(--radius-sm, 8px);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(234, 179, 8, 0.25);
+        }
+        .btn-select-photo:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+        .photo-file-name {
+            font-size: 0.78rem;
+            color: var(--text-muted, #64748b);
+            font-weight: 600;
+        }
+        @@media (max-width: 540px) {
+            .photo-upload-container {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+                padding: 12px;
+            }
+            .photo-actions-row {
+                justify-content: center;
+            }
+        }
+
+        /* Loading Spinner Overlay */
+        #divLoader {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader-card {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            direction: rtl;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-dark, #0f172a);
+        }
+        .loader-card i {
+            font-size: 1.6rem;
+            color: var(--primary, #eab308);
+        }
+
+        /* Alarm / System Notification Modal */
+        #alaram_box {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 420px;
+            max-width: 90%;
+            z-index: 100000;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: none;
+            direction: rtl;
+            font-family: inherit;
+            border: 1px solid #e2e8f0;
+        }
+        #alaram_box table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #alaram_box #td1 {
+            padding: 12px 18px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: #fff;
+            background-color: var(--danger, #ef4444);
+        }
+        #alaram_box #td2 {
+            padding: 12px 18px;
+            text-align: left;
+            background-color: var(--danger, #ef4444);
+            color: #fff;
+        }
+        #alaram_box #td3 {
+            padding: 22px 18px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+            color: var(--text-dark, #0f172a);
+            font-weight: 600;
+        }
+        #alaram_box .alarm-footer {
+            padding: 12px 18px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        #alarm_btn {
+            min-width: 110px;
+            padding: 8px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .btn-Pcustome-alarm {
+            background: var(--danger, #ef4444);
+            color: #fff;
+        }
+        .btn-success {
+            background: var(--success, #10b981) !important;
+            color: #fff !important;
+        }
+
+        /* Responsive Submit Buttons: Top bar for Laptop/Desktop, Sticky bottom for Mobile */
+        .btn-submit-top {
+            background: var(--success, #10b981) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .sticky-submit-wrapper {
+            position: fixed;
+            bottom: 65px;
+            left: 0;
+            right: 0;
+            padding: 10px 20px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 999;
+            border-top: 1px solid rgba(234, 179, 8, 0.15);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            transition: bottom 0.25s ease;
+        }
+
+        .sticky-submit-btn {
+            background: var(--success, #10b981);
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+            width: 100%;
+            padding: 14px !important;
+            font-size: 1rem !important;
+            border-radius: 12px !important;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .sticky-submit-btn:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+
+        @@media (min-width: 769px) {
+            .sticky-submit-wrapper {
+                display: none !important;
+            }
+            .mobile-only-spacer {
+                display: none !important;
+            }
+            .btn-submit-top {
+                display: flex !important;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .btn-submit-top {
+                display: none !important;
+            }
+            .sticky-submit-wrapper {
+                display: flex !important;
+            }
+            .mobile-only-spacer {
+                display: block !important;
+                height: 85px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -21,7 +297,7 @@
             <div class="navbar-container">
                 <div class="header-profile">
                     <div class="header-profile-avatar">
-                        <img alt="user" src="@(string.IsNullOrEmpty(user?.PassportPhotoPath) ? "/assets/images/messi-profile.jpg" : user.PassportPhotoPath)">
+                        <img id="topbar_user_avatar" alt="user" src="@(string.IsNullOrEmpty(user?.PassportPhotoPath) ? "/assets/images/messi-profile.jpg" : user.PassportPhotoPath)">
                     </div>
                     <div>
                         <div class="header-profile-info">
@@ -92,93 +368,141 @@
                     </button>
                 </div>
 
-                @if (TempData["Success"] != null)
-                {
-                    <div style="background-color: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid #16a34a; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: bold;">
-                        <i class="fa fa-check-circle" style="font-size: 1.2rem;"></i>
-                        <span>@TempData["Success"]</span>
+                <!-- AJAX Loading Spinner Overlay -->
+                <div id="divLoader" style="display: none;">
+                    <div class="loader-card">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        <span>در حال ارسال و ثبت اطلاعات، لطفا صبور باشید...</span>
                     </div>
-                }
+                </div>
+
+                <!-- Alarm / Notification Modal Box -->
+                <div class="alarm_box" id="alaram_box" style="display: none;">
+                    <table>
+                        <tr>
+                            <td id="td1">
+                                <label id="lbl1">پیام سیستم</label>
+                                <input type="hidden" id="hdn_alarm" value="" />
+                            </td>
+                            <td id="td2">
+                                <img src="/Content/images/Cancel-128.png" id="alarm_pic" style="width: 24px; height: 24px;" alt="وضعیت" onerror="this.style.display='none';" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="td3" colspan="2">
+                                <label id="lbl2"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="alarm-footer" colspan="2">
+                                <input type="button" value="متوجه شدم" class="btn-Pcustome-alarm" id="alarm_btn" onclick="close_alarm_box();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
                 <div class="card">
-                    <form id="personal-info-form" class="form-grid" method="post" action="/personal-info">
+                    <form id="personal-info-form" class="form-grid" method="post" action="/personal-info" onsubmit="event.preventDefault(); save_data(); return false;" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
-                        <div asp-validation-summary="All" style="grid-column: 1 / -1; color: red; margin-bottom: 15px; font-weight: bold;"></div>
+                        <div asp-validation-summary="All" style="grid-column: 1 / -1; color: red; margin-bottom: 15px; font-weight: bold; display: none;"></div>
+
+                        <!-- 1. Profile Photo Selection Section -->
+                        <div class="photo-upload-container">
+                            <div class="photo-avatar-box" onclick="document.getElementById('FileUpload').click();" title="کلیک برای تغییر تصویر">
+                                <img id="doc_pic" name="doc_pic" src="@(string.IsNullOrEmpty(user?.PassportPhotoPath) ? "/assets/images/messi-profile.jpg" : user.PassportPhotoPath)" alt="تصویر بازیکن" />
+                                <div class="photo-avatar-overlay">
+                                    <i class="fa fa-camera"></i>
+                                </div>
+                            </div>
+                            <div class="photo-upload-details">
+                                <span class="photo-title">تصویر پرسنلی بازیکن</span>
+                                <span class="photo-hint">* فرمت‌های مجاز: JPG, PNG, WEBP, TIFF (حداکثر ۵ مگابایت)</span>
+                                <div class="photo-actions-row">
+                                    <button type="button" class="btn-select-photo" id="btn_FileUpload" onclick="document.getElementById('FileUpload').click();">
+                                        <i class="fa fa-upload"></i> انتخاب تصویر پروفایل
+                                    </button>
+                                    <span class="photo-file-name" id="lbl_FileUpload"></span>
+                                    <input type="file" id="FileUpload" name="profilePhoto" accept=".jpg,.jpeg,.png,.webp,.tiff" style="display: none;" onchange="previewImage(this);" />
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="input-group">
                             <label class="">نام <span class="text-danger">*</span></label>
-                            <input maxlength="50" class="" type="text" name="firstName" value="@Model?.FirstName">
+                            <input maxlength="50" class="" type="text" id="txt_name" name="firstName" value="@Model?.FirstName">
                         </div>
 
                         <div class="input-group">
                             <label class="">نام خانوادگی <span class="text-danger">*</span></label>
-                            <input maxlength="50" class="" type="text" name="lastName" value="@Model?.LastName">
+                            <input maxlength="50" class="" type="text" id="txt_family" name="lastName" value="@Model?.LastName">
                         </div>
 
                         <div class="input-group">
-                            <label class="">کد ملی<span class="text-danger">*</span></label>
-                            <input maxlength="10" inputmode="numeric" class="" type="text" name="nationalId" value="@Model?.NationalId">
+                            <label class="">کد ملی <span class="text-danger">*</span></label>
+                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_international_id" name="nationalId" value="@Model?.NationalId" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10);">
                         </div>
 
                         <div class="input-group">
                             <label class="">Name (لاتین)</label>
-                            <input maxlength="50" class="dir-ltr" type="text" name="englishName" value="@Model?.EnglishName" placeholder="Name">
+                            <input maxlength="50" class="dir-ltr" type="text" id="txt_eng_name" name="englishName" value="@Model?.EnglishName" placeholder="Name">
                         </div>
 
                         <div class="input-group">
                             <label class="">Family (لاتین)</label>
-                            <input maxlength="50" class="dir-ltr" type="text" name="englishSurname" value="@Model?.EnglishSurname" placeholder="Family">
+                            <input maxlength="50" class="dir-ltr" type="text" id="txt_eng_family" name="englishSurname" value="@Model?.EnglishSurname" placeholder="Family">
                         </div>
 
                         <div class="input-group">
                             <label class="">جنسیت <span class="text-danger">*</span></label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="gender" class="hidden-native-select" style="display: none;">
+                            <div class="custom-select-wrapper">
+                                <select name="gender" id="cmd_gender" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مرد" selected="@(Model?.Gender == "مرد")">مرد</option>
                                     <option value="زن" selected="@(Model?.Gender == "زن")">زن</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.Gender) ? "انتخاب کنید" : Model.Gender)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.Gender) ? "انتخاب کنید" : Model.Gender)</div>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label class="">شماره شناسنامه</label>
-                            <input maxlength="10" inputmode="numeric" class="" type="text" name="birthCertificateNo" value="@Model?.BirthCertificateNo">
+                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_id_no" name="birthCertificateNo" value="@Model?.BirthCertificateNo" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10);">
                         </div>
 
                         <div class="input-group">
                             <label class="">شماره سریال شناسنامه</label>
-                            <input maxlength="50" class="" type="text" name="serialId" value="@Model?.SerialId">
+                            <input maxlength="50" class="" type="text" id="txt_serial_id" name="serialId" value="@Model?.SerialId">
                         </div>
 
                         <div class="input-group">
                             <label class="">محل صدور</label>
-                            <input maxlength="50" class="" type="text" name="issuePlace" value="@Model?.IssuePlace">
+                            <input maxlength="50" class="" type="text" id="txt_location_id" name="issuePlace" value="@Model?.IssuePlace">
                         </div>
 
                         <div class="input-group">
                             <label class="">نام پدر</label>
-                            <input maxlength="50" class="" type="text" name="fatherName" value="@Model?.FatherName">
+                            <input maxlength="50" class="" type="text" id="txt_father_name" name="fatherName" value="@Model?.FatherName">
                         </div>
 
                         <div class="input-group">
                             <label class="">شغل پدر</label>
-                            <input maxlength="50" class="" type="text" name="fatherJob" value="@Model?.FatherJob">
+                            <input maxlength="50" class="" type="text" id="txt_father_job" name="fatherJob" value="@Model?.FatherJob">
                         </div>
 
+                        <!-- 2. Job changed to "شغل بازیکن" -->
                         <div class="input-group">
-                            <label class="">شغل</label>
-                            <input maxlength="50" class="" type="text" name="occupation" value="@Model?.Occupation">
+                            <label class="">شغل بازیکن</label>
+                            <input maxlength="50" class="" type="text" id="txt_job" name="occupation" value="@Model?.Occupation">
                         </div>
 
                         <div class="input-group">
                             <label class="">تاریخ تولد <span class="text-danger">*</span></label>
                             <div id="birthDate" class="date-picker-input"
-                                style="width: 100%; padding: 12px 14px; border: 1px solid rgb(203, 213, 225); border-radius: 8px; font-size: 0.9rem; background: rgb(255, 255, 255); color: inherit; cursor: pointer; min-height: 44px; display: flex; align-items: center;">
-                                <span style="color: @(Model?.BirthDate != null ? "inherit" : "rgb(148, 163, 184)");">@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "انتخاب تاریخ")</span>
+                                style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); font-size: 0.85rem; background: #f8fafc; color: inherit; cursor: pointer; min-height: 42px; display: flex; align-items: center;">
+                                <span style="color: @(Model?.BirthDate != null ? "inherit" : "#64748b");">@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "انتخاب تاریخ")</span>
                             </div>
                             <input type="hidden" id="hidden_birthDate" name="birthDate" value="@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "")" />
+                            <input type="hidden" id="birth_date_shamsi" value="@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "")" />
                         </div>
 
                         <div class="input-group">
@@ -186,15 +510,16 @@
                             <input maxlength="10" class="dir-ltr" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" placeholder="YYYY/MM/DD">
                         </div>
 
+                        <!-- 3. Age Field with Theme Primary Color (Yellow #eab308) Background -->
                         <div class="input-group">
                             <label class="">سن</label>
-                            <input class="" type="text" id="lbl_age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly style="background-color: var(--bg-hover, #f8fafc); cursor: default;">
+                            <input class="" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default;">
                         </div>
 
                         <div class="input-group">
                             <label class="">ملیت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper">
-                                <select name="nationality" class="hidden-native-select" style="display: none;">
+                                <select name="nationality" id="cmd_nationality_id" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="ایران" selected="@(Model?.Nationality == "ایران" || string.IsNullOrEmpty(Model?.Nationality))">ایران</option>
                                     <option value="اتباع خارجی" selected="@(Model?.Nationality == "اتباع خارجی")">اتباع خارجی</option>
@@ -210,7 +535,7 @@
                         <div class="input-group">
                             <label class="">تابعیت</label>
                             <div class="custom-select-wrapper">
-                                <select name="citizenship" class="hidden-native-select" style="display: none;">
+                                <select name="citizenship" id="cmd_citizenship" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="ایران" selected="@(Model?.Citizenship == "ایران" || string.IsNullOrEmpty(Model?.Citizenship))">ایران</option>
                                     <option value="افغانستان" selected="@(Model?.Citizenship == "افغانستان")">افغانستان</option>
@@ -223,8 +548,8 @@
 
                         <div class="input-group">
                             <label>گروه خونی</label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="bloodGroup" class="hidden-native-select" style="display: none;">
+                            <div class="custom-select-wrapper">
+                                <select name="bloodGroup" id="cmd_blood_type" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="A+" selected="@(Model?.BloodGroup == "A+")">A+</option>
                                     <option value="A-" selected="@(Model?.BloodGroup == "A-")">A-</option>
@@ -235,50 +560,51 @@
                                     <option value="O+" selected="@(Model?.BloodGroup == "O+")">O+</option>
                                     <option value="O-" selected="@(Model?.BloodGroup == "O-")">O-</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.BloodGroup) ? "انتخاب کنید..." : Model.BloodGroup)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.BloodGroup) ? "انتخاب کنید..." : Model.BloodGroup)</div>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label class="">قد (سانتی‌متر)</label>
-                            <input maxlength="3" inputmode="numeric" class="" type="text" name="height" value="@Model?.Height">
+                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_Height" name="height" value="@Model?.Height" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 3);">
                         </div>
 
                         <div class="input-group">
                             <label class="">وزن (کیلوگرم)</label>
-                            <input maxlength="3" inputmode="numeric" class="" type="text" name="weight" value="@Model?.Weight">
+                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_weight" name="weight" value="@Model?.Weight" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 3);">
                         </div>
 
                         <div class="input-group">
                             <label>وضعیت تاهل</label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="maritalStatus" class="hidden-native-select" style="display: none;">
+                            <div class="custom-select-wrapper">
+                                <select name="maritalStatus" id="cmd_marital_status" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مجرد" selected="@(Model?.MaritalStatus == "مجرد")">مجرد</option>
                                     <option value="متاهل" selected="@(Model?.MaritalStatus == "متاهل")">متاهل</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.MaritalStatus) ? "انتخاب کنید..." : Model.MaritalStatus)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.MaritalStatus) ? "انتخاب کنید..." : Model.MaritalStatus)</div>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label>وضعیت نظام وظیفه</label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="militaryServiceStatus" class="hidden-native-select" style="display: none;">
+                            <div class="custom-select-wrapper">
+                                <select name="militaryServiceStatus" id="cmd_military_service_status" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مشمول" selected="@(Model?.MilitaryServiceStatus == "مشمول")">مشمول</option>
                                     <option value="معافیت تحصیلی" selected="@(Model?.MilitaryServiceStatus == "معافیت تحصیلی")">معافیت تحصیلی</option>
                                     <option value="معافیت دائم" selected="@(Model?.MilitaryServiceStatus == "معافیت دائم")">معافیت دائم</option>
                                     <option value="پایان خدمت" selected="@(Model?.MilitaryServiceStatus == "پایان خدمت")">پایان خدمت</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.MilitaryServiceStatus) ? "انتخاب کنید..." : Model.MilitaryServiceStatus)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.MilitaryServiceStatus) ? "انتخاب کنید..." : Model.MilitaryServiceStatus)</div>
                             </div>
                         </div>
 
+                        <!-- 4. Religion: Required constraint removed -->
                         <div class="input-group">
-                            <label class="">دین <span class="text-danger">*</span></label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="religion" class="hidden-native-select" style="display: none;">
+                            <label class="">دین</label>
+                            <div class="custom-select-wrapper">
+                                <select name="religion" id="cmd_religion" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="اسلام" selected="@(Model?.Religion == "اسلام")">اسلام</option>
                                     <option value="مسیحیت" selected="@(Model?.Religion == "مسیحیت")">مسیحیت</option>
@@ -286,34 +612,50 @@
                                     <option value="زرتشتی" selected="@(Model?.Religion == "زرتشتی")">زرتشتی</option>
                                     <option value="سایر" selected="@(Model?.Religion == "سایر")">سایر</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.Religion) ? "انتخاب کنید..." : Model.Religion)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.Religion) ? "انتخاب کنید..." : Model.Religion)</div>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label class="">مذهب</label>
-                            <div class="custom-select-wrapper  ">
-                                <select name="sect" class="hidden-native-select" style="display: none;">
+                            <div class="custom-select-wrapper">
+                                <select name="sect" id="cmd_sect" class="hidden-native-select" style="display: none;">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="شیعه" selected="@(Model?.Sect == "شیعه")">شیعه</option>
                                     <option value="سنی" selected="@(Model?.Sect == "سنی")">سنی</option>
                                 </select>
-                                <div class="custom-select-trigger ">@(string.IsNullOrEmpty(Model?.Sect) ? "انتخاب کنید..." : Model.Sect)</div>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.Sect) ? "انتخاب کنید..." : Model.Sect)</div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Health Status: Selectable ("سالم" / "غیر سالم") -->
+                        <div class="input-group">
+                            <label>وضعیت سلامت <span class="text-danger">*</span></label>
+                            <div class="custom-select-wrapper">
+                                <select name="healthStatus" id="cmd_health_status" class="hidden-native-select" style="display: none;">
+                                    <option value="">انتخاب کنید...</option>
+                                    <option value="سالم" selected="@(Model?.HealthStatus == "سالم" || string.IsNullOrEmpty(Model?.HealthStatus))">سالم</option>
+                                    <option value="غیر سالم" selected="@(Model?.HealthStatus == "غیر سالم")">غیر سالم</option>
+                                </select>
+                                <div class="custom-select-trigger">@(string.IsNullOrEmpty(Model?.HealthStatus) ? "سالم" : Model.HealthStatus)</div>
                             </div>
                         </div>
 
                         <div class="input-group" style="grid-column: 1 / -1;">
-                            <label>وضعیت سلامت و بیماری‌های خاص</label>
-                            <textarea rows="2" maxlength="500" name="healthStatus" placeholder="اگر بیماری خاصی دارید اینجا بنویسید">@Model?.HealthStatus</textarea>
-                        </div>
-
-                        <div class="input-group" style="grid-column: 1 / -1;">
                             <label>توضیحات</label>
-                            <textarea rows="3" maxlength="500" name="description">@Model?.Description</textarea>
+                            <textarea rows="3" maxlength="500" id="txt_description" name="description">@Model?.Description</textarea>
                         </div>
 
+                        <div class="mobile-only-spacer" style="height: 85px; flex-shrink: 0;"></div>
                         <div class="desktop-anchor" style="display: none;"></div>
                     </form>
+                </div>
+
+                <!-- Mobile Sticky Submit Button (Fixed at bottom on mobile) -->
+                <div class="sticky-submit-wrapper">
+                    <button type="button" class="sticky-submit-btn" id="btn_sticky_submit" onclick="event.preventDefault(); save_data(); return false;">
+                        <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+                    </button>
                 </div>
             </div>
         </main>
@@ -326,78 +668,11 @@
         </nav>
     </div>
 
+    <!-- Scripts -->
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/js/footballit_script.js"></script>
     <script src="/assets/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function jalaliToGregorianCalc(jy, jm, jd) {
-                var sal_a, gy, gm, gd, days;
-                jy += 1595;
-                days = -355668 + (365 * jy) + (~~(jy / 33) * 8) + ~~(((jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
-                gy = 400 * ~~(days / 146097);
-                days %= 146097;
-                if (days > 36524) {
-                    gy += 100 * ~~(--days / 36524);
-                    days %= 36524;
-                    if (days >= 365) days++;
-                }
-                gy += 4 * ~~(days / 1461);
-                days %= 1461;
-                if (days > 365) {
-                    gy += ~~((days - 1) / 365);
-                    days = (days - 1) % 365;
-                }
-                gd = days + 1;
-                sal_a = [0, 31, ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-                for (gm = 0; gm < 13 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
-                return { year: gy, month: gm, day: gd };
-            }
-
-            function syncBirthDetails() {
-                var hiddenInput = document.getElementById('hidden_birthDate');
-                var val = hiddenInput ? hiddenInput.value : '';
-                if (!val) {
-                    var dpSpan = document.querySelector('#birthDate span');
-                    if (dpSpan && dpSpan.textContent.includes('/')) val = dpSpan.textContent.trim();
-                }
-                if (val && val.includes('/')) {
-                    var clean = val.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); });
-                    var parts = clean.split('/');
-                    if (parts.length === 3) {
-                        var jy = parseInt(parts[0], 10);
-                        var jm = parseInt(parts[1], 10);
-                        var jd = parseInt(parts[2], 10);
-                        if (jy > 1300 && jm >= 1 && jm <= 12 && jd >= 1 && jd <= 31) {
-                            var g = jalaliToGregorianCalc(jy, jm, jd);
-                            var miladiInput = document.getElementById('txt_birth_date_miladi');
-                            if (miladiInput) {
-                                miladiInput.value = g.year + '/' + String(g.month).padStart(2, '0') + '/' + String(g.day).padStart(2, '0');
-                            }
-                            var today = new Date();
-                            var age = today.getFullYear() - g.year;
-                            var m = (today.getMonth() + 1) - g.month;
-                            if (m < 0 || (m === 0 && today.getDate() < g.day)) age--;
-                            var ageInput = document.getElementById('lbl_age');
-                            if (ageInput) {
-                                ageInput.value = (age >= 0 ? age : 0) + ' سال';
-                            }
-                        }
-                    }
-                }
-            }
-
-            var dpInput = document.getElementById('birthDate');
-            if (dpInput) {
-                dpInput.addEventListener('change', syncBirthDetails);
-                var observer = new MutationObserver(syncBirthDetails);
-                observer.observe(dpInput, { childList: true, subtree: true, characterData: true });
-            }
-            var hiddenBirth = document.getElementById('hidden_birthDate');
-            if (hiddenBirth) {
-                hiddenBirth.addEventListener('change', syncBirthDetails);
-            }
-            syncBirthDetails();
-        });
-    </script>
+    <script src="/js/personal-info.js"></script>
 </body>
 
 </html>

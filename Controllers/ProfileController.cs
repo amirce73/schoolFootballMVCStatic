@@ -151,7 +151,53 @@ namespace FootballSchoolMVC.Controllers
         public async Task<IActionResult> UpdatePersonalInfo(PersonalInfoViewModel vm, [FromForm] string? birthDate)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Redirect("/");
+            if (user == null)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                {
+                    return Json(new { success = false, errorcode = "1", message = "کاربر وارد نشده است یا نشست منقضی شده است." });
+                }
+                return Redirect("/");
+            }
+
+            // Handle Profile Photo Upload
+            var profilePhoto = Request.Form.Files["profilePhoto"] ?? Request.Form.Files["FileUpload"] ?? (Request.Form.Files.Count > 0 ? Request.Form.Files[0] : null);
+            if (profilePhoto != null && profilePhoto.Length > 0)
+            {
+                var ext = Path.GetExtension(profilePhoto.FileName).ToLower();
+                var allowedExts = new[] { ".jpg", ".jpeg", ".png", ".webp", ".tiff" };
+                if (!allowedExts.Contains(ext))
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, errorcode = "6", message = "خطا در بارگذاری تصویر بازیکن. لطفا فرمت مجاز (jpg, jpeg, png, webp, tiff) انتخاب فرمایید." });
+                    }
+                    ModelState.AddModelError("", "فرمت تصویر مجاز نیست.");
+                }
+                else if (profilePhoto.Length > 5 * 1024 * 1024)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, errorcode = "6", message = "حجم تصویر نباید بیشتر از ۵ مگابایت باشد." });
+                    }
+                    ModelState.AddModelError("", "حجم تصویر نباید بیشتر از ۵ مگابایت باشد.");
+                }
+                else
+                {
+                    var uploadFolder = Path.Combine(_env.WebRootPath, "Uploadfiles", "Images");
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+                    var fileName = $"{user.Id}_{DateTime.Now:yyyyMMddHHmmss}{ext}";
+                    var fullPath = Path.Combine(uploadFolder, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await profilePhoto.CopyToAsync(stream);
+                    }
+                    user.PassportPhotoPath = $"/Uploadfiles/Images/{fileName}";
+                }
+            }
 
             // Parse Persian Date from date-picker if provided
             if (!string.IsNullOrWhiteSpace(birthDate) && birthDate.Contains("/"))
@@ -197,14 +243,26 @@ namespace FootballSchoolMVC.Controllers
             ModelState.Remove("age");
             ModelState.Remove("vm.Age");
 
+            // Check duplicate NationalId if changed
+            if (!string.IsNullOrEmpty(vm.NationalId))
+            {
+                var isDup = await _db.Users.AnyAsync(u => u.NationalId == vm.NationalId && u.Id != user.Id);
+                if (isDup)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, errorcode = "2", message = "کد ملی وارد شده تکراری است!" });
+                    }
+                    ModelState.AddModelError("NationalId", "کد ملی وارد شده تکراری است!");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                foreach (var state in ModelState)
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
                 {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"[PersonalInfo ModelState Error] Key: {state.Key}, Error: {error.ErrorMessage}");
-                    }
+                    return Json(new { success = false, errorcode = "10", message = string.Join(" | ", errors), errors });
                 }
                 ViewBag.User = user;
                 return View("~/Views/Pages/personal-info.cshtml", vm);
@@ -239,9 +297,13 @@ namespace FootballSchoolMVC.Controllers
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
+                var errMsgs = updateResult.Errors.Select(e => e.Description).ToList();
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                {
+                    return Json(new { success = false, errorcode = "10", message = string.Join(" | ", errMsgs) });
+                }
                 foreach (var err in updateResult.Errors)
                 {
-                    Console.WriteLine($"[UserManager Update Error] {err.Code}: {err.Description}");
                     ModelState.AddModelError("", err.Description);
                 }
                 ViewBag.User = user;
@@ -249,9 +311,10 @@ namespace FootballSchoolMVC.Controllers
             }
 
             // Synchronize with tbl_user_personal_info
+            FootballSchool.Web.Models.tbl_user_personal_info? info = null;
             try
             {
-                var info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
+                info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
                 if (info == null)
                 {
                     var fpController = new FootballschoolPersonController(_userManager, _db, _env);
@@ -274,6 +337,11 @@ namespace FootballSchoolMVC.Controllers
                     info.job = vm.Occupation;
                     info.description = vm.Description;
                     info.blood_type = vm.BloodGroup;
+
+                    if (!string.IsNullOrEmpty(user.PassportPhotoPath))
+                    {
+                        info.pictuer = user.PassportPhotoPath;
+                    }
 
                     if (vm.Nationality == "اتباع خارجی") info.nationality_id_FK = 24;
                     else if (vm.Nationality == "افغانستان") info.nationality_id_FK = 2;
@@ -344,7 +412,8 @@ namespace FootballSchoolMVC.Controllers
                     if (info.Height != null && info.Height > 0) temp++;
                     if (!string.IsNullOrEmpty(info.job)) temp++;
                     if (!string.IsNullOrEmpty(info.description)) temp++;
-                    info.complete_percent = Math.Min(100, (100 * temp) / 22);
+                    if (!string.IsNullOrEmpty(info.pictuer)) temp++;
+                    info.complete_percent = Math.Min(100, (100 * temp) / 23);
 
                     await _db.SaveChangesAsync();
                 }
@@ -357,7 +426,13 @@ namespace FootballSchoolMVC.Controllers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                 Request.Headers["Accept"].ToString().Contains("application/json"))
             {
-                return Json(new { success = true, message = "اطلاعات فردی با موفقیت ذخیره شد." });
+                return Json(new { 
+                    success = true, 
+                    errorcode = "0", 
+                    message = "اطلاعات فردی با موفقیت ذخیره شد.", 
+                    file_logo = user.PassportPhotoPath, 
+                    complete_percent = info?.complete_percent ?? 0 
+                });
             }
 
             TempData["Success"] = "اطلاعات فردی با موفقیت ذخیره شد.";

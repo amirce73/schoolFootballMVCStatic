@@ -667,8 +667,6 @@ E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\q8l90v6684-{0}-b9sayi
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\9d5s1q3bia-{0}-61n19gt1b8-61n19gt1b8.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\n3512jz4v1-{0}-180dmtdpho-180dmtdpho.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\lz7awcfnig-{0}-g3h7a9wx5y-g3h7a9wx5y.gz
-E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\1hv0iolgto-{0}-qcvu3vhs4j-qcvu3vhs4j.gz
-E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ow75y1s2bw-{0}-cl3pco89gu-cl3pco89gu.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\u4i3m11gpo-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\j96am1w2p1-{0}-bqjiyaj88i-bqjiyaj88i.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\sg5ikdlim9-{0}-c2jlpeoesf-c2jlpeoesf.gz
@@ -743,3 +741,5 @@ E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.pdb
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\FootballSchool.Web.genruntimeconfig.cache
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\ref\FootballSchool.Web.dll
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\focqqocyp4-{0}-l7b775xw2k-l7b775xw2k.gz
+E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\1hv0iolgto-{0}-qcvu3vhs4j-qcvu3vhs4j.gz
+E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ow75y1s2bw-{0}-vu0h4pb4n6-vu0h4pb4n6.gz

@@ -1,12 +1,38 @@
 /**
- * FootballSchool - Personal Info Page Script
- * Fully separated and modularized JavaScript
+ * FootballSchool - Personal Info Script
+ * Validations using TaskHelpFiles/footballit_script.js
+ * Full AJAX Form Submission (No page reload)
  */
 
-// Image preview handler
+// 1. Image Preview
 function previewImage(input) {
     if (input.files && input.files[0]) {
         var file = input.files[0];
+        
+        // Validate extension
+        var ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        var allowed = ['.jpg', '.jpeg', '.png', '.webp', '.tiff'];
+        if (!allowed.includes(ext)) {
+            if (typeof display_alarm2 === 'function') {
+                display_alarm2("فرمت فایل انتخابی مجاز نیست. لطفا فایل با پسوند jpg, jpeg, png, webp یا tiff انتخاب فرمایید.", "خطا در بارگذاری تصویر", "", 0);
+            } else {
+                alert("فرمت فایل انتخابی مجاز نیست.");
+            }
+            input.value = '';
+            return;
+        }
+
+        // Validate max size 5MB
+        if (file.size > 5 * 1024 * 1024) {
+            if (typeof display_alarm2 === 'function') {
+                display_alarm2("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.", "خطا در بارگذاری تصویر", "", 0);
+            } else {
+                alert("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.");
+            }
+            input.value = '';
+            return;
+        }
+
         var lbl = document.getElementById('lbl_FileUpload');
         if (lbl) lbl.innerText = file.name;
 
@@ -21,161 +47,209 @@ function previewImage(input) {
     }
 }
 
-// Age calculation and auto-defaults matching TaskHelpFiles
-function set_age_param() {
-    if (typeof set_age === 'function') {
-        set_age('birth_date_shamsi', 'lbl_age');
+// 2. Jalali to Gregorian conversion calculation
+function jalaliToGregorianCalc(jy, jm, jd) {
+    var sal_a, gy, gm, gd, days;
+    jy += 1595;
+    days = -355668 + (365 * jy) + (~~(jy / 33) * 8) + ~~(((jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+    gy = 400 * ~~(days / 146097);
+    days %= 146097;
+    if (days > 36524) {
+        gy += 100 * ~~(--days / 36524);
+        days %= 36524;
+        if (days >= 365) days++;
     }
+    gy += 4 * ~~(days / 1461);
+    days %= 1461;
+    if (days > 365) {
+        gy += ~~((days - 1) / 365);
+        days = (days - 1) % 365;
+    }
+    gd = days + 1;
+    sal_a = [0, 31, ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    for (gm = 0; gm < 13 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
+    return { year: gy, month: gm, day: gd };
+}
 
-    var ageEl = document.getElementById('lbl_age');
-    if (!ageEl) return;
+// 3. Synchronize Shamsi Date, Miladi Date, and Age
+function syncBirthDetails() {
+    var hiddenInput = document.getElementById('hidden_birthDate');
+    var val = hiddenInput ? hiddenInput.value : '';
+    if (!val) {
+        var dpSpan = document.querySelector('#birthDate span');
+        if (dpSpan && dpSpan.textContent.includes('/')) val = dpSpan.textContent.trim();
+    }
+    if (val && val.includes('/')) {
+        var clean = val.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); });
+        var parts = clean.split('/');
+        if (parts.length === 3) {
+            var jy = parseInt(parts[0], 10);
+            var jm = parseInt(parts[1], 10);
+            var jd = parseInt(parts[2], 10);
+            if (jy > 1300 && jm >= 1 && jm <= 12 && jd >= 1 && jd <= 31) {
+                // Ensure date format is YYYY/MM/DD
+                var formattedShamsi = jy + '/' + String(jm).padStart(2, '0') + '/' + String(jd).padStart(2, '0');
+                if (hiddenInput) hiddenInput.value = formattedShamsi;
+                var shamsiEl = document.getElementById('birth_date_shamsi');
+                if (shamsiEl) shamsiEl.value = formattedShamsi;
 
-    var ageText = (ageEl.innerText || ageEl.innerHTML || '').replace(/[^0-9]/g, '');
-    var temp = parseInt(ageText);
-    if (!isNaN(temp) && temp > 0) {
-        ageEl.innerText = temp + " سال";
-        if (temp < 18) {
-            var mil = document.getElementById("cmd_military_service_status");
-            if (mil && (mil.value == '0' || mil.value == '' || mil.value == '-1')) {
-                mil.value = '5'; // محصل
-            }
-            var mar = document.getElementById("cmd_marital_status");
-            if (mar && (mar.value == '' || mar.value == '-1')) {
-                mar.value = '0'; // مجرد
+                var g = jalaliToGregorianCalc(jy, jm, jd);
+                var miladiInput = document.getElementById('txt_birth_date_miladi');
+                if (miladiInput) {
+                    miladiInput.value = g.year + '/' + String(g.month).padStart(2, '0') + '/' + String(g.day).padStart(2, '0');
+                }
+                var today = new Date();
+                var age = today.getFullYear() - g.year;
+                var m = (today.getMonth() + 1) - g.month;
+                if (m < 0 || (m === 0 && today.getDate() < g.day)) age--;
+                var ageInput = document.getElementById('lbl_age');
+                if (ageInput) {
+                    ageInput.value = (age >= 0 ? age : 0) + ' سال';
+                }
             }
         }
     }
 }
 
-// Close alarm modal box
+// 4. Safe close alarm box
 function close_alarm_box() {
-    var box = document.getElementById('alaram_box');
-    if (box) {
-        box.style.display = 'none';
+    $('#alaram_box').hide();
+    var hdn = document.getElementById('hdn_alarm');
+    if (hdn && hdn.value !== '') {
+        var target = document.getElementById(hdn.value);
+        if (target) {
+            target.focus();
+        }
+        hdn.value = "";
     }
 }
 
-// Display alarm modal box with title, message, status (false=error, true=success)
-function display_alarm_modal(title, message, isSuccess) {
-    var box = document.getElementById('alaram_box');
-    var td1 = document.getElementById('td1');
-    var td2 = document.getElementById('td2');
-    var lbl1 = document.getElementById('lbl1');
-    var lbl2 = document.getElementById('lbl2');
-    var btn = document.getElementById('alarm_btn');
-
-    if (!box) {
-        alert(message);
-        return;
-    }
-
-    if (lbl1) lbl1.innerText = title;
-    if (lbl2) lbl2.innerText = message;
-
-    if (isSuccess) {
-        if (td1) td1.style.backgroundColor = '#16a34a';
-        if (td2) td2.style.backgroundColor = '#16a34a';
-        if (btn) btn.className = 'btn-success';
-    } else {
-        if (td1) td1.style.backgroundColor = '#dc2626';
-        if (td2) td2.style.backgroundColor = '#dc2626';
-        if (btn) btn.className = 'btn-Pcustome-alarm';
-    }
-
-    box.style.display = 'block';
-}
-
-// Compatibility fallbacks for legacy function calls from footballit_script.js
-function display_alarm(message, obj) {
-    display_alarm_modal("خطا در ورود اطلاعات", message, false);
-}
-
-function display_alarm2(message, title, obj, flag) {
-    display_alarm_modal(title || "خطا در ثبت اطلاعات", message, false);
-}
-
-// Client-side validation matching legacy check_data()
+// 5. Validation using footballit_script.js rules
 function check_data() {
-    if (typeof jalali_to_gregorian === 'function') {
-        jalali_to_gregorian('birth_date_shamsi', 'txt_birth_date_miladi');
-    }
-    set_age_param();
+    syncBirthDetails();
 
-    var nameVal = (document.getElementById("txt_name")?.value || "").trim();
+    // Check Name
+    var nameVal = (document.getElementById("txt_name") ? document.getElementById("txt_name").value : "").trim();
     if (nameVal === '') {
-        display_alarm_modal("لطفا فیلدهای ستاره‌دار را وارد کنید", "نام بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", false);
+        display_alarm2("نام بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "txt_name", 0);
         return false;
     }
 
-    var famVal = (document.getElementById("txt_family")?.value || "").trim();
+    // Check Family
+    var famVal = (document.getElementById("txt_family") ? document.getElementById("txt_family").value : "").trim();
     if (famVal === '') {
-        display_alarm_modal("لطفا فیلدهای ستاره‌دار را وارد کنید", "نام خانوادگی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", false);
+        display_alarm2("نام خانوادگی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "txt_family", 0);
         return false;
     }
 
-    var intIdVal = (document.getElementById("txt_international_id")?.value || "").trim();
+    // Check National / Foreign ID Not Empty
+    var intIdVal = (document.getElementById("txt_international_id") ? document.getElementById("txt_international_id").value : "").trim();
     if (intIdVal === '') {
-        display_alarm_modal("لطفا فیلدهای ستاره‌دار را وارد کنید", "کد ملی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", false);
+        display_alarm2("کد ملی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "txt_international_id", 0);
         return false;
     }
 
-    var natVal = document.getElementById('cmd_nationality_id')?.value || '1';
-    if (natVal !== '24') {
-        if (typeof CheckMeliCode === 'function' && !CheckMeliCode('txt_international_id')) {
-            display_alarm_modal("خطا در ثبت کد ملی", "کد ملی وارد شده معتبر نمی‌باشد.", false);
-            return false;
+    // Check Nationality & National ID algorithm from footballit_script.js
+    var natVal = document.getElementById('cmd_nationality_id') ? document.getElementById('cmd_nationality_id').value : '1';
+    if (natVal === '24' || natVal === 'اتباع خارجی') {
+        if (typeof CheckfaragirCode === 'function') {
+            if (!CheckfaragirCode('txt_international_id')) {
+                display_alarm('کد فراگیر را عددی وارد کنید کد وارد شده معتبر نمی‌باشد.', 'txt_international_id');
+                return false;
+            }
         }
     } else {
-        if (typeof CheckfaragirCode === 'function' && !CheckfaragirCode('txt_international_id')) {
-            display_alarm_modal("خطا در ثبت کد فراگیر", "کد فراگیر را عددی وارد کنید، کد وارد شده معتبر نمی‌باشد.", false);
-            return false;
+        if (typeof CheckMeliCode === 'function') {
+            if (!CheckMeliCode('txt_international_id')) {
+                // CheckMeliCode displays alarm internally
+                return false;
+            }
         }
     }
 
-    var shamsiVal = (document.getElementById("birth_date_shamsi")?.value || "").trim();
+    // Check Gender
+    var genderVal = document.getElementById("cmd_gender") ? document.getElementById("cmd_gender").value : '';
+    if (!genderVal) {
+        display_alarm2("جنسیت بازیکن انتخاب نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "cmd_gender", 0);
+        return false;
+    }
+
+    // Check Shamsi Birth Date
+    var shamsiEl = document.getElementById("birth_date_shamsi") || document.getElementById("hidden_birthDate");
+    var shamsiVal = (shamsiEl ? shamsiEl.value : "").trim();
+    if (shamsiVal === '') {
+        display_alarm2("تاریخ تولد شمسی وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "birthDate", 0);
+        return false;
+    }
+
     if (typeof checkdate === 'function') {
-        if (!checkdate('birth_date_shamsi')
+        // Temporary ensure element id is accessible
+        if (!shamsiEl.id) shamsiEl.id = "birth_date_shamsi";
+        if (!checkdate(shamsiEl.id)
             || shamsiVal.length !== 10
             || shamsiVal.substr(4, 1) !== '/'
             || shamsiVal.substr(7, 1) !== '/') {
-            display_alarm_modal("خطا در ثبت تاریخ تولد شمسی", "تاریخ وارد شده صحیح نیست. لطفا تاریخ تولد شمسی را با فرمت YYYY/MM/DD وارد کنید.", false);
+            display_alarm2("تاریخ وارد شده صحیح نیست . لطفا تاریخ تولد شمسی را با فرمت YYYY/MM/DD وارد کنید.", "خطا در ثبت تاریخ تولد شمسی", shamsiEl.id, 0);
             return false;
         }
     }
 
-    var miladiVal = (document.getElementById("txt_birth_date_miladi")?.value || "").trim();
-    if (typeof checkdate_miladi === 'function') {
+    // Check Gregorian Birth Date if filled
+    var miladiEl = document.getElementById("txt_birth_date_miladi");
+    var miladiVal = (miladiEl ? miladiEl.value : "").trim();
+    if (miladiVal !== '' && typeof checkdate_miladi === 'function') {
         if (!checkdate_miladi('txt_birth_date_miladi')
             || miladiVal.length !== 10
             || miladiVal.substr(4, 1) !== '/'
             || miladiVal.substr(7, 1) !== '/') {
-            display_alarm_modal("خطا در ثبت تاریخ تولد میلادی", "تاریخ وارد شده صحیح نیست. لطفا تاریخ تولد میلادی را با فرمت YYYY/MM/DD وارد کنید.", false);
+            display_alarm2("تاریخ وارد شده صحیح نیست . لطفا تاریخ تولد میلادی را با فرمت YYYY/MM/DD وارد کنید.", "خطا در ثبت تاریخ تولد میلادی", "txt_birth_date_miladi", 0);
             return false;
         }
     }
 
+    // Check Health Status
+    var healthVal = document.getElementById("cmd_health_status") ? document.getElementById("cmd_health_status").value : '';
+    if (!healthVal) {
+        display_alarm2("وضعیت سلامت بازیکن انتخاب نشده است. لطفا وضعیت سلامت را انتخاب نمایید.", "لطفا فیلدهای ستاره‌دار را وارد کنید", "cmd_health_status", 0);
+        return false;
+    }
+
+    // Note: Religion field is optional as requested (no validation check)
+
     return true;
 }
 
-// AJAX Form submission
+// 6. Full AJAX Form Submission ("agex")
 function save_data() {
+    if (!check_data()) {
+        return;
+    }
+
     var form = document.getElementById('personal-info-form');
     if (!form) return;
 
+    // Show Loader
+    var loader = document.getElementById('divLoader');
+    if (loader) {
+        $(loader).fadeIn(150);
+    }
+
+    // Prepare FormData
     var formData = new FormData(form);
 
-    var fileInput = document.getElementById("FileUpload");
-    if (fileInput && fileInput.files.length > 0) {
+    // Ensure profilePhoto file is included
+    var fileInput = document.getElementById('FileUpload');
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        formData.set("profilePhoto", fileInput.files[0]);
         formData.set("FileUpload", fileInput.files[0]);
     }
 
-    var soccerEl = document.getElementById('cmb_soccer');
-    if (soccerEl) {
-        formData.set('soccer_id', soccerEl.value);
+    // Ensure Shamsi date is sent
+    var shamsiVal = (document.getElementById("birth_date_shamsi") ? document.getElementById("birth_date_shamsi").value : "") ||
+                    (document.getElementById("hidden_birthDate") ? document.getElementById("hidden_birthDate").value : "");
+    if (shamsiVal) {
+        formData.set("birthDate", shamsiVal);
     }
-
-    var loader = document.getElementById('divLoader');
-    if (loader) loader.style.display = 'flex';
 
     $.ajax({
         url: "/personal-info",
@@ -188,117 +262,110 @@ function save_data() {
             "X-Requested-With": "XMLHttpRequest"
         },
         success: function (response) {
-            if (loader) loader.style.display = 'none';
+            if (loader) $(loader).fadeOut(150);
 
-            if (response && response.errorcode === "0") {
-                display_alarm_modal("ثبت اطلاعات", "اطلاعات با موفقیت ذخیره شد.", true);
+            if (response && (response.success === true || response.errorcode === "0")) {
+                var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
+                display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
+
+                // Update Profile Photo if returned
                 if (response.file_logo) {
-                    var pic = document.getElementById('doc_pic');
-                    if (pic) pic.src = "/Uploadfiles/Images/" + response.file_logo;
-                    var topbarAvatar = document.getElementById('topbar_user_avatar');
-                    if (topbarAvatar) topbarAvatar.src = "/Uploadfiles/Images/" + response.file_logo;
-                }
-                if (response.complete_percent !== undefined) {
-                    var percentBadge = document.getElementById('lbl_complete_percent');
-                    if (percentBadge) percentBadge.innerText = response.complete_percent + "٪";
+                    var docPic = document.getElementById('doc_pic');
+                    if (docPic) docPic.src = response.file_logo;
+                    var topAvatar = document.getElementById('topbar_user_avatar');
+                    if (topAvatar) topAvatar.src = response.file_logo;
                 }
             } else {
-                var msg = "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
-                var code = response ? response.errorcode : "";
-                switch (code) {
-                    case "1": msg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
-                    case "2": msg = "کد ملی وارد شده تکراری است!"; break;
-                    case "3": msg = "لازم است شما مجددا در سیستم وارد شوید."; break;
-                    case "6": msg = "خطا در بارگذاری تصویر بازیکن. لطفا فرمت مجاز (jpg, jpeg, png, tiff) انتخاب فرمایید."; break;
-                    case "10": msg = "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
+                if (response && response.errorcode) {
+                    switch (response.errorcode) {
+                        case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
+                        case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
+                        case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
+                        case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
+                        case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                    }
                 }
-                display_alarm_modal("خطا در ثبت اطلاعات", msg, false);
+                display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
             }
         },
-        error: function () {
-            if (loader) loader.style.display = 'none';
-            display_alarm_modal("خطا در برقراری ارتباط", "در برقراری ارتباط با سرور خطایی رخ داد. لطفا مجددا سعی نمایید.", false);
+        error: function (xhr, status, error) {
+            if (loader) $(loader).fadeOut(150);
+            display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
         }
     });
 }
 
-// Player selection change handler
-function set_data(flag) {
-    var soccerEl = document.getElementById('cmb_soccer');
-    if (!soccerEl) return;
-
-    var soccer_id = soccerEl.value;
-    var loader = document.getElementById('divLoader');
-    if (loader) loader.style.display = 'flex';
-
-    $.ajax({
-        url: "/FootballschoolPerson/view_person2",
-        type: "GET",
-        data: { soccer_id: soccer_id, flag: flag },
-        success: function (response) {
-            if (response && response.model) {
-                var m = response.model;
-                if (m.person_id && document.getElementById('person_id')) document.getElementById('person_id').value = m.person_id;
-                if (m.user_id_FK && document.getElementById('user_id_FK')) document.getElementById('user_id_FK').value = m.user_id_FK;
-                if (document.getElementById('txt_name')) document.getElementById('txt_name').value = m.name || '';
-                if (document.getElementById('txt_family')) document.getElementById('txt_family').value = m.family || '';
-                if (document.getElementById('txt_eng_name')) document.getElementById('txt_eng_name').value = m.eng_name || '';
-                if (document.getElementById('txt_eng_family')) document.getElementById('txt_eng_family').value = m.eng_family || '';
-                if (document.getElementById('txt_international_id')) document.getElementById('txt_international_id').value = m.international_id || '';
-                if (document.getElementById('txt_id_no')) document.getElementById('txt_id_no').value = m.id_no || '';
-                if (document.getElementById('txt_serial_id')) document.getElementById('txt_serial_id').value = m.serial_id || '';
-                if (document.getElementById('txt_location_id')) document.getElementById('txt_location_id').value = m.location_id || '';
-                if (document.getElementById('txt_father_name')) document.getElementById('txt_father_name').value = m.father_name || '';
-                if (document.getElementById('txt_father_job')) document.getElementById('txt_father_job').value = m.father_job || '';
-                if (document.getElementById('birth_date_shamsi')) document.getElementById('birth_date_shamsi').value = m.birth_date_shamsi || '';
-                if (document.getElementById('txt_birth_date_miladi')) document.getElementById('txt_birth_date_miladi').value = m.birth_date_miladi || '';
-                if (document.getElementById('cmd_nationality_id') && m.nationality_id_FK2) document.getElementById('cmd_nationality_id').value = m.nationality_id_FK2;
-                if (document.getElementById('cmd_citizenship') && m.citizenship2) document.getElementById('cmd_citizenship').value = m.citizenship2;
-                if (document.getElementById('cmd_health_status') && m.health_status2) document.getElementById('cmd_health_status').value = m.health_status2;
-                if (document.getElementById('cmd_blood_type') && m.blood_type2) document.getElementById('cmd_blood_type').value = m.blood_type2;
-                if (document.getElementById('txt_Height')) document.getElementById('txt_Height').value = m.Height || '';
-                if (document.getElementById('txt_weight')) document.getElementById('txt_weight').value = m.weight || '';
-                if (document.getElementById('cmd_gender') && m.gender2 !== null && m.gender2 !== undefined) document.getElementById('cmd_gender').value = m.gender2;
-                if (document.getElementById('cmd_marital_status') && m.marital_status2 !== null && m.marital_status2 !== undefined) document.getElementById('cmd_marital_status').value = m.marital_status2;
-                if (document.getElementById('cmd_military_service_status') && m.military_service_status2 !== null && m.military_service_status2 !== undefined) document.getElementById('cmd_military_service_status').value = m.military_service_status2;
-                if (document.getElementById('txt_job')) document.getElementById('txt_job').value = m.job || '';
-                if (document.getElementById('cmd_religion') && m.religion2 !== null && m.religion2 !== undefined) document.getElementById('cmd_religion').value = m.religion2;
-                if (document.getElementById('txt_description')) document.getElementById('txt_description').value = m.description || '';
-                if (document.getElementById('doc_pic') && m.pictuer) document.getElementById('doc_pic').src = m.pictuer;
-                set_age_param();
-            }
-            if (loader) loader.style.display = 'none';
-        },
-        error: function () {
-            if (loader) loader.style.display = 'none';
-        }
-    });
-}
-
-// Navigation on Enter key
-function enter_to_tab2(nextId) {
-    if (window.event && window.event.keyCode === 13) {
-        window.event.preventDefault();
-        var nextEl = document.getElementById(nextId);
-        if (nextEl) nextEl.focus();
-    }
-}
-
-// Page load initialization
+// 7. Page Load Listeners
 document.addEventListener('DOMContentLoaded', function () {
-    var bs = document.getElementById("birth_date_shamsi");
-    if (bs && bs.value !== '') {
-        set_age_param();
+    var dpInput = document.getElementById('birthDate');
+    if (dpInput) {
+        dpInput.addEventListener('change', syncBirthDetails);
+        var observer = new MutationObserver(syncBirthDetails);
+        observer.observe(dpInput, { childList: true, subtree: true, characterData: true });
     }
-});
+    var hiddenBirth = document.getElementById('hidden_birthDate');
+    if (hiddenBirth) {
+        hiddenBirth.addEventListener('change', syncBirthDetails);
+    }
+    syncBirthDetails();
 
-// Periodic or mouseover synchronization
-window.onmouseover = function () {
-    var bs = document.getElementById('birth_date_shamsi');
-    if (bs && bs.value.length === 10) {
-        if (typeof jalali_to_gregorian === 'function') {
-            jalali_to_gregorian('birth_date_shamsi', 'txt_birth_date_miladi');
-        }
-        set_age_param();
+    // Prevent default form submit on personal-info-form
+    var form = document.getElementById('personal-info-form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            save_data();
+            return false;
+        });
     }
-};
+
+    // Bind submit buttons (Top Bar for laptop, Sticky Bottom for mobile)
+    var topSubmitBtn = document.querySelector('.btn-submit-top');
+    if (topSubmitBtn) {
+        topSubmitBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            save_data();
+            return false;
+        });
+    }
+
+    var stickySubmitBtn = document.querySelector('.sticky-submit-btn');
+    if (stickySubmitBtn) {
+        stickySubmitBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            save_data();
+            return false;
+        });
+    }
+
+    // Keyboard-aware positioning for sticky submit button on mobile devices
+    var updateStickySubmitPosition = function () {
+        if (window.innerWidth > 768) return;
+        var wrapper = document.querySelector('.sticky-submit-wrapper');
+        if (!wrapper) return;
+        var vv = window.visualViewport;
+        if (!vv) return;
+        var isKeyboard = (window.innerHeight - vv.height) > 100;
+        var bottomNav = document.querySelector('.bottom-nav');
+        if (isKeyboard) {
+            var h = wrapper.offsetHeight || 65;
+            wrapper.style.top = (vv.offsetTop + vv.height - h) + 'px';
+            wrapper.style.bottom = 'auto';
+            if (bottomNav) bottomNav.style.display = 'none';
+        } else {
+            wrapper.style.top = 'auto';
+            wrapper.style.bottom = '65px';
+            if (bottomNav) bottomNav.style.display = '';
+        }
+    };
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateStickySubmitPosition);
+        window.visualViewport.addEventListener('scroll', updateStickySubmitPosition);
+    }
+    window.addEventListener('resize', updateStickySubmitPosition);
+    window.addEventListener('scroll', updateStickySubmitPosition);
+});
