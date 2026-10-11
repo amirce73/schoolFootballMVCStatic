@@ -16,37 +16,46 @@
                     </button>
                 </div>
 
-                <!-- AJAX Loading Spinner Overlay -->
+                <!-- Modern AJAX Loading Spinner Overlay -->
                 <div id="divLoader" style="display: none;">
                     <div class="loader-card">
-                        <i class="fa fa-spinner fa-spin"></i>
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
                         <span>در حال ارسال و ثبت اطلاعات، لطفا صبور باشید...</span>
                     </div>
                 </div>
 
-                <!-- Alarm / Notification Modal Box -->
-                <div class="alarm_box" id="alaram_box" style="display: none;">
-                    <table>
-                        <tr>
-                            <td id="td1">
-                                <label id="lbl1">پیام سیستم</label>
-                                <input type="hidden" id="hdn_alarm" value="" />
-                            </td>
-                            <td id="td2">
-                                <img src="/Content/images/Cancel-128.png" id="alarm_pic" style="width: 24px; height: 24px;" alt="وضعیت" onerror="this.style.display='none';" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td id="td3" colspan="2">
-                                <label id="lbl2"></label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="alarm-footer" colspan="2">
-                                <input type="button" value="متوجه شدم" class="btn-Pcustome-alarm" id="alarm_btn" onclick="close_alarm_box();" />
-                            </td>
-                        </tr>
-                    </table>
+                <!-- Modern Result Notification Modal -->
+                <div class="fs-modal-backdrop" id="alaram_box" style="display: none; opacity: 0;" onclick="if(event.target === this) close_alarm_box();">
+                    <div class="fs-modal-card is-success" id="alarm_card">
+                        <button type="button" class="fs-modal-close" onclick="close_alarm_box();" title="بستن">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div class="fs-modal-icon-wrap" id="alarm_icon_wrap">
+                            <div class="fs-modal-icon-circle" id="alarm_icon_circle">
+                                <i class="fa fa-check" id="alarm_icon"></i>
+                            </div>
+                        </div>
+                        <input type="hidden" id="hdn_alarm" value="" />
+                        <!-- Fallback elements for legacy script compatibility -->
+                        <span id="td1" style="display: none;"></span>
+                        <span id="td2" style="display: none;"></span>
+                        <img id="alarm_pic" style="display: none;" />
+
+                        <h4 class="fs-modal-title" id="lbl1">ثبت اطلاعات</h4>
+                        <div class="fs-modal-body" id="td3">
+                            <p id="lbl2"></p>
+                        </div>
+                        <div class="fs-modal-footer">
+                            <button type="button" class="fs-modal-btn" id="alarm_btn" onclick="close_alarm_box();">
+                                <span>متوجه شدم</span>
+                                <i class="fa fa-chevron-left" style="font-size: 0.8rem; margin-right: 4px;"></i>
+                            </button>
+                        </div>
+                        <!-- 4-second auto-close progress bar -->
+                        <div class="fs-modal-progress">
+                            <div class="fs-modal-progress-bar" id="alarm_progress_bar"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -296,3 +305,32 @@
                 </div>
             </div>
 
+@section Styles {
+<style>
+.fs-modal-progress {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 0 0 26px 26px;
+    overflow: hidden;
+}
+.fs-modal-progress-bar {
+    height: 100%;
+    width: 100%;
+    transform-origin: left;
+    animation: fsModalTimer 4s linear forwards;
+}
+.fs-modal-card.is-success .fs-modal-progress-bar { background: linear-gradient(to right, #10b981, #059669); }
+.fs-modal-card.is-error   .fs-modal-progress-bar { background: linear-gradient(to right, #ef4444, #dc2626); }
+.fs-modal-card.is-warning .fs-modal-progress-bar { background: linear-gradient(to right, #f59e0b, #d97706); }
+@@keyframes fsModalTimer {
+    0%   { transform: scaleX(1); }
+    100% { transform: scaleX(0); }
+}
+</style>
+}
+
+@section Scripts {
+    <script src="~/js/personal-info.js" asp-append-version="true"></script>
+}

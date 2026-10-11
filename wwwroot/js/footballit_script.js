@@ -503,65 +503,98 @@ function CheckMeliCode(obj) {
 
     //document.getElementById(flag).value = "1";
 }
-function display_alarm(alarm_text, obj) {
-    $('#alaram_box').hide().fadeIn(1000);
-    $('#alaram_box').className = "alarm_box";
-    document.getElementById('td1').style.backgroundColor = '#ff0000';
-    document.getElementById('td2').style.backgroundColor = '#ff0000';
-    document.getElementById('lbl1').innerHTML = 'خطا در ثبت اطلاعات';
-    document.getElementById('lbl2').innerHTML = alarm_text;
-    document.getElementById("alarm_pic").src = '/Content/images/Cancel-128.png';
-    document.getElementById('hdn_alarm').value = obj;
-    document.getElementById('alarm_btn').className="btn-Pcustome-alarm";
-    document.getElementById('alaram_box').className = "alarm_box";
-    document.documentElement.scrollTop = 0;
-}
 function display_alarm2(alarm_text, titel, obj, flag) {
-   
-    if (flag == 1)
-    {
-        document.getElementById('td1').style.backgroundColor = "green";
-        document.getElementById('td2').style.backgroundColor = "green";
-        document.getElementById('td3').style.color = "green";
-        document.getElementById('lbl1').innerHTML = titel;
-        document.getElementById('lbl2').innerHTML = alarm_text;
-        document.getElementById("alarm_pic").src = "/Content/images/ok1.jpg";
-        document.getElementById('hdn_alarm').value = obj;
-        document.getElementById('alarm_btn').className = "btn btn-success";
-        document.getElementById('alaram_box').className = "inform_box";
-        $('#alaram_box').className = "alarm_box";
-        
-    }
-    if (flag == 0)
-    {
-        document.getElementById('td1').style.backgroundColor = '#ff0000';
-        document.getElementById('td2').style.backgroundColor = '#ff0000';
-        document.getElementById('td3').style.color = "red";
-        document.getElementById('lbl1').innerHTML = titel;
-        document.getElementById('lbl2').innerHTML = alarm_text;
-        
-        document.getElementById("alarm_pic").src = '/Content/images/Cancel-128.png';
-        document.getElementById('hdn_alarm').value = obj;
-        document.getElementById('alarm_btn').className = "btn-Pcustome-alarm";
-        document.getElementById('alaram_box').className = "alarm_box";
-        $('#alaram_box').className = "alarm_box";
-    }
-    if (flag == 2) {
-        document.getElementById('td1').style.backgroundColor = '#ff0000';
-        document.getElementById('td2').style.backgroundColor = '#ff0000';
-        document.getElementById('td3').style.color = "red";
-        document.getElementById('lbl1').innerHTML = titel;
-        document.getElementById('lbl2').innerHTML = alarm_text;
-        document.getElementById("alarm_pic").src = '/Content/images/Cancel-128.png';
-        document.getElementById('hdn_alarm').value = obj;
-        document.getElementById('alarm_btn').className = "btn-Pcustome-alarm";
-        document.getElementById('alaram_box').className = "alarm_box";
-        $('#alaram_box').className = "question_box";
-    }
-    $('#alaram_box').hide().fadeIn(1000);
-    document.documentElement.scrollTop = 0;
+    var isSuccess = (flag === 1 || flag === '1');
+    var isWarning = (flag === 2 || flag === '2');
+    var defaultTitle = isSuccess ? 'ثبت موفق اطلاعات' : (isWarning ? 'هشدار سیستم' : 'خطا در ثبت اطلاعات');
+    var finalTitle = titel || defaultTitle;
 
+    if (typeof Swal !== 'undefined') {
+        var iconType = isSuccess ? 'success' : (isWarning ? 'warning' : 'error');
+        var confirmColor = isSuccess ? '#10b981' : (isWarning ? '#f59e0b' : '#ef4444');
+
+        Swal.fire({
+            title: finalTitle,
+            text: alarm_text,
+            icon: iconType,
+            confirmButtonText: 'متوجه شدم',
+            confirmButtonColor: confirmColor,
+            buttonsStyling: true,
+            allowOutsideClick: true,
+            allowEscapeKey: true
+        }).then(function() {
+            if (obj) {
+                var el = document.getElementById(obj);
+                if (el) {
+                    try { el.focus(); } catch (e) {}
+                }
+            }
+        });
+        return;
+    }
+
+    var card = document.getElementById('alarm_card');
+    var icon = document.getElementById('alarm_icon');
+    var titleEl = document.getElementById('lbl1');
+    var textEl = document.getElementById('lbl2');
+    var hdn = document.getElementById('hdn_alarm');
+
+    if (hdn) hdn.value = obj || '';
+    if (titleEl) titleEl.textContent = finalTitle;
+    if (textEl) textEl.textContent = alarm_text || '';
+
+    if (card) {
+        card.classList.remove('is-success', 'is-error', 'is-warning');
+        if (isSuccess) {
+            card.classList.add('is-success');
+            if (icon) icon.className = 'fa fa-check';
+        } else if (isWarning) {
+            card.classList.add('is-warning');
+            if (icon) icon.className = 'fa fa-exclamation-triangle';
+        } else {
+            card.classList.add('is-error');
+            if (icon) icon.className = 'fa fa-times';
+        }
+    } else {
+        var td1 = document.getElementById('td1');
+        var td2 = document.getElementById('td2');
+        var td3 = document.getElementById('td3');
+        var color = isSuccess ? 'green' : '#ff0000';
+        if (td1) td1.style.backgroundColor = color;
+        if (td2) td2.style.backgroundColor = color;
+        if (td3) td3.style.color = color;
+    }
+
+    var box = $('#alaram_box');
+    if (box.length) {
+        box.css('display', 'flex').hide().fadeIn(250);
+    }
 }
+
+function display_alarm(alarm_text, obj) {
+    display_alarm2(alarm_text, 'خطا در اطلاعات ورودی', obj, 0);
+}
+
+function close_alarm_box() {
+    var box = $('#alaram_box');
+    if (box.length) {
+        box.fadeOut(200, function() {
+            var hdn = document.getElementById('hdn_alarm');
+            if (hdn && hdn.value !== '') {
+                var target = document.getElementById(hdn.value);
+                if (target) {
+                    target.focus();
+                }
+                hdn.value = '';
+            }
+        });
+    }
+}
+
+window.close_alarm_box = close_alarm_box;
+window.display_alarm2 = display_alarm2;
+window.display_alarm = display_alarm;
+
 function jalali_to_gregorian(obj1, obj2) {
     var date_shamsi = document.getElementById(obj1).value;
     mds_str = "";

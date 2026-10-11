@@ -111,18 +111,95 @@ function syncBirthDetails() {
     }
 }
 
-// 4. Safe close alarm box
+// 4. Ultra-Modern Alarm Modal Controller (Vanilla JS - no jQuery needed)
+var _alarmTimer = null;
+
 function close_alarm_box() {
-    $('#alaram_box').hide();
-    var hdn = document.getElementById('hdn_alarm');
-    if (hdn && hdn.value !== '') {
-        var target = document.getElementById(hdn.value);
-        if (target) {
-            target.focus();
-        }
-        hdn.value = "";
+    if (_alarmTimer) {
+        clearTimeout(_alarmTimer);
+        _alarmTimer = null;
     }
+    var box = document.getElementById('alaram_box');
+    if (!box) return;
+    box.style.opacity = '0';
+    box.style.transition = 'opacity 0.2s ease';
+    setTimeout(function() {
+        box.style.display = 'none';
+        box.style.opacity = '';
+        box.style.transition = '';
+        var hdn = document.getElementById('hdn_alarm');
+        if (hdn && hdn.value !== '') {
+            var target = document.getElementById(hdn.value);
+            if (target) { try { target.focus(); } catch(e){} }
+            hdn.value = '';
+        }
+    }, 200);
 }
+
+function display_alarm2(alarm_text, titel, obj, flag) {
+    var isSuccess = (flag === 1 || flag === '1');
+    var isWarning = (flag === 2 || flag === '2');
+    var defaultTitle = isSuccess ? 'ثبت موفق اطلاعات' : (isWarning ? 'هشدار سیستم' : 'خطا در ثبت اطلاعات');
+    var finalTitle = titel || defaultTitle;
+
+    var card = document.getElementById('alarm_card');
+    var icon = document.getElementById('alarm_icon');
+    var titleEl = document.getElementById('lbl1');
+    var textEl = document.getElementById('lbl2');
+    var hdn = document.getElementById('hdn_alarm');
+    var box = document.getElementById('alaram_box');
+
+    if (!box) return;
+
+    if (hdn) hdn.value = obj || '';
+    if (titleEl) titleEl.textContent = finalTitle;
+    if (textEl) textEl.textContent = alarm_text || '';
+
+    if (card) {
+        card.classList.remove('is-success', 'is-error', 'is-warning');
+        if (isSuccess) {
+            card.classList.add('is-success');
+            if (icon) icon.className = 'fa fa-check';
+        } else if (isWarning) {
+            card.classList.add('is-warning');
+            if (icon) icon.className = 'fa fa-exclamation-triangle';
+        } else {
+            card.classList.add('is-error');
+            if (icon) icon.className = 'fa fa-times';
+        }
+    }
+
+    // Restart progress bar animation
+    var bar = document.getElementById('alarm_progress_bar');
+    if (bar) {
+        bar.style.animation = 'none';
+        void bar.offsetWidth; // reflow
+        bar.style.animation = 'fsModalTimer 4s linear forwards';
+    }
+
+    // Show modal
+    box.style.display = 'flex';
+    box.style.opacity = '0';
+    box.style.transition = 'opacity 0.25s ease';
+    setTimeout(function() { box.style.opacity = '1'; }, 10);
+
+    // Auto-close after 4 seconds
+    if (_alarmTimer) clearTimeout(_alarmTimer);
+    _alarmTimer = setTimeout(function() { close_alarm_box(); }, 4000);
+}
+
+window.close_alarm_box = close_alarm_box;
+window.display_alarm2 = display_alarm2;
+window.display_alarm = function(alarm_text, obj) {
+    display_alarm2(alarm_text, 'خطا در اطلاعات ورودی', obj, 0);
+};
+
+// Global keydown listener for Escape key to close modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        close_alarm_box();
+    }
+});
 
 // 4.5 Real-time National ID validation under the input field
 function validateNationalIdRealtime() {
@@ -343,7 +420,7 @@ function save_data() {
     // Show Loader
     var loader = document.getElementById('divLoader');
     if (loader) {
-        $(loader).fadeIn(150);
+        loader.style.display = 'flex';
     }
 
     // Prepare FormData
@@ -363,48 +440,45 @@ function save_data() {
         formData.set("birthDate", shamsiVal);
     }
 
-    $.ajax({
-        url: "/personal-info",
-        type: "POST",
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
+    fetch("/personal-info", {
+        method: "POST",
+        body: formData,
         headers: {
             "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (response) {
-            if (loader) $(loader).fadeOut(150);
-
-            if (response && (response.success === true || response.errorcode === "0")) {
-                var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
-                display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
-
-                // Update Profile Photo if returned
-                if (response.file_logo) {
-                    var docPic = document.getElementById('doc_pic');
-                    if (docPic) docPic.src = response.file_logo;
-                    var topAvatar = document.getElementById('topbar_user_avatar');
-                    if (topAvatar) topAvatar.src = response.file_logo;
-                }
-            } else {
-                var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
-                if (response && response.errorcode) {
-                    switch (response.errorcode) {
-                        case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
-                        case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
-                        case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
-                        case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
-                        case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
-                    }
-                }
-                display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
-            }
-        },
-        error: function (xhr, status, error) {
-            if (loader) $(loader).fadeOut(150);
-            display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
         }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(response) {
+        if (loader) loader.style.display = 'none';
+
+        if (response && (response.success === true || response.errorcode === "0")) {
+            var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
+            display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
+
+            // Update Profile Photo if returned
+            if (response.file_logo) {
+                var docPic = document.getElementById('doc_pic');
+                if (docPic) docPic.src = response.file_logo;
+                var topAvatar = document.getElementById('topbar_user_avatar');
+                if (topAvatar) topAvatar.src = response.file_logo;
+            }
+        } else {
+            var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
+            if (response && response.errorcode) {
+                switch (response.errorcode) {
+                    case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
+                    case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
+                    case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
+                    case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
+                    case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                }
+            }
+            display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
+        }
+    })
+    .catch(function() {
+        if (loader) loader.style.display = 'none';
+        display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
     });
 }
 
