@@ -24,6 +24,7 @@
         var _pc = new System.Globalization.PersianCalendar();
         _joinDateStr = $"{_pc.GetYear(_cd):0000}/{_pc.GetMonth(_cd):00}/{_pc.GetDayOfMonth(_cd):00}";
     }
+    var _avatar = !string.IsNullOrWhiteSpace(_currentUser?.PassportPhotoPath) ? _currentUser.PassportPhotoPath : "/assets/images/messi-profile.jpg";
     var _currentPath = Context.Request.Path.Value?.ToLower() ?? "";
     bool _isDashboard = _currentPath == "/dashboard" || _currentPath == "/dashboard.html";
     bool _isProfile = _currentPath.Contains("profile-hub") || _currentPath.Contains("personal-info") || _currentPath.Contains("contact-info") || _currentPath.Contains("passport-info") || _currentPath.Contains("clothing-info") || _currentPath.Contains("sports-info") || _currentPath.Contains("bank-info") || _currentPath.Contains("documents") || _currentPath.Contains("password") || _currentPath.Contains("verification");
@@ -38,8 +39,7 @@
   <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} - فوتبالیت" : "فوتبالیت - داشبورد مدرن")</title>
-  <link rel="stylesheet" href="~/assets/fontawesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="~/assets/app.css" />
+  <link rel="stylesheet" href="~/css/player.css" asp-append-version="true" />
   @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -50,7 +50,7 @@
         <!-- Header Profile & Dropdown -->
         <div class="header-profile" id="headerProfileTrigger">
           <div class="header-profile-avatar">
-            <img alt="user" src="~/assets/images/messi-profile.jpg" onerror="this.src='/assets/images/messi-profile.jpg';" />
+            <img alt="user" src="@_avatar" onerror="this.src='/assets/images/messi-profile.jpg';" />
           </div>
           <div>
             <div class="header-profile-info">
@@ -267,6 +267,7 @@
     </script>
   }
 
+  <script src="~/js/player.js" asp-append-version="true"></script>
   @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

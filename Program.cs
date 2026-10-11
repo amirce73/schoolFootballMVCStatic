@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FootballSchool.Web.Data;
 using FootballSchool.Web.Models;
@@ -63,6 +63,7 @@ app.Use(async (context, next) => {
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapStaticAssets();
 
 // Support both attribute routing (for new controllers) and conventional routing

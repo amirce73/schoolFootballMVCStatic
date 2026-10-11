@@ -11,11 +11,11 @@ function enter_to_tab2(object) {
     }
     return false;
 }
-function ett(object,index) {
+function ett(object, index) {
     var obj = document.getElementById(object);
     var key = window.event.keyCode;
     if (key == 13) {
-       // alert(index);
+        // alert(index);
         var form = event.target.form;
         form.elements[index].focus();
         event.preventDefault();
@@ -25,29 +25,26 @@ function ett(object,index) {
 function enter_to_tab(object) {
     var obj = document.getElementById(object);
     //alert( document.getElementById(object).tabIndex);
-    var key = window.event.keyCode;    
+    var key = window.event.keyCode;
     if (key == 13) {
-        obj.focus(); 
+        obj.focus();
     }
 
     return false;
 }
-function checktime(obj)
-{
+function checktime(obj) {
 
     var str = document.getElementById(obj).value;
-   
-    if (str == '') 
-    {
+
+    if (str == '') {
         display_alarm('ساعت وارد نشده است.', '');
         return false;
     }
-    if (str.length == 4 && str.indexOf(':')==-1)
-    {
+    if (str.length == 4 && str.indexOf(':') == -1) {
         str = str.substr(0, 2) + ':' + str.substr(2, 2);
         document.getElementById(obj).value = str;
     }
-   
+
     if (str.length < 5) {
         str = str + ':00';
         document.getElementById(obj).value = str;
@@ -68,14 +65,12 @@ function checktime(obj)
 function checkdate(obj) {
     var str = document.getElementById(obj).value;
     var mds_str = "";
-   
-    if (str == '') 
-    {
+
+    if (str == '') {
         display_alarm('تاریخ وارد نشده است.', '');
         return false;
     }
-    for (var i = 0; i < str.length ; i++)
-    { 
+    for (var i = 0; i < str.length; i++) {
         switch (str.charCodeAt(i)) {
             case 1777: mds_str = mds_str + "1"; break;
             case 1778: mds_str = mds_str + "2"; break;
@@ -89,11 +84,11 @@ function checkdate(obj) {
             case 1776: mds_str = mds_str + "0"; break;
             case 47: mds_str = mds_str + "/"; break;
             default:
-                mds_str = mds_str + str.substr(i, 1); 
+                mds_str = mds_str + str.substr(i, 1);
             //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
         }
     }
-        
+
     var patt = /(13|14|19|20)([0-9][0-9])\/(((0?[1-6])\/((0?[1-9])|([12][0-9])|(3[0-1])))|(((0?[7-9])|(1[0-2]))\/((0?[1-9])|([12][0-9])|(30))))/g;
     var result = patt.test(mds_str);
     if (result) {
@@ -111,8 +106,7 @@ function checkdate(obj) {
         return false;
         //document.getElementById(flag).value = "0";
     }
-    else
-    {
+    else {
         return true;
         //document.getElementById(flag).value = "1";
     }
@@ -121,7 +115,7 @@ function checkdate2(obj) {
     var str = document.getElementById(obj).value;
     var mds_str = "";
 
-    for (var i = 0; i < str.length ; i++) {
+    for (var i = 0; i < str.length; i++) {
         switch (str.charCodeAt(i)) {
             case 1777: mds_str = mds_str + "1"; break;
             case 1778: mds_str = mds_str + "2"; break;
@@ -136,7 +130,7 @@ function checkdate2(obj) {
             case 47: mds_str = mds_str + "/"; break;
             default:
                 mds_str = mds_str + str.substr(i, 1);
-                //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+            //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
         }
     }
 
@@ -218,7 +212,7 @@ function CheckDateNew(obj) {
 function close_alarm_box() {
     $('#alaram_box').hide();
     var obj = document.getElementById('hdn_alarm').value;
-    if(obj!=''){document.getElementById(obj).focus();}
+    if (obj != '') { document.getElementById(obj).focus(); }
     document.getElementById("hdn_alarm").value = "";
 }
 function checkEmail(obj) {
@@ -280,9 +274,9 @@ function Set_value_numeric(obj, max_len) {
     document.getElementById(obj).value = str_checked;
 }
 function Set_value_numeric2(obj, max_len) {
-    
+
     var str = document.getElementById(obj).value;
-    var temp = ''; 
+    var temp = '';
     var str_checked = '';
     for (i = 0; i < str.length; i++) {
         temp = str.substring(i, i + 1);
@@ -365,52 +359,47 @@ function Set_value_numeric3(obj, max_len) {
 
 var msg = "";
 function CheckMeliCode(obj) {
-    var meli_code = document.getElementById(obj).value;
+    var elem = document.getElementById(obj);
+    var meli_code = (elem && elem.value) ? elem.value.trim() : "";
     var flag = "";
     if (meli_code != '') {
         var temp = meli_code.substr(0, 1).toUpperCase();
-        if (temp >= 'A' && temp <= 'Z')
-        {
-            
-            for(i=2;i<meli_code.length;i++)
-            {
-                
+        if (temp >= 'A' && temp <= 'Z') {
+
+            for (i = 2; i < meli_code.length; i++) {
+
                 switch (meli_code.charCodeAt(i)) {
-                    case 1777: temp =  "1"; break;
-                    case 1778: temp =  "2"; break;
-                    case 1779: temp =  "3"; break;
-                    case 1780: temp =  "4"; break;
-                    case 1781: temp =  "5"; break;
-                    case 1782: temp =  "6"; break;
-                    case 1783: temp =  "7"; break;
-                    case 1784: temp =  "8"; break;
-                    case 1785: temp =  "9"; break;
-                    case 1776: temp =  "0"; break;
+                    case 1777: temp = "1"; break;
+                    case 1778: temp = "2"; break;
+                    case 1779: temp = "3"; break;
+                    case 1780: temp = "4"; break;
+                    case 1781: temp = "5"; break;
+                    case 1782: temp = "6"; break;
+                    case 1783: temp = "7"; break;
+                    case 1784: temp = "8"; break;
+                    case 1785: temp = "9"; break;
+                    case 1776: temp = "0"; break;
                     default:
                         temp = meli_code.substr(i, 1);
                 }
                 if (temp != '0' && temp != '9' && temp != '8'
                     && temp != '7' && temp != '6' && temp != '5'
-                    && temp != '4' && temp != '3' && temp != '2' && temp != '1')
-                {
+                    && temp != '4' && temp != '3' && temp != '2' && temp != '1') {
                     flag = '***';
                 }
-            } 
-            if (flag != '***')
-            {
-                
+            }
+            if (flag != '***') {
+
                 return true;
             }
-            else
-            {
+            else {
                 msg = 'شماره کد ملی یا پاسپورت صحيح نمي باشد';
                 //document.getElementById(flag).value = "0";
                 display_alarm(msg, obj);
                 return false;
             }
         }
-        else
-        {
+        else {
             temp2 = "";
             for (i = 0; i < meli_code.length; i++) {
                 //alert(meli_code.charCodeAt(i));
@@ -434,7 +423,8 @@ function CheckMeliCode(obj) {
             //alert(meli_code);
             if (meli_code.length == 10) {
 
-                if (meli_code == '1111111111' ||
+                if (/^(\d)\1{9}$/.test(meli_code) ||
+                    meli_code == '1111111111' ||
                     meli_code == '0000000000' ||
                     meli_code == '2222222222' ||
                     meli_code == '3333333333' ||
@@ -445,8 +435,10 @@ function CheckMeliCode(obj) {
                     meli_code == '8888888888' ||
                     meli_code == '9999999999' ||
                     meli_code == '0123456789' ||
-                    meli_code == '1234567890'
-                    ) {
+                    meli_code == '1234567890' ||
+                    meli_code == '9876543210' ||
+                    meli_code == '0987654321'
+                ) {
                     msg = 'كد ملي صحيح نمي باشد';
                     //document.getElementById(flag).value = "0";
                     display_alarm(msg, obj);
@@ -486,9 +478,8 @@ function CheckMeliCode(obj) {
                 return false;
             }
         }
-    }    
-    else
-    {
+    }
+    else {
         msg = 'ثبت کد ملی الزامی است';
         //document.getElementById(flag).value = "0";
         display_alarm(msg, obj);
@@ -508,14 +499,13 @@ function display_alarm(alarm_text, obj) {
     document.getElementById('lbl2').innerHTML = alarm_text;
     document.getElementById("alarm_pic").src = '/Content/images/Cancel-128.png';
     document.getElementById('hdn_alarm').value = obj;
-    document.getElementById('alarm_btn').className="btn-Pcustome-alarm";
+    document.getElementById('alarm_btn').className = "btn-Pcustome-alarm";
     document.getElementById('alaram_box').className = "alarm_box";
     document.documentElement.scrollTop = 0;
 }
 function display_alarm2(alarm_text, titel, obj, flag) {
-   
-    if (flag == 1)
-    {
+
+    if (flag == 1) {
         document.getElementById('td1').style.backgroundColor = "green";
         document.getElementById('td2').style.backgroundColor = "green";
         document.getElementById('td3').style.color = "green";
@@ -526,16 +516,15 @@ function display_alarm2(alarm_text, titel, obj, flag) {
         document.getElementById('alarm_btn').className = "btn btn-success";
         document.getElementById('alaram_box').className = "inform_box";
         $('#alaram_box').className = "alarm_box";
-        
+
     }
-    if (flag == 0)
-    {
+    if (flag == 0) {
         document.getElementById('td1').style.backgroundColor = '#ff0000';
         document.getElementById('td2').style.backgroundColor = '#ff0000';
         document.getElementById('td3').style.color = "red";
         document.getElementById('lbl1').innerHTML = titel;
         document.getElementById('lbl2').innerHTML = alarm_text;
-        
+
         document.getElementById("alarm_pic").src = '/Content/images/Cancel-128.png';
         document.getElementById('hdn_alarm').value = obj;
         document.getElementById('alarm_btn').className = "btn-Pcustome-alarm";
@@ -561,14 +550,12 @@ function display_alarm2(alarm_text, titel, obj, flag) {
 function jalali_to_gregorian(obj1, obj2) {
     var date_shamsi = document.getElementById(obj1).value;
     mds_str = "";
-    if (date_shamsi != '' && date_shamsi.length==10) {
-        if (date_shamsi.substr(0,2)=='19' || date_shamsi.substr(0,2)=='20')
-        {
-            document.getElementById(obj2).value=document.getElementById(obj1).value;
+    if (date_shamsi != '' && date_shamsi.length == 10) {
+        if (date_shamsi.substr(0, 2) == '19' || date_shamsi.substr(0, 2) == '20') {
+            document.getElementById(obj2).value = document.getElementById(obj1).value;
         }
-        else
-        {
-            for (var i = 0; i < date_shamsi.length ; i++) {
+        else {
+            for (var i = 0; i < date_shamsi.length; i++) {
                 //alert(date_shamsi.charCodeAt(i));
                 switch (date_shamsi.charCodeAt(i)) {
                     case 1777: mds_str = mds_str + "1"; break;
@@ -584,10 +571,10 @@ function jalali_to_gregorian(obj1, obj2) {
                     case 47: mds_str = mds_str + "/"; break;
                     default:
                         mds_str = mds_str + date_shamsi.substr(i, 1);
-                        //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
+                    //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
                 }
             }
-        
+
             jy = parseInt(mds_str.substr(0, 4));
             jm = parseInt(mds_str.substr(5, 2));
             jd = parseInt(mds_str.substr(8, 2));
@@ -618,9 +605,9 @@ function jalali_to_gregorian(obj1, obj2) {
                 if (gd <= v) break;
                 gd -= v;
             }
-         
-            var g_month=gm.toString();
-            if(gm.toString().length==1)
+
+            var g_month = gm.toString();
+            if (gm.toString().length == 1)
                 g_month = '0' + g_month
 
             var g_day = gd.toString();
@@ -679,8 +666,7 @@ function ginj(year, month, day, f) {
     var jy = $jy.toString();
     var jm = $jm.toString();
     var jd = $jd.toString();
-    if (jm.length == 1)
-    {
+    if (jm.length == 1) {
         jm = '0' + jm
     }
     if (jd.length == 1) {
@@ -690,24 +676,23 @@ function ginj(year, month, day, f) {
     //if (!f || f == undefined)
     //    return { y: $jy, m: $jm, d: $jd }
     //else
-        return jy + '/' + jm + '/' + jd;
+    return jy + '/' + jm + '/' + jd;
 
 
 
 
 
 }
-function set_age(obj1,obj2) {
+function set_age(obj1, obj2) {
     var date_shamsi = document.getElementById(obj1).value;
     mds_str = "";
-    
+
     if (date_shamsi != '' && date_shamsi.length == 10) {
-        if (date_shamsi.substr(0, 2) == '19' || date_shamsi.substr(0, 2) == '20')
-        {
+        if (date_shamsi.substr(0, 2) == '19' || date_shamsi.substr(0, 2) == '20') {
             date_shamsi = ginj(date_shamsi.substr(0, 4), date_shamsi.substr(5, 2), date_shamsi.substr(8, 2));
             //alert(date_shamsi);
         }
-        for (var i = 0; i < date_shamsi.length ; i++) {
+        for (var i = 0; i < date_shamsi.length; i++) {
             //alert(date_shamsi.charCodeAt(i));
             switch (date_shamsi.charCodeAt(i)) {
                 case 1777: mds_str = mds_str + "1"; break;
@@ -723,7 +708,7 @@ function set_age(obj1,obj2) {
                 case 47: mds_str = mds_str + "/"; break;
                 default:
                     mds_str = mds_str + date_shamsi.substr(i, 1);
-                    //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
+                //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
             }
         }
 
@@ -761,7 +746,7 @@ function set_age(obj1,obj2) {
 
         var year = new Date().getFullYear()
         result = year - gy;
-        
+
         document.getElementById(obj2).innerHTML = result.toString();
 
     }
@@ -773,30 +758,28 @@ function monthDiff(d1, d2) {
     d2 = set_ascii_date2(d2);
     months = (d2.substr(0, 4) - d1.substr(0, 4)) * 12;
     months -= d1.substr(5, 2);
-    months += parseInt(d2.substr(5, 2)); 
+    months += parseInt(d2.substr(5, 2));
     return months <= 0 ? 0 : months;
 }
 function checkdate_miladi(obj) {
     var str = document.getElementById(obj).value;
     result = true;
-    if (str != '')
-    {
+    if (str != '') {
         var regEx = /(19|20)([0-9][0-9])\/(((0?[1-6])\/((0?[1-9])|([12][0-9])|(3[0-1])))|(((0?[7-9])|(1[0-2]))\/((0?[1-9])|([12][0-9])|(30))))/g;
- 
+
         if (!str.match(regEx))
-            result= false;  // Invalid format
+            result = false;  // Invalid format
         var d;
         if (!((d = new Date(str)) | 0))
             result = false; // Invalid date (or this could be epoch)
-            //return d.toISOString().slice(0, 10) == dateString;
+        //return d.toISOString().slice(0, 10) == dateString;
     }
     if (result == false) {
         //document.getElementById(flag).value = "0";
         display_alarm('فرمت تاریخ میلادی وارد شده معتبر نیست. لطفا تاریخ را با فرمت YYYY/MM/DD وارد نمائید.', obj);
         return false;
     }
-    else
-    {
+    else {
         return true;
         //document.getElementById(flag).value = "1";
     }
@@ -813,7 +796,7 @@ function checkdate_sequence(obj1, obj2) {
         var mds_str2 = "";
         if (date1 != '') {
             //
-            for (var i = 0; i < date1.length ; i++) {
+            for (var i = 0; i < date1.length; i++) {
                 switch (date1.charCodeAt(i)) {
                     case 1777: mds_str1 = mds_str1 + "1"; break;
                     case 1778: mds_str1 = mds_str1 + "2"; break;
@@ -828,7 +811,7 @@ function checkdate_sequence(obj1, obj2) {
                     case 47: mds_str1 = mds_str1; break;
                     default:
                         mds_str1 = mds_str1 + date1.substr(i, 1);
-                        //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+                    //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
                 }
             }
 
@@ -837,7 +820,7 @@ function checkdate_sequence(obj1, obj2) {
 
         if (date2 != '') {
             //
-            for (var i = 0; i < date2.length ; i++) {
+            for (var i = 0; i < date2.length; i++) {
                 switch (date2.charCodeAt(i)) {
                     case 1777: mds_str2 = mds_str2 + "1"; break;
                     case 1778: mds_str2 = mds_str2 + "2"; break;
@@ -852,7 +835,7 @@ function checkdate_sequence(obj1, obj2) {
                     case 47: mds_str2 = mds_str2; break;
                     default:
                         mds_str2 = mds_str2 + date2.substr(i, 1);
-                        //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+                    //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
                 }
             }
 
@@ -866,13 +849,11 @@ function checkdate_sequence(obj1, obj2) {
             return true;
         }
     }
-    else
-    { return true;}
+    else { return true; }
 }
-function checkages_not_empty(obj)
-{ 
+function checkages_not_empty(obj) {
     var str = document.getElementById(obj).value;
-   if (str == '' || str == '-1' || str == '0') {
+    if (str == '' || str == '-1' || str == '0') {
         //document.getElementById(flag).value = "0";
         display_alarm('لطفا رده سنی مورد نظر خود را وارد کنید', obj);
         return false;
@@ -880,23 +861,21 @@ function checkages_not_empty(obj)
     }
     return true;
 }
-function set_weekday(obj1, obj2, obj3,obj4) {
-    if (document.getElementById(obj1).value!='')
-    {
-        var weekday='';
+function set_weekday(obj1, obj2, obj3, obj4) {
+    if (document.getElementById(obj1).value != '') {
+        var weekday = '';
         var date = document.getElementById(obj1).value;
-        jalali_to_gregorian(obj1, obj2); 
+        jalali_to_gregorian(obj1, obj2);
         var MyDate = new Date(document.getElementById(obj2).value);
-        switch (MyDate.getDay())
-        {
-            case 0 : weekday='یکشنبه' ; break;
-            case 1 : weekday='دوشنبه' ; break;
-            case 2 : weekday='سه‌شنبه' ; break;
-            case 3 : weekday='چهارشنبه' ; break;
-            case 4 : weekday='پنجشنبه' ; break;
-            case 5 : weekday='جمعه' ; break;
-            case 6 : weekday='شنبه' ; break;
-        } 
+        switch (MyDate.getDay()) {
+            case 0: weekday = 'یکشنبه'; break;
+            case 1: weekday = 'دوشنبه'; break;
+            case 2: weekday = 'سه‌شنبه'; break;
+            case 3: weekday = 'چهارشنبه'; break;
+            case 4: weekday = 'پنجشنبه'; break;
+            case 5: weekday = 'جمعه'; break;
+            case 6: weekday = 'شنبه'; break;
+        }
         document.getElementById(obj3).innerText = weekday;
         document.getElementById(obj4).value = MyDate.getDay();
 
@@ -926,12 +905,11 @@ function set_weekday_full(obj1, obj2, obj3, obj4) {
 
 
 }
-function set_ascii_date(str)
-{
+function set_ascii_date(str) {
     var mds_str1 = "";
     if (str != '') {
         //
-        for (var i = 0; i < str.length ; i++) {
+        for (var i = 0; i < str.length; i++) {
             switch (str.charCodeAt(i)) {
                 case 1777: mds_str1 = mds_str1 + "1"; break;
                 case 1778: mds_str1 = mds_str1 + "2"; break;
@@ -946,7 +924,7 @@ function set_ascii_date(str)
                 case 47: mds_str1 = mds_str1; break;
                 default:
                     mds_str1 = mds_str1 + str.substr(i, 1);
-                    //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+                //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
             }
         }
     }
@@ -956,7 +934,7 @@ function set_ascii_date2(str) {
     var mds_str1 = "";
     if (str != '') {
         //
-        for (var i = 0; i < str.length ; i++) {
+        for (var i = 0; i < str.length; i++) {
             switch (str.charCodeAt(i)) {
                 case 1777: mds_str1 = mds_str1 + "1"; break;
                 case 1778: mds_str1 = mds_str1 + "2"; break;
@@ -971,7 +949,7 @@ function set_ascii_date2(str) {
                 case 47: mds_str1 = mds_str1 + "/"; break;
                 default:
                     mds_str1 = mds_str1 + str.substr(i, 1);
-                    //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+                //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
             }
         }
     }
@@ -980,7 +958,7 @@ function set_ascii_date2(str) {
 function set_curency_format(obj) {
 
 
-    var str = document.getElementById(obj).value.replace(',','');
+    var str = document.getElementById(obj).value.replace(',', '');
     var temp = '';
     var str_checked = '';
     for (i = 0; i < str.length; i++) {
@@ -1005,9 +983,9 @@ function set_curency_format(obj) {
         }
 
 
-        if ((48 <= temp.charCodeAt(0) && temp.charCodeAt(0) <= 57) || temp=='-') {
+        if ((48 <= temp.charCodeAt(0) && temp.charCodeAt(0) <= 57) || temp == '-') {
 
-           str_checked = str_checked + temp
+            str_checked = str_checked + temp
 
         }
         temp = "";
@@ -1016,8 +994,7 @@ function set_curency_format(obj) {
     var num = str_checked.replace(/,/g, "", -1);
     document.getElementById(obj).value = num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 }
-function set_curency_format_value(str)
-{
+function set_curency_format_value(str) {
     var temp = str.replace(/,/g, "", -1);
     return temp.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 
@@ -1025,8 +1002,7 @@ function set_curency_format_value(str)
 function CheckfaragirCode(obj) {
     var faragir_code = document.getElementById(obj).value;
     var flag = "";
-    if(faragir_code!='')
-    {
+    if (faragir_code != '') {
         for (i = 2; i < faragir_code.length; i++) {
             switch (faragir_code.charCodeAt(i)) {
                 case 1777: temp = "1"; break;
@@ -1069,10 +1045,9 @@ function CheckfaragirCode(obj) {
 
     //document.getElementById(flag).value = "1";
 }
-function set_char(str)
-{
+function set_char(str) {
     var temp = "";
-    for (var i = 0; i < str.length ; i++) {
+    for (var i = 0; i < str.length; i++) {
         switch (str.charCodeAt(i)) {
             case 1777: temp = temp + "1"; break;
             case 1778: temp = temp + "2"; break;
@@ -1087,7 +1062,7 @@ function set_char(str)
             case 47: temp = temp + "/"; break;
             default:
                 temp = temp + str.substr(i, 1);
-                //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
+            //       alert(mds_str + '****' + str.substr(i, 1)+'****'+i); break;
         }
     }
     if (temp != '')
@@ -1117,7 +1092,7 @@ function jalali_to_gregorian2(date_shamsi) {
                     case 47: mds_str = mds_str + "/"; break;
                     default:
                         mds_str = mds_str + date_shamsi.substr(i, 1);
-                        //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
+                    //alert(mds_str + '****' + date_shamsi.substr(i, 1) + '****' + i); break;
                 }
             }
 
@@ -1667,16 +1642,16 @@ function DisplayModal(modal_text, title, flag, redirection) {
             break;
     }
     // تنظیم رفتار دکمه برای ریدایرکت یا بسته شدن مودال
-          document.getElementById("btn-modal").onclick = function () {
-              document.getElementById("ModalPanel").style.display = "none";
-              clearTimeout(timeout);
-              if (redirection != null && redirection != '') {
+    document.getElementById("btn-modal").onclick = function () {
+        document.getElementById("ModalPanel").style.display = "none";
+        clearTimeout(timeout);
+        if (redirection != null && redirection != '') {
 
-                   window.location.href = redirection;
-             }
+            window.location.href = redirection;
+        }
 
     };
-    
+
     if (redirection != null && redirection != '') {
         if (flag == 3 || flag == 0 || flag == 1 || flag == 4 || flag == 5) {
             //document.getElementById("btn-modal").style.display = "none";
@@ -1886,7 +1861,7 @@ function DisplayModalTermination() {
 
 function validatePassword(password) {
     if (password.length < 6) {
-        DisplayModal("رمز عبور باید حداقل ۶ کاراکتر باشد.", "کلمه عبور قابل قبول نیست",  0);
+        DisplayModal("رمز عبور باید حداقل ۶ کاراکتر باشد.", "کلمه عبور قابل قبول نیست", 0);
         return false;
     }
     //if (!/[A-Za-z]/.test(password)) {

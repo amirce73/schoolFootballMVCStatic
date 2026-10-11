@@ -17,13 +17,13 @@ using FootballSchool.Web.Models.ViewModels;
 namespace FootballSchoolMVC.Controllers
 {
     [Authorize]
-    public class FootballschoolPersonController : Controller
+    public class PersonController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _env;
 
-        public FootballschoolPersonController(
+        public PersonController(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext db,
             IWebHostEnvironment env)
@@ -181,6 +181,7 @@ namespace FootballSchoolMVC.Controllers
             return info;
         }
 
+        [HttpGet("person/view_person")]
         [HttpGet("FootballschoolPerson/view_person")]
         public async Task<IActionResult> ViewPerson()
         {
@@ -230,6 +231,7 @@ namespace FootballSchoolMVC.Controllers
             return Redirect("/personal-info");
         }
 
+        [HttpGet("person/view_person2")]
         [HttpGet("FootballschoolPerson/view_person2")]
         [HttpGet("api/personal-info")]
         public async Task<IActionResult> ViewPerson2(string? soccer_id, int? flag)
@@ -293,6 +295,8 @@ namespace FootballSchoolMVC.Controllers
             return Json(new { model = rec, errorcode = "0" });
         }
 
+        [HttpPost("person/view_person")]
+        [HttpPost("person/save_data")]
         [HttpPost("FootballschoolPerson/view_person")]
         [HttpPost("api/personal-info")]
         public async Task<IActionResult> SavePerson(PersonViewModel model)

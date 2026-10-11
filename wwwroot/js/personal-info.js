@@ -8,7 +8,7 @@
 function previewImage(input) {
     if (input.files && input.files[0]) {
         var file = input.files[0];
-        
+
         // Validate extension
         var ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
         var allowed = ['.jpg', '.jpeg', '.png', '.webp', '.tiff'];
@@ -124,6 +124,107 @@ function close_alarm_box() {
     }
 }
 
+// 4.5 Real-time National ID validation under the input field
+function validateNationalIdRealtime() {
+    var input = document.getElementById("txt_international_id");
+    if (!input) return true;
+
+    var group = input.closest('.input-group');
+    if (!group) return true;
+
+    var label = group.querySelector('label');
+    var existingErr = group.querySelector('.error-text');
+    if (existingErr) existingErr.remove();
+
+    var val = input.value.trim();
+    if (!val) {
+        input.classList.remove('error', 'success');
+        if (label) label.classList.remove('error-label');
+        return true;
+    }
+
+    // Normalize Persian & Arabic numerals to English 0-9
+    val = val.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); })
+             .replace(/[٠-٩]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1632 + 48); });
+
+    var natVal = document.getElementById('cmd_nationality_id') ? document.getElementById('cmd_nationality_id').value : '1';
+    var isForeign = (natVal === '24' || natVal === 'اتباع خارجی');
+
+    var hasError = false;
+    var errorMsg = '';
+
+    if (isForeign) {
+        var firstChar = val.substr(0, 1).toUpperCase();
+        if (firstChar >= 'A' && firstChar <= 'Z') {
+            if (val.length < 5) {
+                hasError = true;
+                errorMsg = 'شماره پاسپورت باید حداقل ۵ کاراکتر باشد';
+            }
+        } else {
+            if (!/^\d+$/.test(val)) {
+                hasError = true;
+                errorMsg = 'کد فراگیر اتباع باید عددی باشد';
+            } else if (val.length < 10) {
+                hasError = true;
+                errorMsg = 'کد فراگیر باید حداقل ۱۰ رقم باشد';
+            }
+        }
+    } else {
+        // Iranian National ID
+        if (val.length < 10) {
+            hasError = true;
+            errorMsg = 'کد ملی باید ۱۰ رقم باشد';
+        } else if (val.length === 10) {
+            if (!/^\d{10}$/.test(val)) {
+                hasError = true;
+                errorMsg = 'کد ملی فقط باید شامل اعداد باشد';
+            } else if (/^(\d)\1{9}$/.test(val)) {
+                hasError = true;
+                errorMsg = 'کد ملی نامعتبر است (ارقام تکراری مجاز نیست)';
+            } else if (val === '0123456789' || val === '1234567890' || val === '9876543210' || val === '0987654321') {
+                hasError = true;
+                errorMsg = 'کد ملی نامعتبر است (ارقام متوالی مجاز نیست)';
+            } else {
+                var check = parseInt(val[9], 10);
+                var sum = 0;
+                for (var i = 0; i < 9; i++) {
+                    sum += parseInt(val[i], 10) * (10 - i);
+                }
+                var remainder = sum % 11;
+                var isValid = (remainder < 2 && check === remainder) || (remainder >= 2 && check === (11 - remainder));
+                if (!isValid) {
+                    hasError = true;
+                    errorMsg = 'کد ملی نامعتبر است';
+                }
+            }
+        } else if (val.length > 10) {
+            hasError = true;
+            errorMsg = 'طول کد ملی نباید بیشتر از ۱۰ رقم باشد';
+        }
+    }
+
+    if (hasError) {
+        input.classList.remove('success');
+        input.classList.add('error');
+        if (label) label.classList.add('error-label');
+
+        var errSpan = document.createElement('span');
+        errSpan.className = 'error-text';
+        errSpan.innerHTML = '<i class="fa fa-exclamation-circle" style="margin-left: 4px;"></i>' + errorMsg;
+        group.appendChild(errSpan);
+        return false;
+    } else if (val.length === 10) {
+        input.classList.remove('error');
+        input.classList.add('success');
+        if (label) label.classList.remove('error-label');
+        return true;
+    } else {
+        input.classList.remove('error', 'success');
+        if (label) label.classList.remove('error-label');
+        return true;
+    }
+}
+
 // 5. Validation using footballit_script.js rules
 function check_data() {
     syncBirthDetails();
@@ -164,6 +265,17 @@ function check_data() {
                 // CheckMeliCode displays alarm internally
                 return false;
             }
+        }
+        var rawMeli = (document.getElementById("txt_international_id") ? document.getElementById("txt_international_id").value : "").trim();
+        rawMeli = rawMeli.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); })
+            .replace(/[٠-٩]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1632 + 48); });
+        if (/^(\d)\1{9}$/.test(rawMeli) || rawMeli === '0123456789' || rawMeli === '1234567890' || rawMeli === '9876543210' || rawMeli === '0987654321') {
+            if (typeof display_alarm === 'function') {
+                display_alarm('كد ملي صحيح نمي باشد', 'txt_international_id');
+            } else if (typeof display_alarm2 === 'function') {
+                display_alarm2('کد ملی وارد شده صحیح نیست . لطفا کد ملی را صحیح وارد کنید.', 'خطا در ثبت کد ملی', 'txt_international_id', 0);
+            }
+            return false;
         }
     }
 
@@ -246,7 +358,7 @@ function save_data() {
 
     // Ensure Shamsi date is sent
     var shamsiVal = (document.getElementById("birth_date_shamsi") ? document.getElementById("birth_date_shamsi").value : "") ||
-                    (document.getElementById("hidden_birthDate") ? document.getElementById("hidden_birthDate").value : "");
+        (document.getElementById("hidden_birthDate") ? document.getElementById("hidden_birthDate").value : "");
     if (shamsiVal) {
         formData.set("birthDate", shamsiVal);
     }
@@ -318,6 +430,19 @@ document.addEventListener('DOMContentLoaded', function () {
             save_data();
             return false;
         });
+    }
+
+    // Bind Real-time validation for National ID
+    var natInput = document.getElementById('txt_international_id');
+    if (natInput) {
+        natInput.addEventListener('input', validateNationalIdRealtime);
+        natInput.addEventListener('keyup', validateNationalIdRealtime);
+        natInput.addEventListener('change', validateNationalIdRealtime);
+        natInput.addEventListener('blur', validateNationalIdRealtime);
+    }
+    var natSelect = document.getElementById('cmd_nationality_id');
+    if (natSelect) {
+        natSelect.addEventListener('change', validateNationalIdRealtime);
     }
 
     // Bind submit buttons (Top Bar for laptop, Sticky Bottom for mobile)

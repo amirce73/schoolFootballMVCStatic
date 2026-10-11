@@ -69,7 +69,7 @@ namespace FootballSchoolMVC.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Redirect("/");
 
-            var fpController = new FootballschoolPersonController(_userManager, _db, _env);
+            var fpController = new PersonController(_userManager, _db, _env);
             var info = await fpController.GetOrInitPersonalInfoAsync(user);
 
             if (string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(info.name)) user.FirstName = info.name;
@@ -243,6 +243,30 @@ namespace FootballSchoolMVC.Controllers
             ModelState.Remove("age");
             ModelState.Remove("vm.Age");
 
+            // Check NationalId format & algorithm
+            if (!string.IsNullOrEmpty(vm.NationalId) && (vm.Nationality == "ایران" || string.IsNullOrEmpty(vm.Nationality)))
+            {
+                var cleanId = vm.NationalId.Trim();
+                var invalidBlacklist = new[] { "0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999", "0123456789", "1234567890", "9876543210" };
+                bool isMeliValid = cleanId.Length == 10 && cleanId.All(char.IsDigit) && !invalidBlacklist.Contains(cleanId) && cleanId.Distinct().Count() > 1;
+                if (isMeliValid)
+                {
+                    int sum = 0;
+                    for (int i = 0; i < 9; i++) sum += (cleanId[i] - '0') * (10 - i);
+                    int r = sum % 11;
+                    int c = cleanId[9] - '0';
+                    isMeliValid = (r < 2 && c == r) || (r >= 2 && c == 11 - r);
+                }
+                if (!isMeliValid)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, errorcode = "10", message = "كد ملي صحيح نمي باشد" });
+                    }
+                    ModelState.AddModelError("NationalId", "كد ملي صحيح نمي باشد");
+                }
+            }
+
             // Check duplicate NationalId if changed
             if (!string.IsNullOrEmpty(vm.NationalId))
             {
@@ -317,7 +341,7 @@ namespace FootballSchoolMVC.Controllers
                 info = await _db.tbl_user_personal_infos.FirstOrDefaultAsync(p => p.ApplicationUserId == user.Id);
                 if (info == null)
                 {
-                    var fpController = new FootballschoolPersonController(_userManager, _db, _env);
+                    var fpController = new PersonController(_userManager, _db, _env);
                     info = await fpController.GetOrInitPersonalInfoAsync(user);
                 }
                 if (info != null)

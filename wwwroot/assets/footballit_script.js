@@ -365,7 +365,8 @@ function Set_value_numeric3(obj, max_len) {
 
 var msg = "";
 function CheckMeliCode(obj) {
-    var meli_code = document.getElementById(obj).value;
+    var elem = document.getElementById(obj);
+    var meli_code = (elem && elem.value) ? elem.value.trim() : "";
     var flag = "";
     if (meli_code != '') {
         var temp = meli_code.substr(0, 1).toUpperCase();
@@ -434,7 +435,8 @@ function CheckMeliCode(obj) {
             //alert(meli_code);
             if (meli_code.length == 10) {
 
-                if (meli_code == '1111111111' ||
+                if (/^(\d)\1{9}$/.test(meli_code) ||
+                    meli_code == '1111111111' ||
                     meli_code == '0000000000' ||
                     meli_code == '2222222222' ||
                     meli_code == '3333333333' ||
@@ -445,7 +447,9 @@ function CheckMeliCode(obj) {
                     meli_code == '8888888888' ||
                     meli_code == '9999999999' ||
                     meli_code == '0123456789' ||
-                    meli_code == '1234567890'
+                    meli_code == '1234567890' ||
+                    meli_code == '9876543210' ||
+                    meli_code == '0987654321'
                     ) {
                     msg = 'كد ملي صحيح نمي باشد';
                     //document.getElementById(flag).value = "0";

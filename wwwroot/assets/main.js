@@ -852,6 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('input', (e) => {
         const target = e.target;
         if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') return;
+        if (target.closest('#personal-info-form')) return;
 
         const name = target.name || '';
         const type = target.type || '';
@@ -906,6 +907,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (name === 'nationalId' && cleanVal.length === 10) {
                 const isValidIranianNationalId = (val) => {
                     if (!/^\d{10}$/.test(val)) return false;
+                    if (/^(\d)\1{9}$/.test(val)) return false;
+                    const invalidCodes = ["0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999", "1234567890", "0123456789", "9876543210"];
+                    if (invalidCodes.includes(val)) return false;
                     const check = parseInt(val[9]);
                     let sum = 0;
                     for (let i = 0; i < 9; i++) sum += parseInt(val[i]) * (10 - i);
@@ -983,6 +987,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 6. Validations
     document.querySelectorAll('form').forEach(form => {
+        if (form.id === "personal-info-form") return;
         let submitBtn = form.querySelector('button[type="submit"]');
         if (!submitBtn) {
             const topBtn = document.querySelector('.btn-submit-top');
@@ -995,6 +1000,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Complex validations
         const isValidIranianNationalId = (val) => {
             if (!/^\d{10}$/.test(val)) return false;
+            if (/^(\d)\1{9}$/.test(val)) return false;
+            const invalidCodes = ["0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999", "1234567890", "0123456789", "9876543210"];
+            if (invalidCodes.includes(val)) return false;
             const check = parseInt(val[9]);
             let sum = 0;
             for (let i = 0; i < 9; i++) sum += parseInt(val[i]) * (10 - i);
