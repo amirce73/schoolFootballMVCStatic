@@ -42,51 +42,76 @@
   <link rel="stylesheet" href="~/css/player.css" asp-append-version="true" />
   @await RenderSectionAsync("Styles", required: false)
   <script>
-    function toggleProfileMenu(e) {
-      if (e) {
-        if (e.stopPropagation) e.stopPropagation();
-        if (e.cancelBubble !== undefined) e.cancelBubble = true;
-      }
+    function closeProfileMenu() {
       var m = document.getElementById('profileMenu');
-      if (!m) return;
-      var isOpen = m.classList.toggle('show');
-      if (isOpen) {
-        m.style.setProperty('display', 'block', 'important');
-        m.style.setProperty('opacity', '1', 'important');
-        m.style.setProperty('visibility', 'visible', 'important');
-        m.style.setProperty('pointer-events', 'auto', 'important');
-        m.style.setProperty('transform', 'translateY(0)', 'important');
-        m.style.setProperty('z-index', '999999', 'important');
-      } else {
+      var b = document.getElementById('profileMenuBackdrop');
+      if (m) {
+        m.classList.remove('show');
         m.style.setProperty('display', 'none', 'important');
         m.style.setProperty('opacity', '0', 'important');
         m.style.setProperty('visibility', 'hidden', 'important');
         m.style.setProperty('pointer-events', 'none', 'important');
         m.style.setProperty('transform', 'translateY(-10px)', 'important');
       }
+      if (b) {
+        b.style.display = 'none';
+      }
     }
 
-    document.addEventListener('click', function(e) {
+    function toggleProfileMenu(e) {
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.cancelBubble !== undefined) e.cancelBubble = true;
+      }
+      var m = document.getElementById('profileMenu');
+      var b = document.getElementById('profileMenuBackdrop');
+      if (!m) return;
+      var isOpen = m.classList.contains('show');
+      if (!isOpen) {
+        m.classList.add('show');
+        m.style.setProperty('display', 'block', 'important');
+        m.style.setProperty('opacity', '1', 'important');
+        m.style.setProperty('visibility', 'visible', 'important');
+        m.style.setProperty('pointer-events', 'auto', 'important');
+        m.style.setProperty('transform', 'translateY(0)', 'important');
+        m.style.setProperty('z-index', '999999', 'important');
+        if (b) b.style.display = 'block';
+      } else {
+        closeProfileMenu();
+      }
+    }
+
+    // Capture-phase listener as fallback
+    window.addEventListener('click', function(e) {
       var m = document.getElementById('profileMenu');
       if (m && m.classList.contains('show')) {
         if (!e.target.closest('#headerProfileTrigger')) {
-          m.classList.remove('show');
-          m.style.setProperty('display', 'none', 'important');
-          m.style.setProperty('opacity', '0', 'important');
-          m.style.setProperty('visibility', 'hidden', 'important');
-          m.style.setProperty('pointer-events', 'none', 'important');
+          closeProfileMenu();
         }
       }
-    });
+    }, true);
+
+    // Also close on touchstart for mobile devices
+    window.addEventListener('touchstart', function(e) {
+      var m = document.getElementById('profileMenu');
+      if (m && m.classList.contains('show')) {
+        if (!e.target.closest('#headerProfileTrigger')) {
+          closeProfileMenu();
+        }
+      }
+    }, { capture: true, passive: true });
   </script>
 </head>
 <body>
+  <!-- Fullscreen invisible backdrop for closing profile menu on outside click -->
+  <div id="profileMenuBackdrop" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99998; background: transparent; display: none;" onclick="closeProfileMenu();"></div>
+
   <div id="root">
     <!-- Top Navbar -->
     <nav class="top-navbar">
       <div class="navbar-container">
         <!-- Header Profile & Dropdown -->
-        <div class="header-profile" id="headerProfileTrigger" onclick="toggleProfileMenu(event);" style="cursor: pointer;">
+        <div class="header-profile" id="headerProfileTrigger" onclick="toggleProfileMenu(event);" style="cursor: pointer; position: relative; z-index: 99999;">
           <div class="header-profile-avatar">
             <img alt="user" src="@_avatar" onerror="this.src='/assets/images/messi-profile.jpg';" />
           </div>
