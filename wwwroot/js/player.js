@@ -613,11 +613,7 @@ function close_alarm_box() {
     if (box.length) {
         box.fadeOut(200, function() {
             var hdn = document.getElementById('hdn_alarm');
-            if (hdn && hdn.value !== '') {
-                var target = document.getElementById(hdn.value);
-                if (target) {
-                    target.focus();
-                }
+            if (hdn) {
                 hdn.value = '';
             }
         });
@@ -4110,119 +4106,233 @@ function syncBirthDetails() {
     }
 }
 
-// 4. Safe close alarm box
+// 4. Ultra-Modern Alarm Modal Controller (Vanilla JS - no jQuery needed)
+var _alarmTimer = null;
+
 function close_alarm_box() {
-    $('#alaram_box').hide();
-    var hdn = document.getElementById('hdn_alarm');
-    if (hdn && hdn.value !== '') {
-        var target = document.getElementById(hdn.value);
-        if (target) {
-            target.focus();
-        }
-        hdn.value = "";
+    if (_alarmTimer) {
+        clearTimeout(_alarmTimer);
+        _alarmTimer = null;
     }
+    var box = document.getElementById('alaram_box');
+    if (!box) return;
+    box.style.opacity = '0';
+    box.style.transition = 'opacity 0.2s ease';
+    setTimeout(function() {
+        box.style.display = 'none';
+        box.style.opacity = '';
+        box.style.transition = '';
+        var hdn = document.getElementById('hdn_alarm');
+        if (hdn) {
+            hdn.value = '';
+        }
+    }, 200);
 }
 
-// 4.5 Real-time National ID validation under the input field
-function validateNationalIdRealtime() {
-    var input = document.getElementById("txt_international_id");
-    if (!input) return true;
+function display_alarm2(alarm_text, titel, obj, flag) {
+    var isSuccess = (flag === 1 || flag === '1');
+    var isWarning = (flag === 2 || flag === '2');
+    var defaultTitle = isSuccess ? 'ثبت موفق اطلاعات' : (isWarning ? 'هشدار سیستم' : 'خطا در ثبت اطلاعات');
+    var finalTitle = titel || defaultTitle;
 
-    var group = input.closest('.input-group');
-    if (!group) return true;
+    var card = document.getElementById('alarm_card');
+    var icon = document.getElementById('alarm_icon');
+    var titleEl = document.getElementById('lbl1');
+    var textEl = document.getElementById('lbl2');
+    var hdn = document.getElementById('hdn_alarm');
+    var box = document.getElementById('alaram_box');
 
-    var label = group.querySelector('label');
-    var existingErr = group.querySelector('.error-text');
-    if (existingErr) existingErr.remove();
+    if (!box) return;
 
-    var val = input.value.trim();
-    if (!val) {
-        input.classList.remove('error', 'success');
-        if (label) label.classList.remove('error-label');
-        return true;
+    if (hdn) hdn.value = obj || '';
+    if (titleEl) titleEl.textContent = finalTitle;
+    if (textEl) textEl.textContent = alarm_text || '';
+
+    if (card) {
+        card.classList.remove('is-success', 'is-error', 'is-warning');
+        if (isSuccess) {
+            card.classList.add('is-success');
+            if (icon) icon.className = 'fa fa-check';
+        } else if (isWarning) {
+            card.classList.add('is-warning');
+            if (icon) icon.className = 'fa fa-exclamation-triangle';
+        } else {
+            card.classList.add('is-error');
+            if (icon) icon.className = 'fa fa-times';
+        }
     }
 
-    // Normalize Persian & Arabic numerals to English 0-9
-    val = val.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); })
-             .replace(/[٠-٩]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1632 + 48); });
+    // Show modal
+    box.style.display = 'flex';
+    box.style.opacity = '0';
+    box.style.transition = 'opacity 0.25s ease';
+    setTimeout(function() { box.style.opacity = '1'; }, 10);
 
-    var natVal = document.getElementById('cmd_nationality_id') ? document.getElementById('cmd_nationality_id').value : '1';
-    var isForeign = (natVal === '24' || natVal === 'اتباع خارجی');
+    // Auto-close after 4 seconds
+    if (_alarmTimer) clearTimeout(_alarmTimer);
+    _alarmTimer = setTimeout(function() { close_alarm_box(); }, 4000);
+}
 
-    var hasError = false;
-    var errorMsg = '';
+window.close_alarm_box = close_alarm_box;
+window.display_alarm2 = display_alarm2;
+window.display_alarm = function(alarm_text, obj) {
+    display_alarm2(alarm_text, 'خطا در اطلاعات ورودی', obj, 0);
+};
 
-    if (isForeign) {
-        var firstChar = val.substr(0, 1).toUpperCase();
-        if (firstChar >= 'A' && firstChar <= 'Z') {
-            if (val.length < 5) {
-                hasError = true;
-                errorMsg = 'شماره پاسپورت باید حداقل ۵ کاراکتر باشد';
+// Global keydown listener for Escape key to close modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        close_alarm_box();
+    }
+});
+
+// 4.5 Set_value_numeric from TaskHelpFiles/footballit_script.js
+function Set_value_numeric(obj, max_len) {
+    var elem = document.getElementById(obj);
+    if (!elem) return;
+    var str = elem.value;
+    var temp = '';
+    var str_checked = '';
+    for (var i = 0; i < str.length; i++) {
+        temp = str.substring(i, i + 1);
+        switch (temp.charCodeAt(0)) {
+            case 1777: temp = "1"; break;
+            case 1778: temp = "2"; break;
+            case 1779: temp = "3"; break;
+            case 1780: temp = "4"; break;
+            case 1781: temp = "5"; break;
+            case 1782: temp = "6"; break;
+            case 1783: temp = "7"; break;
+            case 1784: temp = "8"; break;
+            case 1785: temp = "9"; break;
+            case 1776: temp = "0"; break;
+            default:
+                temp = temp;
+        }
+
+        if (48 <= temp.charCodeAt(0) && temp.charCodeAt(0) <= 57) {
+            str_checked = str_checked + temp;
+        }
+        temp = "";
+    }
+    if (str_checked.length > max_len) {
+        str_checked = str_checked.substring(0, max_len);
+    }
+    elem.value = str_checked;
+}
+
+// 4.6 CheckMeliCode - exact method from TaskHelpFiles/footballit_script.js
+var msg = "";
+function CheckMeliCode(obj) {
+    var elem = document.getElementById(obj);
+    var meli_code = (elem && elem.value) ? elem.value.trim() : "";
+    var flag = "";
+    if (meli_code != '') {
+        var temp = meli_code.substr(0, 1).toUpperCase();
+        if (temp >= 'A' && temp <= 'Z') {
+            for (var i = 2; i < meli_code.length; i++) {
+                switch (meli_code.charCodeAt(i)) {
+                    case 1777: temp = "1"; break;
+                    case 1778: temp = "2"; break;
+                    case 1779: temp = "3"; break;
+                    case 1780: temp = "4"; break;
+                    case 1781: temp = "5"; break;
+                    case 1782: temp = "6"; break;
+                    case 1783: temp = "7"; break;
+                    case 1784: temp = "8"; break;
+                    case 1785: temp = "9"; break;
+                    case 1776: temp = "0"; break;
+                    default:
+                        temp = meli_code.substr(i, 1);
+                }
+                if (temp != '0' && temp != '9' && temp != '8'
+                    && temp != '7' && temp != '6' && temp != '5'
+                    && temp != '4' && temp != '3' && temp != '2' && temp != '1') {
+                    flag = '***';
+                }
+            }
+            if (flag != '***') {
+                return true;
+            } else {
+                msg = 'شماره کد ملی یا پاسپورت صحيح نمي باشد';
+                display_alarm(msg, obj);
+                return false;
             }
         } else {
-            if (!/^\d+$/.test(val)) {
-                hasError = true;
-                errorMsg = 'کد فراگیر اتباع باید عددی باشد';
-            } else if (val.length < 10) {
-                hasError = true;
-                errorMsg = 'کد فراگیر باید حداقل ۱۰ رقم باشد';
+            var temp2 = "";
+            for (var i = 0; i < meli_code.length; i++) {
+                switch (meli_code.charCodeAt(i)) {
+                    case 1777: temp = "1"; break;
+                    case 1778: temp = "2"; break;
+                    case 1779: temp = "3"; break;
+                    case 1780: temp = "4"; break;
+                    case 1781: temp = "5"; break;
+                    case 1782: temp = "6"; break;
+                    case 1783: temp = "7"; break;
+                    case 1784: temp = "8"; break;
+                    case 1785: temp = "9"; break;
+                    case 1776: temp = "0"; break;
+                    default:
+                        temp = meli_code.substr(i, 1);
+                }
+                temp2 += temp;
             }
-        }
-    } else {
-        // Iranian National ID
-        if (val.length < 10) {
-            hasError = true;
-            errorMsg = 'کد ملی باید ۱۰ رقم باشد';
-        } else if (val.length === 10) {
-            if (!/^\d{10}$/.test(val)) {
-                hasError = true;
-                errorMsg = 'کد ملی فقط باید شامل اعداد باشد';
-            } else if (/^(\d)\1{9}$/.test(val)) {
-                hasError = true;
-                errorMsg = 'کد ملی نامعتبر است (ارقام تکراری مجاز نیست)';
-            } else if (val === '0123456789' || val === '1234567890' || val === '9876543210' || val === '0987654321') {
-                hasError = true;
-                errorMsg = 'کد ملی نامعتبر است (ارقام متوالی مجاز نیست)';
+            meli_code = temp2;
+            if (meli_code.length == 10) {
+                if (/^(\d)\1{9}$/.test(meli_code) ||
+                    meli_code == '1111111111' ||
+                    meli_code == '0000000000' ||
+                    meli_code == '2222222222' ||
+                    meli_code == '3333333333' ||
+                    meli_code == '4444444444' ||
+                    meli_code == '5555555555' ||
+                    meli_code == '6666666666' ||
+                    meli_code == '7777777777' ||
+                    meli_code == '8888888888' ||
+                    meli_code == '9999999999' ||
+                    meli_code == '0123456789' ||
+                    meli_code == '1234567890' ||
+                    meli_code == '9876543210' ||
+                    meli_code == '0987654321'
+                ) {
+                    msg = 'كد ملي صحيح نمي باشد';
+                    display_alarm(msg, obj);
+                    return false;
+                }
+
+                var c = parseInt(meli_code.charAt(9), 10);
+                var n = parseInt(meli_code.charAt(0), 10) * 10 +
+                    parseInt(meli_code.charAt(1), 10) * 9 +
+                    parseInt(meli_code.charAt(2), 10) * 8 +
+                    parseInt(meli_code.charAt(3), 10) * 7 +
+                    parseInt(meli_code.charAt(4), 10) * 6 +
+                    parseInt(meli_code.charAt(5), 10) * 5 +
+                    parseInt(meli_code.charAt(6), 10) * 4 +
+                    parseInt(meli_code.charAt(7), 10) * 3 +
+                    parseInt(meli_code.charAt(8), 10) * 2;
+                var r = n - parseInt(n / 11, 10) * 11;
+                if ((r == 0 && r == c) || (r == 1 && c == 1) || (r > 1 && c == (11 - r))) {
+                    return true;
+                } else {
+                    msg = 'كد ملي صحيح نمي باشد';
+                    display_alarm(msg, obj);
+                    return false;
+                }
             } else {
-                var check = parseInt(val[9], 10);
-                var sum = 0;
-                for (var i = 0; i < 9; i++) {
-                    sum += parseInt(val[i], 10) * (10 - i);
-                }
-                var remainder = sum % 11;
-                var isValid = (remainder < 2 && check === remainder) || (remainder >= 2 && check === (11 - remainder));
-                if (!isValid) {
-                    hasError = true;
-                    errorMsg = 'کد ملی نامعتبر است';
-                }
+                msg = 'طول کد ملی وارد شده باید 10 کاراکتر باشد';
+                display_alarm(msg, obj);
+                return false;
             }
-        } else if (val.length > 10) {
-            hasError = true;
-            errorMsg = 'طول کد ملی نباید بیشتر از ۱۰ رقم باشد';
         }
-    }
-
-    if (hasError) {
-        input.classList.remove('success');
-        input.classList.add('error');
-        if (label) label.classList.add('error-label');
-
-        var errSpan = document.createElement('span');
-        errSpan.className = 'error-text';
-        errSpan.innerHTML = '<i class="fa fa-exclamation-circle" style="margin-left: 4px;"></i>' + errorMsg;
-        group.appendChild(errSpan);
-        return false;
-    } else if (val.length === 10) {
-        input.classList.remove('error');
-        input.classList.add('success');
-        if (label) label.classList.remove('error-label');
-        return true;
     } else {
-        input.classList.remove('error', 'success');
-        if (label) label.classList.remove('error-label');
-        return true;
+        msg = 'ثبت کد ملی الزامی است';
+        display_alarm(msg, obj);
+        return false;
     }
 }
+
+window.CheckMeliCode = CheckMeliCode;
+window.Set_value_numeric = Set_value_numeric;
 
 // 5. Validation using footballit_script.js rules
 function check_data() {
@@ -4242,40 +4352,9 @@ function check_data() {
         return false;
     }
 
-    // Check National / Foreign ID Not Empty
-    var intIdVal = (document.getElementById("txt_international_id") ? document.getElementById("txt_international_id").value : "").trim();
-    if (intIdVal === '') {
-        display_alarm2("کد ملی بازیکن وارد نشده است. ثبت اطلاعات برای فیلدهای ستاره‌دار الزامی است", "لطفا فیلدهای ستاره‌دار را وارد کنید", "txt_international_id", 0);
+    // Check National / Foreign ID using CheckMeliCode from TaskHelpFiles/footballit_script.js
+    if (!CheckMeliCode('txt_international_id')) {
         return false;
-    }
-
-    // Check Nationality & National ID algorithm from footballit_script.js
-    var natVal = document.getElementById('cmd_nationality_id') ? document.getElementById('cmd_nationality_id').value : '1';
-    if (natVal === '24' || natVal === 'اتباع خارجی') {
-        if (typeof CheckfaragirCode === 'function') {
-            if (!CheckfaragirCode('txt_international_id')) {
-                display_alarm('کد فراگیر را عددی وارد کنید کد وارد شده معتبر نمی‌باشد.', 'txt_international_id');
-                return false;
-            }
-        }
-    } else {
-        if (typeof CheckMeliCode === 'function') {
-            if (!CheckMeliCode('txt_international_id')) {
-                // CheckMeliCode displays alarm internally
-                return false;
-            }
-        }
-        var rawMeli = (document.getElementById("txt_international_id") ? document.getElementById("txt_international_id").value : "").trim();
-        rawMeli = rawMeli.replace(/[۰-۹]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1728); })
-            .replace(/[٠-٩]/g, function (w) { return String.fromCharCode(w.charCodeAt(0) - 1632 + 48); });
-        if (/^(\d)\1{9}$/.test(rawMeli) || rawMeli === '0123456789' || rawMeli === '1234567890' || rawMeli === '9876543210' || rawMeli === '0987654321') {
-            if (typeof display_alarm === 'function') {
-                display_alarm('كد ملي صحيح نمي باشد', 'txt_international_id');
-            } else if (typeof display_alarm2 === 'function') {
-                display_alarm2('کد ملی وارد شده صحیح نیست . لطفا کد ملی را صحیح وارد کنید.', 'خطا در ثبت کد ملی', 'txt_international_id', 0);
-            }
-            return false;
-        }
     }
 
     // Check Gender
@@ -4342,7 +4421,7 @@ function save_data() {
     // Show Loader
     var loader = document.getElementById('divLoader');
     if (loader) {
-        $(loader).fadeIn(150);
+        loader.style.display = 'flex';
     }
 
     // Prepare FormData
@@ -4362,48 +4441,45 @@ function save_data() {
         formData.set("birthDate", shamsiVal);
     }
 
-    $.ajax({
-        url: "/personal-info",
-        type: "POST",
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
+    fetch("/personal-info", {
+        method: "POST",
+        body: formData,
         headers: {
             "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (response) {
-            if (loader) $(loader).fadeOut(150);
-
-            if (response && (response.success === true || response.errorcode === "0")) {
-                var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
-                display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
-
-                // Update Profile Photo if returned
-                if (response.file_logo) {
-                    var docPic = document.getElementById('doc_pic');
-                    if (docPic) docPic.src = response.file_logo;
-                    var topAvatar = document.getElementById('topbar_user_avatar');
-                    if (topAvatar) topAvatar.src = response.file_logo;
-                }
-            } else {
-                var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
-                if (response && response.errorcode) {
-                    switch (response.errorcode) {
-                        case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
-                        case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
-                        case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
-                        case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
-                        case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
-                    }
-                }
-                display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
-            }
-        },
-        error: function (xhr, status, error) {
-            if (loader) $(loader).fadeOut(150);
-            display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
         }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(response) {
+        if (loader) loader.style.display = 'none';
+
+        if (response && (response.success === true || response.errorcode === "0")) {
+            var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
+            display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
+
+            // Update Profile Photo if returned
+            if (response.file_logo) {
+                var docPic = document.getElementById('doc_pic');
+                if (docPic) docPic.src = response.file_logo;
+                var topAvatar = document.getElementById('topbar_user_avatar');
+                if (topAvatar) topAvatar.src = response.file_logo;
+            }
+        } else {
+            var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
+            if (response && response.errorcode) {
+                switch (response.errorcode) {
+                    case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
+                    case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
+                    case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
+                    case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
+                    case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                }
+            }
+            display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
+        }
+    })
+    .catch(function() {
+        if (loader) loader.style.display = 'none';
+        display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
     });
 }
 
@@ -4429,19 +4505,6 @@ document.addEventListener('DOMContentLoaded', function () {
             save_data();
             return false;
         });
-    }
-
-    // Bind Real-time validation for National ID
-    var natInput = document.getElementById('txt_international_id');
-    if (natInput) {
-        natInput.addEventListener('input', validateNationalIdRealtime);
-        natInput.addEventListener('keyup', validateNationalIdRealtime);
-        natInput.addEventListener('change', validateNationalIdRealtime);
-        natInput.addEventListener('blur', validateNationalIdRealtime);
-    }
-    var natSelect = document.getElementById('cmd_nationality_id');
-    if (natSelect) {
-        natSelect.addEventListener('change', validateNationalIdRealtime);
     }
 
     // Bind submit buttons (Top Bar for laptop, Sticky Bottom for mobile)

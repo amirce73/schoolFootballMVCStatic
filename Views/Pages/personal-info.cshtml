@@ -51,10 +51,6 @@
                                 <i class="fa fa-chevron-left" style="font-size: 0.8rem; margin-right: 4px;"></i>
                             </button>
                         </div>
-                        <!-- 4-second auto-close progress bar -->
-                        <div class="fs-modal-progress">
-                            <div class="fs-modal-progress-bar" id="alarm_progress_bar"></div>
-                        </div>
                     </div>
                 </div>
 
@@ -96,7 +92,7 @@
 
                         <div class="input-group">
                             <label class="">کد ملی <span class="text-danger">*</span></label>
-                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_international_id" name="nationalId" value="@Model?.NationalId" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10); if(typeof validateNationalIdRealtime === 'function') validateNationalIdRealtime();" oninput="if(typeof validateNationalIdRealtime === 'function') validateNationalIdRealtime();" onblur="if(typeof validateNationalIdRealtime === 'function') validateNationalIdRealtime();" onchange="if(typeof validateNationalIdRealtime === 'function') validateNationalIdRealtime();">
+                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_international_id" name="nationalId" value="@Model?.NationalId" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10);">
                         </div>
 
                         <div class="input-group">
@@ -305,31 +301,7 @@
                 </div>
             </div>
 
-@section Styles {
-<style>
-.fs-modal-progress {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 4px;
-    background: rgba(0,0,0,0.06);
-    border-radius: 0 0 26px 26px;
-    overflow: hidden;
-}
-.fs-modal-progress-bar {
-    height: 100%;
-    width: 100%;
-    transform-origin: left;
-    animation: fsModalTimer 4s linear forwards;
-}
-.fs-modal-card.is-success .fs-modal-progress-bar { background: linear-gradient(to right, #10b981, #059669); }
-.fs-modal-card.is-error   .fs-modal-progress-bar { background: linear-gradient(to right, #ef4444, #dc2626); }
-.fs-modal-card.is-warning .fs-modal-progress-bar { background: linear-gradient(to right, #f59e0b, #d97706); }
-@@keyframes fsModalTimer {
-    0%   { transform: scaleX(1); }
-    100% { transform: scaleX(0); }
-}
-</style>
-}
+
 
 @section Scripts {
     <script src="~/js/personal-info.js" asp-append-version="true"></script>
