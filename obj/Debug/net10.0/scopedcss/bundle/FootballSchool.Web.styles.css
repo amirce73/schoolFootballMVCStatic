@@ -18,7 +18,8 @@ a[b-5xusgrodst] {
   border-color: var(--primary-hover, #ca8a04);
 }
 
-.nav-pills .nav-link.active[b-5xusgrodst], .nav-pills .show > .nav-link[b-5xusgrodst] {
+.nav-pills .nav-link.active[b-5xusgrodst],
+.nav-pills .show>.nav-link[b-5xusgrodst] {
   color: #fff;
   background-color: var(--primary, #eab308);
   border-color: var(--primary-hover, #ca8a04);
@@ -27,6 +28,7 @@ a[b-5xusgrodst] {
 .border-top[b-5xusgrodst] {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom[b-5xusgrodst] {
   border-bottom: 1px solid #e5e5e5;
 }

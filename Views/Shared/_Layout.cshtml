@@ -56,46 +56,46 @@
             <div class="header-profile-info">
               <span class="name">@_fullName</span>
               <span class="meta">
-                <i class="fa fa-calendar-check-o" style="margin-left: 4px;"></i>عضویت:
-                <strong class="dir-ltr" style="margin-right: 4px;">@_joinDateStr</strong>
+                <i class="fa fa-calendar-check-o header-meta-icon"></i>عضویت:
+                <strong class="dir-ltr header-meta-date">@_joinDateStr</strong>
               </span>
             </div>
           </div>
-          <i class="fa fa-angle-down" style="color: var(--text-muted); margin-right: 4px; font-size: 1.1rem;"></i>
+          <i class="fa fa-angle-down header-profile-arrow"></i>
 
           <div id="profileMenu" class="profile-menu">
-            <div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 20px;">
-              <div style="display: flex; flex-direction: row;">
-                <div style="font-weight: 800; color: var(--text-dark); margin-bottom: 12px; font-size: 1.05rem; text-align: center; display: flex; justify-content: center; align-items: center;">
+            <div class="profile-menu-container">
+              <div class="profile-menu-header">
+                <div class="profile-menu-user-fullname">
                   @_fullName
                 </div>
-                <div style="margin-right: auto; margin-bottom: 12px; display: flex; justify-content: center;">
-                  <a href="/verification" style="text-decoration: none;">
-                    <span class="badge-verify unverified" style="border-color: rgb(51, 65, 85);">
+                <div class="profile-menu-verify-badge-wrap">
+                  <a href="/verification">
+                    <span class="badge-verify unverified">
                       <i class="fa fa-exclamation-circle"></i>استعلام هویت نشده
                     </span>
                   </a>
                 </div>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
+              <div class="profile-menu-info-row">
                 <span>کد ملی:</span> <strong>@_nationalId</strong>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
+              <div class="profile-menu-info-row">
                 <span>تاریخ تولد:</span> <strong class="dir-ltr">@_birthDateStr</strong>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">
+              <div class="profile-menu-info-row">
                 <span>سن:</span> <strong>@_ageStr</strong>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+              <div class="profile-menu-info-row no-margin">
                 <span>رده سنی:</span> <strong>رده سنی جوانان</strong>
               </div>
             </div>
 
-            <a href="/verification" style="color: rgb(51, 65, 85);"><i class="fa fa-shield"></i> تایید هویت و مدارک</a>
-            <form id="logoutForm" method="post" action="/account/logout" style="display: none;">
+            <a href="/verification" class="profile-menu-verify-link"><i class="fa fa-shield"></i> تایید هویت و مدارک</a>
+            <form id="logoutForm" method="post" action="/account/logout">
               @Html.AntiForgeryToken()
             </form>
-            <a href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();" style="color: var(--danger); padding: 12px 16px;">
+            <a href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();" class="profile-menu-logout-link">
               <i class="fa fa-sign-out"></i> خروج از حساب
             </a>
           </div>
@@ -103,7 +103,7 @@
 
         <div class="header-actions">
           <!-- Bulletin / Notifications Button -->
-          <a href="/bulletin" class="btn-noti" title="اعلان‌ها" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+          <a href="/bulletin" class="btn-noti" title="اعلان‌ها">
             <i class="fa fa-bell-o"></i>
             <span class="badge">۳</span>
           </a>
@@ -116,7 +116,7 @@
 
     <!-- Desktop Sidebar -->
     <aside class="desktop-sidebar">
-      <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-right: 8px;">
+      <div class="sidebar-title">
         منوی اصلی
       </div>
       <a class="dnav-item @(_isDashboard ? "active" : "")" href="/dashboard"><i class="fa fa-home"></i> خانه</a>
@@ -261,8 +261,8 @@
 
   @if (TempData["Success"] != null)
   {
-    <div id="toast-success" style="position: fixed; bottom: 80px; left: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-family: inherit;">
-      <i class="fa fa-check-circle" style="margin-left: 8px;"></i> @TempData["Success"]
+    <div id="toast-success" class="toast-success-banner">
+      <i class="fa fa-check-circle"></i> @TempData["Success"]
     </div>
     <script>
       setTimeout(function() {
@@ -277,7 +277,7 @@
   }
 
   <!-- Modern Global AJAX Loading Spinner Overlay -->
-  <div id="divLoader" style="display: none;">
+  <div id="divLoader">
       <div class="loader-card">
           <i class="fa fa-circle-o-notch fa-spin"></i>
           <span>در حال ارسال و ثبت اطلاعات، لطفا صبور باشید...</span>
@@ -285,7 +285,7 @@
   </div>
 
   <!-- Modern Global Result Notification Modal -->
-  <div class="fs-modal-backdrop" id="alaram_box" style="display: none; opacity: 0;" onclick="if(event.target === this) close_alarm_box();">
+  <div class="fs-modal-backdrop" id="alaram_box" onclick="if(event.target === this) close_alarm_box();">
       <div class="fs-modal-card is-success" id="alarm_card">
           <button type="button" class="fs-modal-close" onclick="close_alarm_box();" title="بستن">
               <i class="fa fa-times"></i>
@@ -297,9 +297,9 @@
           </div>
           <input type="hidden" id="hdn_alarm" value="" />
           <!-- Fallback elements for legacy script compatibility -->
-          <span id="td1" style="display: none;"></span>
-          <span id="td2" style="display: none;"></span>
-          <img id="alarm_pic" style="display: none;" />
+          <span id="td1"></span>
+          <span id="td2"></span>
+          <img id="alarm_pic" />
 
           <h4 class="fs-modal-title" id="lbl1">ثبت اطلاعات</h4>
           <div class="fs-modal-body" id="td3">
@@ -308,7 +308,7 @@
           <div class="fs-modal-footer">
               <button type="button" class="fs-modal-btn" id="alarm_btn" onclick="close_alarm_box();">
                   <span>متوجه شدم</span>
-                  <i class="fa fa-chevron-left" style="font-size: 0.8rem; margin-right: 4px;"></i>
+                  <i class="fa fa-chevron-left modal-btn-chevron"></i>
               </button>
           </div>
       </div>

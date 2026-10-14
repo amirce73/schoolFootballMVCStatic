@@ -9722,3 +9722,395 @@ body.fs-modal-open {
 }
 
 /* ===== END: wwwroot/css/personal-info.css ===== */
+
+/* ========================================================
+   Layout & Dashboard Transferred Styles
+   ======================================================== */
+
+/* Universal Box-Sizing & Reset Guarantee */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Profile & Top Navbar */
+.header-meta-icon {
+    margin-left: 4px;
+}
+.header-meta-date {
+    margin-right: 4px;
+}
+.header-profile-arrow {
+    color: var(--text-muted);
+    margin-right: 4px;
+    font-size: 1.1rem;
+}
+.profile-menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 20px;
+}
+.profile-menu-header {
+    display: flex;
+    flex-direction: row;
+}
+.profile-menu-user-fullname {
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.profile-menu-verify-badge-wrap {
+    margin-right: auto;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+.profile-menu-verify-badge-wrap a {
+    text-decoration: none;
+}
+.badge-verify.verified {
+    border-color: var(--success);
+}
+.badge-verify.unverified {
+    border-color: rgb(51, 65, 85);
+}
+.profile-menu-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+.profile-menu-info-row.no-margin {
+    margin-bottom: 0;
+}
+.profile-menu-verify-link {
+    color: rgb(51, 65, 85);
+}
+.profile-menu-logout-link {
+    color: var(--danger) !important;
+    padding: 12px 16px !important;
+}
+.btn-noti {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.sidebar-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    padding-right: 8px;
+}
+
+/* Modal School Details */
+.modal-overlay {
+    display: none;
+}
+.modal-info-title-icon {
+    color: rgb(234, 179, 8);
+}
+.info-icon.bg-blue {
+    background: rgb(219, 234, 254);
+    color: rgb(59, 130, 246);
+}
+.info-icon.bg-green {
+    background: rgb(220, 252, 231);
+    color: rgb(34, 197, 94);
+}
+.info-icon.bg-purple {
+    background: rgb(243, 232, 255);
+    color: rgb(168, 85, 247);
+}
+
+/* Club Intro Card */
+.profile-club-row.club-intro-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.club-intro-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.club-intro-row .club-info {
+    margin-right: 18px;
+    margin-left: 0px;
+}
+.club-intro-title {
+    margin: 0px 0px 8px;
+    font-size: 1.2rem;
+    color: black;
+}
+.club-intro-tag {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    opacity: 1;
+    color: rgb(113 113 122 / var(--tw-text-opacity, 1));
+}
+.social-icon-telegram {
+    color: deepskyblue;
+}
+.social-icon-instagram {
+    color: red;
+}
+.social-icon-whatsapp {
+    color: lawngreen;
+}
+.social-icon-globe {
+    color: orange;
+}
+.action-row.mb-6 {
+    margin-bottom: 6px;
+}
+.action-warning-icon {
+    color: rgb(253, 224, 71);
+    font-size: 1rem;
+}
+.progress-fill.w-32 {
+    width: 32%;
+}
+
+/* School Top Registration Card */
+.card.registration-card.school-registration-card {
+    flex: 1 1 0%;
+    margin: 0px;
+    cursor: pointer;
+    border: 1px solid var(--primary);
+}
+.school-registration-card .reg-label {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+.school-registration-card .reg-val {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.school-registration-card .reg-status {
+    border-radius: 16px;
+    background: rgb(224, 242, 254);
+    color: rgb(3, 105, 161);
+    font-weight: bold;
+}
+
+/* School Top BMI Card */
+.card.bmi-card.school-top-bmi-card {
+    cursor: pointer;
+    flex: 1 1 0%;
+    margin: 0px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.school-top-bmi-card .bmi-label {
+    color: var(--text-muted);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    width: 100%;
+}
+.school-top-bmi-card .bmi-label svg {
+    flex-shrink: 0;
+}
+.bmi-label-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.bmi-label-text-main {
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+.bmi-label-text-sub {
+    white-space: nowrap;
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: -2px;
+}
+.bmi-values-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.school-top-bmi-card .bmi-val {
+    font-weight: 900;
+    color: var(--text-dark);
+    font-size: 1.2rem;
+}
+.school-top-bmi-card .bmi-status {
+    border-radius: 16px;
+    background: rgb(241, 245, 249);
+    color: rgb(71, 85, 105);
+    font-weight: bold;
+    padding: 2px 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+/* School Top Debt Card */
+.card.debt-card.school-debt-card {
+    flex: 1 1 0%;
+    margin: 0px;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.school-debt-card .debt-info-wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0px;
+    margin-bottom: 6px;
+}
+.school-debt-card .debt-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+}
+.school-debt-card .label {
+    white-space: nowrap;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+.school-debt-card .amount {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+.school-debt-card .debt-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    opacity: 0.9;
+}
+.school-debt-card .btn-credit {
+    margin: 0px auto;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    min-height: auto;
+    width: 100%;
+}
+
+/* Stat Cards & KPI */
+.stat-card.school-stat-card {
+    cursor: pointer;
+}
+.stat-icon.kpi-bmi-gauge {
+    color: rgb(71, 85, 105);
+    background: rgb(241, 245, 249);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+}
+.stat-icon.kpi-talent-search {
+    color: rgb(147, 51, 234);
+    background: rgb(243, 232, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+/* Dash Action Cards & News */
+.dash-action-card {
+    cursor: pointer;
+}
+.card.news-card {
+    cursor: pointer;
+    margin-bottom: 0px;
+}
+.news-header h4 .news-bell-icon {
+    color: var(--primary);
+}
+
+/* Toast & Utility */
+.toast-success-banner {
+    position: fixed;
+    bottom: 80px;
+    left: 20px;
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-family: inherit;
+}
+.toast-success-banner i {
+    margin-left: 8px;
+}
+.modal-btn-chevron {
+    font-size: 0.8rem;
+    margin-right: 4px;
+}
+}
+.d-none,
+#logoutForm,
+#td1,
+#td2,
+#alarm_pic {
+    display: none !important;
+}
+
+/* Layout Helper Utilities from _Layout.cshtml.css */
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary, #eab308);
+    border-color: var(--primary-hover, #ca8a04);
+}
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: var(--primary, #eab308);
+    border-color: var(--primary-hover, #ca8a04);
+}
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}

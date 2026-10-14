@@ -17,7 +17,8 @@ a {
   border-color: var(--primary-hover, #ca8a04);
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
   color: #fff;
   background-color: var(--primary, #eab308);
   border-color: var(--primary-hover, #ca8a04);
@@ -26,6 +27,7 @@ a {
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
