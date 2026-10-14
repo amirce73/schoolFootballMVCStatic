@@ -9536,6 +9536,10 @@ body.fs-modal-open {
     display: block !important;
 }
 
+.custom-select-wrapper:not(.open) .custom-select-dropdown {
+    display: none !important;
+}
+
 .custom-select-dropdown {
     border: 1px solid #cbd5e1 !important;
     border-radius: 10px !important;
@@ -9550,3 +9554,171 @@ body.fs-modal-open {
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
 }
+
+/* ===== START: wwwroot/css/personal-info.css ===== */
+/* Scoped & Non-conflicting Personal Info Page Styles */
+#view-personal-info .dir-ltr {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+#view-personal-info .text-danger {
+    color: var(--danger, #ef4444) !important;
+}
+
+#view-personal-info .hidden-native-select {
+    display: none !important;
+}
+
+#view-personal-info .hidden-file-input {
+    display: none !important;
+}
+
+#view-personal-info .desktop-anchor {
+    display: none !important;
+}
+
+#view-personal-info .date-picker-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-sm, 8px);
+    font-size: 0.85rem;
+    background: #f8fafc;
+    color: inherit;
+    cursor: pointer;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.2s ease;
+}
+
+#view-personal-info .date-picker-input:hover {
+    border-color: var(--primary, #eab308);
+}
+
+#view-personal-info .mobile-only-spacer {
+    height: 85px;
+    flex-shrink: 0;
+}
+
+#view-personal-info .input-group.full-width {
+    grid-column: 1 / -1;
+}
+
+#view-personal-info .form-bottom-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light, #e2e8f0);
+    direction: rtl;
+}
+
+#view-personal-info .btn-action-save {
+    min-width: 140px;
+    padding: 12px 34px;
+    background: var(--primary, #eab308);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm, 8px);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(234, 179, 8, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#view-personal-info .btn-action-save:hover {
+    background: var(--primary-hover, #ca8a04);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(234, 179, 8, 0.35);
+}
+
+#view-personal-info .btn-action-cancel {
+    min-width: 140px;
+    padding: 12px 34px;
+    background: var(--danger, #ef4444);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm, 8px);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#view-personal-info .btn-action-cancel:hover {
+    background: var(--danger-hover, #dc2626);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+}
+
+#view-personal-info .photo-upload-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+#view-personal-info .photo-upload-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #334155;
+}
+
+#view-personal-info .photo-upload-subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--danger, #ef4444);
+}
+
+#view-personal-info .photo-upload-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+#view-personal-info .btn-upload {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: var(--primary, #eab308);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm, 8px);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.2);
+    transition: all 0.2s ease;
+}
+
+#view-personal-info .btn-upload:hover {
+    background: var(--primary-hover, #ca8a04);
+    transform: translateY(-1px);
+}
+
+#view-personal-info .upload-filename {
+    font-size: 0.8rem;
+    color: #0284c7;
+    font-weight: 600;
+}
+
+/* ===== END: wwwroot/css/personal-info.css ===== */
