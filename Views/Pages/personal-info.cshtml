@@ -16,45 +16,8 @@
                     </button>
                 </div>
 
-                <!-- Modern AJAX Loading Spinner Overlay -->
-                <div id="divLoader" style="display: none;">
-                    <div class="loader-card">
-                        <i class="fa fa-circle-o-notch fa-spin"></i>
-                        <span>در حال ارسال و ثبت اطلاعات، لطفا صبور باشید...</span>
-                    </div>
-                </div>
 
-                <!-- Modern Result Notification Modal -->
-                <div class="fs-modal-backdrop" id="alaram_box" style="display: none; opacity: 0;" onclick="if(event.target === this) close_alarm_box();">
-                    <div class="fs-modal-card is-success" id="alarm_card">
-                        <button type="button" class="fs-modal-close" onclick="close_alarm_box();" title="بستن">
-                            <i class="fa fa-times"></i>
-                        </button>
-                        <div class="fs-modal-icon-wrap" id="alarm_icon_wrap">
-                            <div class="fs-modal-icon-circle" id="alarm_icon_circle">
-                                <i class="fa fa-check" id="alarm_icon"></i>
-                            </div>
-                        </div>
-                        <input type="hidden" id="hdn_alarm" value="" />
-                        <!-- Fallback elements for legacy script compatibility -->
-                        <span id="td1" style="display: none;"></span>
-                        <span id="td2" style="display: none;"></span>
-                        <img id="alarm_pic" style="display: none;" />
-
-                        <h4 class="fs-modal-title" id="lbl1">ثبت اطلاعات</h4>
-                        <div class="fs-modal-body" id="td3">
-                            <p id="lbl2"></p>
-                        </div>
-                        <div class="fs-modal-footer">
-                            <button type="button" class="fs-modal-btn" id="alarm_btn" onclick="close_alarm_box();">
-                                <span>متوجه شدم</span>
-                                <i class="fa fa-chevron-left" style="font-size: 0.8rem; margin-right: 4px;"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
+                <div class="card" style="overflow: visible;">
                     <form id="personal-info-form" class="form-grid" method="post" action="/personal-info" onsubmit="event.preventDefault(); save_data(); return false;" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="All" style="grid-column: 1 / -1; color: red; margin-bottom: 15px; font-weight: bold; display: none;"></div>
@@ -129,7 +92,7 @@
 
                         <div class="input-group">
                             <label class="">محل صدور</label>
-                            <input maxlength="50" class="" type="text" id="txt_location_id" name="issuePlace" value="@Model?.IssuePlace">
+                            <input maxlength="50" class="" type="text" id="txt_location_id" name="issuePlace" value="@Model?.IssuePlace" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
                         </div>
 
                         <div class="input-group">
@@ -139,13 +102,13 @@
 
                         <div class="input-group">
                             <label class="">شغل پدر</label>
-                            <input maxlength="50" class="" type="text" id="txt_father_job" name="fatherJob" value="@Model?.FatherJob">
+                            <input maxlength="50" class="" type="text" id="txt_father_job" name="fatherJob" value="@Model?.FatherJob" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
                         </div>
 
                         <!-- 2. Job changed to "شغل بازیکن" -->
                         <div class="input-group">
                             <label class="">شغل بازیکن</label>
-                            <input maxlength="50" class="" type="text" id="txt_job" name="occupation" value="@Model?.Occupation">
+                            <input maxlength="50" class="" type="text" id="txt_job" name="occupation" value="@Model?.Occupation" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
                         </div>
 
                         <div class="input-group">
@@ -160,13 +123,13 @@
 
                         <div class="input-group">
                             <label class="">تاریخ تولد میلادی</label>
-                            <input maxlength="10" class="dir-ltr" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" placeholder="YYYY/MM/DD">
+                            <input class="" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" readonly tabindex="-1" onfocus="this.blur();" style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default; direction: ltr; text-align: center;" placeholder="YYYY/MM/DD">
                         </div>
 
                         <!-- 3. Age Field with Theme Primary Color (Yellow #eab308) Background -->
                         <div class="input-group">
                             <label class="">سن</label>
-                            <input class="" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default;">
+                            <input class="" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly tabindex="-1" onfocus="this.blur();" style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default;">
                         </div>
 
                         <div class="input-group">

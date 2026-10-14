@@ -3327,7 +3327,7 @@ img {
 
     to {
         opacity: 1;
-        transform: translateY(0)
+        transform: none
     }
 }
 
@@ -8586,16 +8586,27 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
 /* Modern AJAX Loading Spinner Overlay */
 #divLoader {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.6);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    z-index: 2147483647 !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    background: rgba(15, 23, 42, 0.6) !important;
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-    z-index: 999999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+    overflow: hidden !important;
 }
 .loader-card {
     background: #ffffff;
@@ -8620,31 +8631,45 @@ svg.leaflet-image-layer.leaflet-interactive path {
 /* Modern Notification / Result Modal Box */
 #alaram_box,
 .fs-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.65);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    z-index: 999999;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    z-index: 2147483647 !important;
     display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    overflow-y: auto;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    background: rgba(15, 23, 42, 0.65) !important;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
 }
 
 .fs-modal-card {
     background: #ffffff;
-    border-radius: 26px;
+    border-radius: 24px;
     width: 100%;
-    max-width: 440px;
-    padding: 36px 30px 28px;
+    max-width: 420px;
+    margin: auto !important;
+    padding: 30px 22px 24px;
     text-align: center;
     box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.5);
     position: relative;
     direction: rtl;
     font-family: inherit;
-    animation: fsModalCardPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    box-sizing: border-box;
+    animation: fsModalCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
@@ -9068,4 +9093,48 @@ svg.leaflet-image-layer.leaflet-interactive path {
     font-weight: 800;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(234, 179, 8, 0.3);
+}
+
+body.fs-modal-open {
+    overflow: hidden !important;
+}
+
+/* Custom Select Overflow & Stacking Fixes */
+.card:has(.custom-select-wrapper),
+.card.has-select {
+    overflow: visible !important;
+}
+
+.input-group:has(.custom-select-wrapper.open),
+.input-group.has-open-select {
+    z-index: 1000 !important;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-wrapper.open {
+    z-index: 1001 !important;
+}
+
+.custom-select-wrapper.open .custom-select-dropdown {
+    z-index: 99999 !important;
+    display: block !important;
+}
+
+.custom-select-dropdown {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+    z-index: 99999 !important;
+    background: #ffffff !important;
+    max-height: 240px !important;
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
 }

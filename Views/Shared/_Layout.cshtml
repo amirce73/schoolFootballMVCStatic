@@ -210,11 +210,18 @@
       if (trigger) {
         const wrapper = trigger.closest('.custom-select-wrapper');
         if (wrapper) {
-          wrapper.classList.toggle('open');
+          const isOpen = wrapper.classList.toggle('open');
+          const group = wrapper.closest('.input-group');
+          if (group) {
+            if (isOpen) group.classList.add('has-open-select');
+            else group.classList.remove('has-open-select');
+          }
         }
       } else {
         document.querySelectorAll('.custom-select-wrapper.open').forEach(function(w) {
           w.classList.remove('open');
+          const g = w.closest('.input-group');
+          if (g) g.classList.remove('has-open-select');
         });
       }
 
@@ -232,6 +239,8 @@
             selectEl.dispatchEvent(new Event('change', { bubbles: true }));
           }
           wrapper.classList.remove('open');
+          const g = wrapper.closest('.input-group');
+          if (g) g.classList.remove('has-open-select');
         }
       }
     });
@@ -266,6 +275,44 @@
       }, 3000);
     </script>
   }
+
+  <!-- Modern Global AJAX Loading Spinner Overlay -->
+  <div id="divLoader" style="display: none;">
+      <div class="loader-card">
+          <i class="fa fa-circle-o-notch fa-spin"></i>
+          <span>در حال ارسال و ثبت اطلاعات، لطفا صبور باشید...</span>
+      </div>
+  </div>
+
+  <!-- Modern Global Result Notification Modal -->
+  <div class="fs-modal-backdrop" id="alaram_box" style="display: none; opacity: 0;" onclick="if(event.target === this) close_alarm_box();">
+      <div class="fs-modal-card is-success" id="alarm_card">
+          <button type="button" class="fs-modal-close" onclick="close_alarm_box();" title="بستن">
+              <i class="fa fa-times"></i>
+          </button>
+          <div class="fs-modal-icon-wrap" id="alarm_icon_wrap">
+              <div class="fs-modal-icon-circle" id="alarm_icon_circle">
+                  <i class="fa fa-check" id="alarm_icon"></i>
+              </div>
+          </div>
+          <input type="hidden" id="hdn_alarm" value="" />
+          <!-- Fallback elements for legacy script compatibility -->
+          <span id="td1" style="display: none;"></span>
+          <span id="td2" style="display: none;"></span>
+          <img id="alarm_pic" style="display: none;" />
+
+          <h4 class="fs-modal-title" id="lbl1">ثبت اطلاعات</h4>
+          <div class="fs-modal-body" id="td3">
+              <p id="lbl2"></p>
+          </div>
+          <div class="fs-modal-footer">
+              <button type="button" class="fs-modal-btn" id="alarm_btn" onclick="close_alarm_box();">
+                  <span>متوجه شدم</span>
+                  <i class="fa fa-chevron-left" style="font-size: 0.8rem; margin-right: 4px;"></i>
+              </button>
+          </div>
+      </div>
+  </div>
 
   <script src="~/lib/sweetalert2/sweetalert2.all.min.js"></script>
   <script src="~/js/player.js" asp-append-version="true"></script>

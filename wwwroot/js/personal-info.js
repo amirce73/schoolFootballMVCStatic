@@ -123,7 +123,8 @@ function close_alarm_box() {
     if (!box) return;
     box.style.opacity = '0';
     box.style.transition = 'opacity 0.2s ease';
-    setTimeout(function() {
+    document.body.classList.remove('fs-modal-open');
+    setTimeout(function () {
         box.style.display = 'none';
         box.style.opacity = '';
         box.style.transition = '';
@@ -140,6 +141,11 @@ function display_alarm2(alarm_text, titel, obj, flag) {
     var defaultTitle = isSuccess ? 'ثبت موفق اطلاعات' : (isWarning ? 'هشدار سیستم' : 'خطا در ثبت اطلاعات');
     var finalTitle = titel || defaultTitle;
 
+    // Dismiss mobile virtual keyboard if open
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+    }
+
     var card = document.getElementById('alarm_card');
     var icon = document.getElementById('alarm_icon');
     var titleEl = document.getElementById('lbl1');
@@ -148,6 +154,11 @@ function display_alarm2(alarm_text, titel, obj, flag) {
     var box = document.getElementById('alaram_box');
 
     if (!box) return;
+
+    // Ensure modal is direct child of body (bypasses any parent transforms/overflows)
+    if (box.parentNode !== document.body) {
+        document.body.appendChild(box);
+    }
 
     if (hdn) hdn.value = obj || '';
     if (titleEl) titleEl.textContent = finalTitle;
@@ -167,25 +178,26 @@ function display_alarm2(alarm_text, titel, obj, flag) {
         }
     }
 
-    // Show modal
+    // Lock body scroll and show modal centered in current viewport
+    document.body.classList.add('fs-modal-open');
     box.style.display = 'flex';
     box.style.opacity = '0';
     box.style.transition = 'opacity 0.25s ease';
-    setTimeout(function() { box.style.opacity = '1'; }, 10);
+    setTimeout(function () { box.style.opacity = '1'; }, 10);
 
     // Auto-close after 4 seconds
     if (_alarmTimer) clearTimeout(_alarmTimer);
-    _alarmTimer = setTimeout(function() { close_alarm_box(); }, 4000);
+    _alarmTimer = setTimeout(function () { close_alarm_box(); }, 4000);
 }
 
 window.close_alarm_box = close_alarm_box;
 window.display_alarm2 = display_alarm2;
-window.display_alarm = function(alarm_text, obj) {
+window.display_alarm = function (alarm_text, obj) {
     display_alarm2(alarm_text, 'خطا در اطلاعات ورودی', obj, 0);
 };
 
 // Global keydown listener for Escape key to close modal
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.key === 'Esc') {
         close_alarm_box();
     }
@@ -414,6 +426,99 @@ function check_data() {
     return true;
 }
 
+// Disallow entering numbers in txt_location_id, txt_father_job, txt_job
+function setupNoNumbersValidation() {
+    var fieldIds = ['txt_location_id', 'txt_father_job', 'txt_job'];
+    var digitRegex = /[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g;
+    var singleDigitRegex = /[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/;
+
+    function sanitizeField(el) {
+        if (!el) return;
+        var curVal = el.value || '';
+        if (digitRegex.test(curVal)) {
+            el.value = curVal.replace(digitRegex, '');
+        }
+    }
+
+    fieldIds.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+
+        // Clean initial value
+        sanitizeField(el);
+
+        // Block digit keystrokes
+        el.addEventListener('keydown', function (e) {
+            if (e.key && singleDigitRegex.test(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        el.addEventListener('keypress', function (e) {
+            var charCode = (typeof e.which === 'number') ? e.which : e.keyCode;
+            var charStr = String.fromCharCode(charCode);
+            if (singleDigitRegex.test(charStr) || (e.key && singleDigitRegex.test(e.key))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Instant cleanup on any input (typing, mobile IME, virtual keyboard, autocomplete, drag-drop)
+        el.addEventListener('input', function () {
+            sanitizeField(this);
+        });
+
+        // Intercept paste
+        el.addEventListener('paste', function (e) {
+            var pasteData = (e.clipboardData || window.clipboardData) ? (e.clipboardData || window.clipboardData).getData('text') : '';
+            if (pasteData && digitRegex.test(pasteData)) {
+                e.preventDefault();
+                var cleaned = pasteData.replace(digitRegex, '');
+                if (document.queryCommandSupported && document.queryCommandSupported('insertText')) {
+                    document.execCommand('insertText', false, cleaned);
+                } else {
+                    var start = this.selectionStart || 0;
+                    var end = this.selectionEnd || 0;
+                    this.value = this.value.substring(0, start) + cleaned + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = start + cleaned.length;
+                }
+            }
+        });
+
+        el.addEventListener('blur', function () {
+            sanitizeField(this);
+        });
+    });
+
+    // Enforce display-only / readonly on Gregorian birth date
+    var miladiInput = document.getElementById('txt_birth_date_miladi');
+    if (miladiInput) {
+        miladiInput.readOnly = true;
+        miladiInput.tabIndex = -1;
+        miladiInput.addEventListener('keydown', function (e) {
+            e.preventDefault();
+            return false;
+        });
+        miladiInput.addEventListener('focus', function () {
+            this.blur();
+        });
+    }
+
+    var ageInput = document.getElementById('lbl_age');
+    if (ageInput) {
+        ageInput.readOnly = true;
+        ageInput.tabIndex = -1;
+        ageInput.addEventListener('keydown', function (e) {
+            e.preventDefault();
+            return false;
+        });
+        ageInput.addEventListener('focus', function () {
+            this.blur();
+        });
+    }
+}
+
 // 6. Full AJAX Form Submission ("agex")
 function save_data() {
     if (!check_data()) {
@@ -423,9 +528,20 @@ function save_data() {
     var form = document.getElementById('personal-info-form');
     if (!form) return;
 
+    // Sanitize no-digit fields before submitting
+    ['txt_location_id', 'txt_father_job', 'txt_job'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && el.value) {
+            el.value = el.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');
+        }
+    });
+
     // Show Loader
     var loader = document.getElementById('divLoader');
     if (loader) {
+        if (loader.parentNode !== document.body) {
+            document.body.appendChild(loader);
+        }
         loader.style.display = 'flex';
     }
 
@@ -453,39 +569,39 @@ function save_data() {
             "X-Requested-With": "XMLHttpRequest"
         }
     })
-    .then(function(res) { return res.json(); })
-    .then(function(response) {
-        if (loader) loader.style.display = 'none';
+        .then(function (res) { return res.json(); })
+        .then(function (response) {
+            if (loader) loader.style.display = 'none';
 
-        if (response && (response.success === true || response.errorcode === "0")) {
-            var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
-            display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
+            if (response && (response.success === true || response.errorcode === "0")) {
+                var successMsg = response.message || "اطلاعات با موفقیت ذخیره شد.";
+                display_alarm2(successMsg, "ثبت اطلاعات", "", 1);
 
-            // Update Profile Photo if returned
-            if (response.file_logo) {
-                var docPic = document.getElementById('doc_pic');
-                if (docPic) docPic.src = response.file_logo;
-                var topAvatar = document.getElementById('topbar_user_avatar');
-                if (topAvatar) topAvatar.src = response.file_logo;
-            }
-        } else {
-            var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
-            if (response && response.errorcode) {
-                switch (response.errorcode) {
-                    case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
-                    case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
-                    case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
-                    case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
-                    case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                // Update Profile Photo if returned
+                if (response.file_logo) {
+                    var docPic = document.getElementById('doc_pic');
+                    if (docPic) docPic.src = response.file_logo;
+                    var topAvatar = document.getElementById('topbar_user_avatar');
+                    if (topAvatar) topAvatar.src = response.file_logo;
                 }
+            } else {
+                var errorMsg = (response && response.message) ? response.message : "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید.";
+                if (response && response.errorcode) {
+                    switch (response.errorcode) {
+                        case "1": errorMsg = "شما مدت زیادی است که از سیستم استفاده نکرده‌اید. لطفا مجددا وارد شوید."; break;
+                        case "2": errorMsg = "کد ملی وارد شده تکراری است!"; break;
+                        case "3": errorMsg = "لازم است شما مجددا در سیستم وارد شوید."; break;
+                        case "6": errorMsg = response.message || "خطا در بارگذاری تصویر بازیکن."; break;
+                        case "10": errorMsg = response.message || "در ثبت اطلاعات با خطائی مواجه شده‌اید. لطفا مجددا سعی نمائید."; break;
+                    }
+                }
+                display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
             }
-            display_alarm2(errorMsg, "خطا در ثبت اطلاعات", "", 0);
-        }
-    })
-    .catch(function() {
-        if (loader) loader.style.display = 'none';
-        display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
-    });
+        })
+        .catch(function () {
+            if (loader) loader.style.display = 'none';
+            display_alarm2("در برقراری ارتباط با سرور خطایی رخ داد. لطفا اتصال اینترنت خود را بررسی نموده و مجددا سعی نمایید.", "خطا در برقراری ارتباط", "", 0);
+        });
 }
 
 // 7. Page Load Listeners
@@ -501,6 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hiddenBirth.addEventListener('change', syncBirthDetails);
     }
     syncBirthDetails();
+    setupNoNumbersValidation();
 
     // Prevent default form submit on personal-info-form
     var form = document.getElementById('personal-info-form');
