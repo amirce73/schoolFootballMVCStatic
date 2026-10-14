@@ -10113,4 +10113,141 @@ body.fs-modal-open {
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
-}
+}
+
+/* ========================================================
+   Profile Hub & Personal Info Transferred Styles
+   ======================================================== */
+
+/* Profile Hub */
+.top-bar-spacer {
+    width: 80px;
+}
+.profile-header-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffffff;
+    padding: 12px 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+}
+.profile-hub-avatar-wrap {
+    position: relative;
+}
+.profile-hub-avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+}
+.profile-hub-avatar-btn {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.profile-hub-username {
+    margin-top: 16px;
+    margin-bottom: 4px;
+    color: var(--text-dark);
+}
+.profile-hub-nid {
+    margin: 0px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.verify-banner-icon {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+.verify-banner-shield {
+    font-size: 2.4rem;
+}
+.btn-verify-action {
+    cursor: pointer;
+}
+.frame-title .icon-personal {
+    color: var(--primary);
+}
+.frame-title .icon-sports {
+    color: var(--warning);
+}
+.frame-title .icon-documents {
+    color: var(--danger);
+}
+.frame-title .icon-security {
+    color: var(--success);
+}
+.frame-item {
+    cursor: pointer;
+}
+
+/* Personal Info Page Utilities */
+.card-overflow-visible {
+    overflow: visible !important;
+}
+.validation-summary-box {
+    grid-column: 1 / -1;
+    color: var(--danger, #ef4444);
+    margin-bottom: 15px;
+    font-weight: bold;
+    display: none;
+}
+.date-picker-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-sm, 8px);
+    font-size: 0.85rem;
+    background: #f8fafc;
+    color: inherit;
+    cursor: pointer;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+}
+.date-picker-placeholder {
+    color: #94a3b8;
+}
+.input-highlight-gold {
+    background-color: rgba(234, 179, 8, 0.16) !important;
+    color: #854d0e !important;
+    border: 1.5px solid var(--primary, #eab308) !important;
+    font-weight: 700 !important;
+    cursor: default;
+}
+.input-highlight-gold.text-center {
+    direction: ltr;
+    text-align: center;
+}
+.col-span-full {
+    grid-column: 1 / -1;
+}
+.mobile-only-spacer {
+    height: 85px;
+    flex-shrink: 0;
+}
+.desktop-anchor {
+    display: none;
+}
+.sticky-submit-btn i {
+    margin-left: 8px;
+}
+.btn-top-action i {
+    margin-left: 8px;
+}
+

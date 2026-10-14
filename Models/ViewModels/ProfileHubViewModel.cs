@@ -7,6 +7,7 @@ namespace FootballSchool.Web.Models.ViewModels
     {
         public ApplicationUser User { get; set; } = null!;
         public int CompletionPercentage { get; set; }
+        public bool IsVerified => !string.IsNullOrEmpty(User?.NationalId);
         
         public int Age
         {

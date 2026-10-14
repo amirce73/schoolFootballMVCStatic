@@ -12,15 +12,15 @@
                     </button>
                     <h3 class="sticky-title">اطلاعات فردی</h3>
                     <button type="submit" form="personal-info-form" class="btn-top-action btn-submit-top">
-                        <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+                        <i class="fa fa-check"></i>ثبت اطلاعات
                     </button>
                 </div>
 
 
-                <div class="card" style="overflow: visible;">
+                <div class="card card-overflow-visible">
                     <form id="personal-info-form" class="form-grid" method="post" action="/personal-info" onsubmit="event.preventDefault(); save_data(); return false;" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
-                        <div asp-validation-summary="All" style="grid-column: 1 / -1; color: red; margin-bottom: 15px; font-weight: bold; display: none;"></div>
+                        <div asp-validation-summary="All" class="validation-summary-box"></div>
 
                         <!-- 1. Profile Photo Selection Section -->
                         <div class="photo-upload-container">
@@ -38,7 +38,7 @@
                                         <i class="fa fa-upload"></i> انتخاب تصویر پروفایل
                                     </button>
                                     <span class="photo-file-name" id="lbl_FileUpload"></span>
-                                    <input type="file" id="FileUpload" name="profilePhoto" accept=".jpg,.jpeg,.png,.webp,.tiff" style="display: none;" onchange="previewImage(this);" />
+                                    <input type="file" id="FileUpload" name="profilePhoto" accept=".jpg,.jpeg,.png,.webp,.tiff" class="d-none" onchange="previewImage(this);" />
                                 </div>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                         <div class="input-group">
                             <label class="">جنسیت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper">
-                                <select name="gender" id="cmd_gender" class="hidden-native-select" style="display: none;">
+                                <select name="gender" id="cmd_gender" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مرد" selected="@(Model?.Gender == "مرد")">مرد</option>
                                     <option value="زن" selected="@(Model?.Gender == "زن")">زن</option>
@@ -113,9 +113,8 @@
 
                         <div class="input-group">
                             <label class="">تاریخ تولد <span class="text-danger">*</span></label>
-                            <div id="birthDate" class="date-picker-input"
-                                style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); font-size: 0.85rem; background: #f8fafc; color: inherit; cursor: pointer; min-height: 42px; display: flex; align-items: center;">
-                                <span style="color: @(Model?.BirthDate != null ? "inherit" : "#64748b");">@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "انتخاب تاریخ")</span>
+                            <div id="birthDate" class="date-picker-input">
+                                <span class="@(Model?.BirthDate != null ? "" : "date-picker-placeholder")">@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "انتخاب تاریخ")</span>
                             </div>
                             <input type="hidden" id="hidden_birthDate" name="birthDate" value="@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "")" />
                             <input type="hidden" id="birth_date_shamsi" value="@(Model?.BirthDate != null ? Model.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "")" />
@@ -123,19 +122,19 @@
 
                         <div class="input-group">
                             <label class="">تاریخ تولد میلادی</label>
-                            <input class="" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" readonly tabindex="-1" onfocus="this.blur();" style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default; direction: ltr; text-align: center;" placeholder="YYYY/MM/DD">
+                            <input class="input-highlight-gold text-center" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" readonly tabindex="-1" onfocus="this.blur();" placeholder="YYYY/MM/DD">
                         </div>
 
                         <!-- 3. Age Field with Theme Primary Color (Yellow #eab308) Background -->
                         <div class="input-group">
                             <label class="">سن</label>
-                            <input class="" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly tabindex="-1" onfocus="this.blur();" style="background-color: rgba(234, 179, 8, 0.16) !important; color: #854d0e !important; border: 1.5px solid var(--primary, #eab308) !important; font-weight: 700 !important; cursor: default;">
+                            <input class="input-highlight-gold" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly tabindex="-1" onfocus="this.blur();">
                         </div>
 
                         <div class="input-group">
                             <label class="">ملیت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper">
-                                <select name="nationality" id="cmd_nationality_id" class="hidden-native-select" style="display: none;">
+                                <select name="nationality" id="cmd_nationality_id" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="ایران" selected="@(Model?.Nationality == "ایران" || string.IsNullOrEmpty(Model?.Nationality))">ایران</option>
                                     <option value="اتباع خارجی" selected="@(Model?.Nationality == "اتباع خارجی")">اتباع خارجی</option>
@@ -151,7 +150,7 @@
                         <div class="input-group">
                             <label class="">تابعیت</label>
                             <div class="custom-select-wrapper">
-                                <select name="citizenship" id="cmd_citizenship" class="hidden-native-select" style="display: none;">
+                                <select name="citizenship" id="cmd_citizenship" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="ایران" selected="@(Model?.Citizenship == "ایران" || string.IsNullOrEmpty(Model?.Citizenship))">ایران</option>
                                     <option value="افغانستان" selected="@(Model?.Citizenship == "افغانستان")">افغانستان</option>
@@ -165,7 +164,7 @@
                         <div class="input-group">
                             <label>گروه خونی</label>
                             <div class="custom-select-wrapper">
-                                <select name="bloodGroup" id="cmd_blood_type" class="hidden-native-select" style="display: none;">
+                                <select name="bloodGroup" id="cmd_blood_type" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="A+" selected="@(Model?.BloodGroup == "A+")">A+</option>
                                     <option value="A-" selected="@(Model?.BloodGroup == "A-")">A-</option>
@@ -193,7 +192,7 @@
                         <div class="input-group">
                             <label>وضعیت تاهل</label>
                             <div class="custom-select-wrapper">
-                                <select name="maritalStatus" id="cmd_marital_status" class="hidden-native-select" style="display: none;">
+                                <select name="maritalStatus" id="cmd_marital_status" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مجرد" selected="@(Model?.MaritalStatus == "مجرد")">مجرد</option>
                                     <option value="متاهل" selected="@(Model?.MaritalStatus == "متاهل")">متاهل</option>
@@ -205,7 +204,7 @@
                         <div class="input-group">
                             <label>وضعیت نظام وظیفه</label>
                             <div class="custom-select-wrapper">
-                                <select name="militaryServiceStatus" id="cmd_military_service_status" class="hidden-native-select" style="display: none;">
+                                <select name="militaryServiceStatus" id="cmd_military_service_status" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="مشمول" selected="@(Model?.MilitaryServiceStatus == "مشمول")">مشمول</option>
                                     <option value="معافیت تحصیلی" selected="@(Model?.MilitaryServiceStatus == "معافیت تحصیلی")">معافیت تحصیلی</option>
@@ -220,7 +219,7 @@
                         <div class="input-group">
                             <label class="">دین</label>
                             <div class="custom-select-wrapper">
-                                <select name="religion" id="cmd_religion" class="hidden-native-select" style="display: none;">
+                                <select name="religion" id="cmd_religion" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="اسلام" selected="@(Model?.Religion == "اسلام")">اسلام</option>
                                     <option value="مسیحیت" selected="@(Model?.Religion == "مسیحیت")">مسیحیت</option>
@@ -237,7 +236,7 @@
                         <div class="input-group">
                             <label>وضعیت سلامت <span class="text-danger">*</span></label>
                             <div class="custom-select-wrapper">
-                                <select name="healthStatus" id="cmd_health_status" class="hidden-native-select" style="display: none;">
+                                <select name="healthStatus" id="cmd_health_status" class="hidden-native-select">
                                     <option value="">انتخاب کنید...</option>
                                     <option value="سالم" selected="@(Model?.HealthStatus == "سالم" || string.IsNullOrEmpty(Model?.HealthStatus))">سالم</option>
                                     <option value="غیر سالم" selected="@(Model?.HealthStatus == "غیر سالم")">غیر سالم</option>
@@ -246,20 +245,20 @@
                             </div>
                         </div>
 
-                        <div class="input-group" style="grid-column: 1 / -1;">
+                        <div class="input-group col-span-full">
                             <label>توضیحات</label>
                             <textarea rows="3" maxlength="500" id="txt_description" name="description">@Model?.Description</textarea>
                         </div>
 
-                        <div class="mobile-only-spacer" style="height: 85px; flex-shrink: 0;"></div>
-                        <div class="desktop-anchor" style="display: none;"></div>
+                        <div class="mobile-only-spacer"></div>
+                        <div class="desktop-anchor"></div>
                     </form>
                 </div>
 
                 <!-- Mobile Sticky Submit Button (Fixed at bottom on mobile) -->
                 <div class="sticky-submit-wrapper">
                     <button type="button" class="sticky-submit-btn" id="btn_sticky_submit" onclick="event.preventDefault(); save_data(); return false;">
-                        <i class="fa fa-check" style="margin-left: 8px;"></i>ثبت اطلاعات
+                        <i class="fa fa-check"></i>ثبت اطلاعات
                     </button>
                 </div>
             </div>

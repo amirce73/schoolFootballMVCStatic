@@ -1,77 +1,10 @@
 @model FootballSchool.Web.Models.ViewModels.DashboardViewModel
-<!doctype html>
-<html lang="fa" dir="rtl">
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "داشبورد";
+}
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>فوتبالیت - داشبورد مدرن</title>
-  <link rel="stylesheet" href="~/css/player.css" asp-append-version="true" />
-</head>
-
-<body>
-  <div id="root">
-    <nav class="top-navbar">
-      <div class="navbar-container">
-        <div class="header-profile">
-          <div class="header-profile-avatar">
-            <img alt="user" src="/assets/images/messi-profile.jpg" />
-          </div>
-          <div>
-            <div class="header-profile-info">
-              <span class="name">@(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())</span><span class="meta"><i class="fa fa-calendar-check-o header-meta-icon"></i>عضویت:<strong class="dir-ltr header-meta-date">@(Model.User.RegistrationRecords?.FirstOrDefault()?.Term?.Title ?? "- - -")</strong></span>
-            </div>
-          </div>
-          <i class="fa fa-angle-down header-profile-arrow"></i>
-          <div id="profileMenu" class="profile-menu">
-            <div class="profile-menu-container">
-              <div class="profile-menu-header">
-                <div class="profile-menu-user-fullname">@(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())</div>
-                <div class="profile-menu-verify-badge-wrap" onclick="window.location.href='/verification'">
-                  @if (Model.IsVerified) {
-                    <span class="badge-verify verified"><i class="fa fa-check-circle"></i> تایید شده</span>
-                  } else {
-                    <span class="badge-verify unverified"><i class="fa fa-exclamation-circle"></i>استعلام هویت نشده</span>
-                  }
-                </div>
-              </div>
-              <div class="profile-menu-info-row">
-                <span>کد ملی:</span> <strong>@(Model.User.NationalId ?? "- - - - - - - - - -")</strong>
-              </div>
-              <div class="profile-menu-info-row">
-                <span>تاریخ تولد:</span>
-                <strong class="dir-ltr">@(Model.User.BirthDate != null ? Model.User.BirthDate.Value.ToString("yyyy/MM/dd", new System.Globalization.CultureInfo("fa-IR")) : "- - / - - / - - - -")</strong>
-              </div>
-              <div class="profile-menu-info-row">
-                <span>سن:</span> <strong>@Model.Age سال</strong>
-              </div>
-              <div class="profile-menu-info-row no-margin">
-                <span>رده سنی:</span> <strong>- - - - - - -</strong>
-              </div>
-            </div>
-            <a href="/verification" class="profile-menu-verify-link"><i class="fa fa-shield"></i>تایید هویت و مدارک</a><a href="/logout" class="profile-menu-logout-link"><i class="fa fa-sign-out"></i> خروج از حساب</a>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="btn-noti" title="اعلان‌ها" onclick="window.location.href='/bulletin'">
-            <i class="fa fa-bell-o"></i><span class="badge">@Model.UnreadNotificationsCount</span></button><a href="#" class="btn-app-header"
-            title="دانلود اپلیکیشن"><i class="fa fa-android"></i> <span>دانلود اپ</span></a>
-        </div>
-      </div>
-    </nav>
-    <aside class="desktop-sidebar">
-      <div class="sidebar-title">
-        منوی اصلی
-      </div>
-      <a aria-current="page" class="dnav-item active" href="/dashboard" data-discover="true"><i class="fa fa-home"></i>
-        خانه</a><a class="dnav-item" href="/profile-hub" data-discover="true"><i class="fa fa-user"></i> پروفایل</a><a
-        class="dnav-item" href="/registration" data-discover="true"><i class="fa fa-edit"></i> ثبت‌نام</a><a
-        class="dnav-item" href="/financial-hub" data-discover="true"><i class="fa fa-credit-card"></i> مالی</a><a
-        class="dnav-item" href="/specialized-hub" data-discover="true"><i class="fa fa-building"></i> تخصصی</a>
-    </aside>
-    <main class="main-wrapper">
-      <div id="view-dashboard" class="view-section fade-in">
+<div id="view-dashboard" class="view-section fade-in">
         <div class="modal-overlay">
           <div class="modal-box">
             <div class="modal-header-gradient">
@@ -324,18 +257,3 @@
           </div>
         </div>
       </div>
-    </main>
-    <nav class="bottom-nav">
-      <a aria-current="page" class="bnav-item active" href="/dashboard" data-discover="true"><i class="fa fa-home"></i>
-        خانه</a><a class="bnav-item" href="/profile-hub" data-discover="true"><i class="fa fa-user"></i> پروفایل</a><a
-        class="bnav-item" href="/registration" data-discover="true"><i class="fa fa-edit"></i> ثبت‌نام</a><a
-        class="bnav-item" href="/financial-hub" data-discover="true"><i class="fa fa-credit-card"></i> مالی</a><a
-        class="bnav-item" href="/specialized-hub" data-discover="true"><i class="fa fa-building"></i> تخصصی</a>
-    </nav>
-  </div>
-
-  <script src="~/js/player.js" asp-append-version="true"></script>
-</body>
-
-</html>
-
