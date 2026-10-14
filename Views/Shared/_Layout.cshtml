@@ -41,6 +41,44 @@
   <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} - فوتبالیت" : "فوتبالیت - داشبورد مدرن")</title>
   <link rel="stylesheet" href="~/css/player.css" asp-append-version="true" />
   @await RenderSectionAsync("Styles", required: false)
+  <script>
+    function toggleProfileMenu(e) {
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.cancelBubble !== undefined) e.cancelBubble = true;
+      }
+      var m = document.getElementById('profileMenu');
+      if (!m) return;
+      var isOpen = m.classList.toggle('show');
+      if (isOpen) {
+        m.style.setProperty('display', 'block', 'important');
+        m.style.setProperty('opacity', '1', 'important');
+        m.style.setProperty('visibility', 'visible', 'important');
+        m.style.setProperty('pointer-events', 'auto', 'important');
+        m.style.setProperty('transform', 'translateY(0)', 'important');
+        m.style.setProperty('z-index', '999999', 'important');
+      } else {
+        m.style.setProperty('display', 'none', 'important');
+        m.style.setProperty('opacity', '0', 'important');
+        m.style.setProperty('visibility', 'hidden', 'important');
+        m.style.setProperty('pointer-events', 'none', 'important');
+        m.style.setProperty('transform', 'translateY(-10px)', 'important');
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      var m = document.getElementById('profileMenu');
+      if (m && m.classList.contains('show')) {
+        if (!e.target.closest('#headerProfileTrigger')) {
+          m.classList.remove('show');
+          m.style.setProperty('display', 'none', 'important');
+          m.style.setProperty('opacity', '0', 'important');
+          m.style.setProperty('visibility', 'hidden', 'important');
+          m.style.setProperty('pointer-events', 'none', 'important');
+        }
+      }
+    });
+  </script>
 </head>
 <body>
   <div id="root">
@@ -48,7 +86,7 @@
     <nav class="top-navbar">
       <div class="navbar-container">
         <!-- Header Profile & Dropdown -->
-        <div class="header-profile" id="headerProfileTrigger">
+        <div class="header-profile" id="headerProfileTrigger" onclick="toggleProfileMenu(event);" style="cursor: pointer;">
           <div class="header-profile-avatar">
             <img alt="user" src="@_avatar" onerror="this.src='/assets/images/messi-profile.jpg';" />
           </div>
@@ -63,7 +101,7 @@
           </div>
           <i class="fa fa-angle-down header-profile-arrow"></i>
 
-          <div id="profileMenu" class="profile-menu">
+          <div id="profileMenu" class="profile-menu" onclick="event.stopPropagation();">
             <div class="profile-menu-container">
               <div class="profile-menu-header">
                 <div class="profile-menu-user-fullname">
@@ -143,20 +181,6 @@
 
   <!-- Global Scripts -->
   <script>
-    // Profile menu toggle
-    const profileTrigger = document.getElementById('headerProfileTrigger');
-    const profileMenu = document.getElementById('profileMenu');
-    if (profileTrigger && profileMenu) {
-      profileTrigger.addEventListener('click', function(e) {
-        e.stopPropagation();
-        profileMenu.classList.toggle('show');
-      });
-      document.addEventListener('click', function() {
-        if (profileMenu.classList.contains('show')) {
-          profileMenu.classList.remove('show');
-        }
-      });
-    }
 
     // Global Topbar Back Button handling
     const LAYOUT_BACK_MAP = {
