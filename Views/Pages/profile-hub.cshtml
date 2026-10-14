@@ -6,7 +6,7 @@
 
 <div id="view-profile-hub" class="view-section fade-in">
     <div class="sticky-top-bar">
-        <button class="btn-top-action btn-back-top" onclick="window.location.href='/dashboard'"><i class="fa fa-arrow-right"></i> بازگشت</button>
+        <button class="btn-top-action btn-back-top" data-href="/dashboard"><i class="fa fa-arrow-right"></i> بازگشت</button>
         <h3 class="sticky-title">پروفایل کاربری</h3>
         <div class="top-bar-spacer"></div>
     </div>
@@ -14,7 +14,7 @@
         <div class="profile-header-card">
             <div class="profile-hub-avatar-wrap">
                 <img alt="Profile" src="@(string.IsNullOrEmpty(Model.User.PassportPhotoPath) ? "/assets/images/messi-profile.jpg" : Model.User.PassportPhotoPath)" class="profile-hub-avatar-img" onerror="this.src='/assets/images/messi-profile.jpg';" />
-                <button type="button" title="تغییر عکس پروفایل" class="profile-hub-avatar-btn" onclick="window.location.href='/personal-info'"><i class="fa fa-camera"></i></button>
+                <button type="button" title="تغییر عکس پروفایل" class="profile-hub-avatar-btn" data-href="/personal-info"><i class="fa fa-camera"></i></button>
             </div>
             <h3 class="profile-hub-username">@(string.IsNullOrEmpty(Model.User.FirstName) && string.IsNullOrEmpty(Model.User.LastName) ? "کاربر گرامی" : $"{Model.User.FirstName} {Model.User.LastName}".Trim())</h3>
             <p class="profile-hub-nid">@(Model.User.NationalId ?? "کد ملی ثبت نشده")</p>
@@ -39,21 +39,21 @@
             </div>
             @if (!Model.IsVerified)
             {
-                <button class="btn-verify-action" onclick="window.location.href='/verification'">تکمیل هویت</button>
+                <button class="btn-verify-action" data-href="/verification">تکمیل هویت</button>
             }
         </div>
         <div class="profile-frame">
             <div class="frame-title"><i class="fa fa-user icon-personal"></i> اطلاعات فردی</div>
             <div class="frame-grid">
-                <div class="frame-item" onclick="window.location.href='/personal-info'">
+                <div class="frame-item" data-href="/personal-info">
                     <div class="frame-icon-circle ic-blue"><i class="fa fa-id-card-o"></i></div>
                     <span class="frame-item-label">اطلاعات شخصی</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/contact-info'">
+                <div class="frame-item" data-href="/contact-info">
                     <div class="frame-icon-circle ic-green"><i class="fa fa-phone"></i></div>
                     <span class="frame-item-label">اطلاعات تماس</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/passport-info'">
+                <div class="frame-item" data-href="/passport-info">
                     <div class="frame-icon-circle ic-orange"><i class="fa fa-globe"></i></div>
                     <span class="frame-item-label">سایر (گذرنامه)</span>
                 </div>
@@ -62,11 +62,11 @@
         <div class="profile-frame">
             <div class="frame-title"><i class="fa fa-soccer-ball-o icon-sports"></i> اطلاعات ورزشی</div>
             <div class="frame-grid">
-                <div class="frame-item" onclick="window.location.href='/sports-info'">
+                <div class="frame-item" data-href="/sports-info">
                     <div class="frame-icon-circle ic-purple"><i class="fa fa-star"></i></div>
                     <span class="frame-item-label">مشخصات ورزشی</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/club-info'">
+                <div class="frame-item" data-href="/club-info">
                     <div class="frame-icon-circle ic-blue"><i class="fa fa-shield"></i></div>
                     <span class="frame-item-label">اطلاعات باشگاهی</span>
                 </div>
@@ -75,19 +75,19 @@
         <div class="profile-frame">
             <div class="frame-title"><i class="fa fa-folder-open icon-documents"></i> مستندات و مدارک</div>
             <div class="frame-grid">
-                <div class="frame-item" onclick="window.location.href='/documents'">
+                <div class="frame-item" data-href="/documents">
                     <div class="frame-icon-circle ic-blue"><i class="fa fa-file-image-o"></i></div>
                     <span class="frame-item-label">کارت ملی</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/documents'">
+                <div class="frame-item" data-href="/documents">
                     <div class="frame-icon-circle ic-green"><i class="fa fa-file-text-o"></i></div>
                     <span class="frame-item-label">شناسنامه</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/documents'">
+                <div class="frame-item" data-href="/documents">
                     <div class="frame-icon-circle ic-purple"><i class="fa fa-certificate"></i></div>
                     <span class="frame-item-label">مجوز ورزشی</span>
                 </div>
-                <div class="frame-item" onclick="window.location.href='/documents'">
+                <div class="frame-item" data-href="/documents">
                     <div class="frame-icon-circle ic-red-card"><i class="fa fa-plus-circle"></i></div>
                     <span class="frame-item-label">مدارک و سایر</span>
                 </div>
@@ -96,7 +96,7 @@
         <div class="profile-frame">
             <div class="frame-title"><i class="fa fa-shield icon-security"></i> امنیت و حساب کاربری</div>
             <div class="frame-grid">
-                <div class="frame-item" onclick="window.location.href='/password'">
+                <div class="frame-item" data-href="/password">
                     <div class="frame-icon-circle ic-orange"><i class="fa fa-lock"></i></div>
                     <span class="frame-item-label">تغییر رمز عبور</span>
                 </div>

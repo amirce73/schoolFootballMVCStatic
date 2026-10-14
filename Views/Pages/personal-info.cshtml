@@ -7,7 +7,7 @@
 
 <div id="view-personal-info" class="view-section fade-in">
                 <div class="sticky-top-bar">
-                    <button type="button" class="btn-top-action btn-back-top" onclick="window.location.href='/profile-hub'">
+                    <button type="button" class="btn-top-action btn-back-top" data-href="/profile-hub">
                         <i class="fa fa-arrow-right"></i> بازگشت
                     </button>
                     <h3 class="sticky-title">اطلاعات فردی</h3>
@@ -18,13 +18,13 @@
 
 
                 <div class="card card-overflow-visible">
-                    <form id="personal-info-form" class="form-grid" method="post" action="/personal-info" onsubmit="event.preventDefault(); save_data(); return false;" enctype="multipart/form-data">
+                    <form id="personal-info-form" class="form-grid" method="post" action="/personal-info" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="All" class="validation-summary-box"></div>
 
                         <!-- 1. Profile Photo Selection Section -->
                         <div class="photo-upload-container">
-                            <div class="photo-avatar-box" onclick="document.getElementById('FileUpload').click();" title="کلیک برای تغییر تصویر">
+                            <div class="photo-avatar-box" title="کلیک برای تغییر تصویر">
                                 <img id="doc_pic" name="doc_pic" src="@(string.IsNullOrEmpty(user?.PassportPhotoPath) ? "/assets/images/messi-profile.jpg" : user.PassportPhotoPath)" alt="تصویر بازیکن" />
                                 <div class="photo-avatar-overlay">
                                     <i class="fa fa-camera"></i>
@@ -34,11 +34,11 @@
                                 <span class="photo-title">تصویر پرسنلی بازیکن</span>
                                 <span class="photo-hint">* فرمت‌های مجاز: JPG, PNG, WEBP, TIFF (حداکثر ۵ مگابایت)</span>
                                 <div class="photo-actions-row">
-                                    <button type="button" class="btn-select-photo" id="btn_FileUpload" onclick="document.getElementById('FileUpload').click();">
+                                    <button type="button" class="btn-select-photo" id="btn_FileUpload">
                                         <i class="fa fa-upload"></i> انتخاب تصویر پروفایل
                                     </button>
                                     <span class="photo-file-name" id="lbl_FileUpload"></span>
-                                    <input type="file" id="FileUpload" name="profilePhoto" accept=".jpg,.jpeg,.png,.webp,.tiff" class="d-none" onchange="previewImage(this);" />
+                                    <input type="file" id="FileUpload" name="profilePhoto" accept=".jpg,.jpeg,.png,.webp,.tiff" class="d-none" />
                                 </div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
 
                         <div class="input-group">
                             <label class="">کد ملی <span class="text-danger">*</span></label>
-                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_international_id" name="nationalId" value="@Model?.NationalId" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10);">
+                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_international_id" name="nationalId" value="@Model?.NationalId">
                         </div>
 
                         <div class="input-group">
@@ -82,7 +82,7 @@
 
                         <div class="input-group">
                             <label class="">شماره شناسنامه</label>
-                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_id_no" name="birthCertificateNo" value="@Model?.BirthCertificateNo" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 10);">
+                            <input maxlength="10" inputmode="numeric" class="" type="text" id="txt_id_no" name="birthCertificateNo" value="@Model?.BirthCertificateNo">
                         </div>
 
                         <div class="input-group">
@@ -92,7 +92,7 @@
 
                         <div class="input-group">
                             <label class="">محل صدور</label>
-                            <input maxlength="50" class="" type="text" id="txt_location_id" name="issuePlace" value="@Model?.IssuePlace" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
+                            <input maxlength="50" class="" type="text" id="txt_location_id" name="issuePlace" value="@Model?.IssuePlace">
                         </div>
 
                         <div class="input-group">
@@ -102,13 +102,13 @@
 
                         <div class="input-group">
                             <label class="">شغل پدر</label>
-                            <input maxlength="50" class="" type="text" id="txt_father_job" name="fatherJob" value="@Model?.FatherJob" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
+                            <input maxlength="50" class="" type="text" id="txt_father_job" name="fatherJob" value="@Model?.FatherJob">
                         </div>
 
                         <!-- 2. Job changed to "شغل بازیکن" -->
                         <div class="input-group">
                             <label class="">شغل بازیکن</label>
-                            <input maxlength="50" class="" type="text" id="txt_job" name="occupation" value="@Model?.Occupation" oninput="this.value = this.value.replace(/[0-9۰-۹٠-٩\u0660-\u0669\u06F0-\u06F9]/g, '');">
+                            <input maxlength="50" class="" type="text" id="txt_job" name="occupation" value="@Model?.Occupation">
                         </div>
 
                         <div class="input-group">
@@ -122,13 +122,13 @@
 
                         <div class="input-group">
                             <label class="">تاریخ تولد میلادی</label>
-                            <input class="input-highlight-gold text-center" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" readonly tabindex="-1" onfocus="this.blur();" placeholder="YYYY/MM/DD">
+                            <input class="input-highlight-gold text-center" type="text" id="txt_birth_date_miladi" name="birthDateMiladi" value="@Model?.BirthDateMiladi" readonly tabindex="-1" placeholder="YYYY/MM/DD">
                         </div>
 
                         <!-- 3. Age Field with Theme Primary Color (Yellow #eab308) Background -->
                         <div class="input-group">
                             <label class="">سن</label>
-                            <input class="input-highlight-gold" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly tabindex="-1" onfocus="this.blur();">
+                            <input class="input-highlight-gold" type="text" id="lbl_age" name="age" value="@(string.IsNullOrEmpty(Model?.Age) ? "" : (Model.Age.EndsWith("سال") ? Model.Age : Model.Age + " سال"))" readonly tabindex="-1">
                         </div>
 
                         <div class="input-group">
@@ -181,12 +181,12 @@
 
                         <div class="input-group">
                             <label class="">قد (سانتی‌متر)</label>
-                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_Height" name="height" value="@Model?.Height" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 3);">
+                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_Height" name="height" value="@Model?.Height">
                         </div>
 
                         <div class="input-group">
                             <label class="">وزن (کیلوگرم)</label>
-                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_weight" name="weight" value="@Model?.Weight" onkeyup="if(typeof Set_value_numeric === 'function') Set_value_numeric(this.id, 3);">
+                            <input maxlength="3" inputmode="numeric" class="" type="text" id="txt_weight" name="weight" value="@Model?.Weight">
                         </div>
 
                         <div class="input-group">
@@ -257,7 +257,7 @@
 
                 <!-- Mobile Sticky Submit Button (Fixed at bottom on mobile) -->
                 <div class="sticky-submit-wrapper">
-                    <button type="button" class="sticky-submit-btn" id="btn_sticky_submit" onclick="event.preventDefault(); save_data(); return false;">
+                    <button type="button" class="sticky-submit-btn" id="btn_sticky_submit">
                         <i class="fa fa-check"></i>ثبت اطلاعات
                     </button>
                 </div>

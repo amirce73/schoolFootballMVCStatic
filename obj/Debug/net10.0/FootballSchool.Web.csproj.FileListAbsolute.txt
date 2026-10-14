@@ -742,7 +742,7 @@ E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\q8l90v6684-{0}-1lg8hs
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\0xay9hueso-{0}-up5j6ov763-up5j6ov763.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\1hv0iolgto-{0}-3y4gi94q3h-3y4gi94q3h.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\ow75y1s2bw-{0}-psy20xopks-psy20xopks.gz
-E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\s1nwhm1t2v-{0}-fnlq7cxhl3-fnlq7cxhl3.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\lr6k34srnw-{0}-39rbhw3t05-39rbhw3t05.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\y890xiaoox-{0}-39rbhw3t05-39rbhw3t05.gz
 E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\1bqcav5j1k-{0}-0r92ffxv8p-0r92ffxv8p.gz
+E:\amirce73\FootballSchoolMVC\obj\Debug\net10.0\compressed\s1nwhm1t2v-{0}-uki8rhicf4-uki8rhicf4.gz

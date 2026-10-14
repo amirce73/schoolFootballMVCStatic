@@ -41,66 +41,6 @@
   <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} - فوتبالیت" : "فوتبالیت - داشبورد مدرن")</title>
   <link rel="stylesheet" href="~/css/player.css" asp-append-version="true" />
   @await RenderSectionAsync("Styles", required: false)
-  <script>
-    function closeProfileMenu() {
-      var m = document.getElementById('profileMenu');
-      var b = document.getElementById('profileMenuBackdrop');
-      if (m) {
-        m.classList.remove('show');
-        m.style.setProperty('display', 'none', 'important');
-        m.style.setProperty('opacity', '0', 'important');
-        m.style.setProperty('visibility', 'hidden', 'important');
-        m.style.setProperty('pointer-events', 'none', 'important');
-        m.style.setProperty('transform', 'translateY(-10px)', 'important');
-      }
-      if (b) {
-        b.style.display = 'none';
-      }
-    }
-
-    function toggleProfileMenu(e) {
-      if (e) {
-        if (e.stopPropagation) e.stopPropagation();
-        if (e.cancelBubble !== undefined) e.cancelBubble = true;
-      }
-      var m = document.getElementById('profileMenu');
-      var b = document.getElementById('profileMenuBackdrop');
-      if (!m) return;
-      var isOpen = m.classList.contains('show');
-      if (!isOpen) {
-        m.classList.add('show');
-        m.style.setProperty('display', 'block', 'important');
-        m.style.setProperty('opacity', '1', 'important');
-        m.style.setProperty('visibility', 'visible', 'important');
-        m.style.setProperty('pointer-events', 'auto', 'important');
-        m.style.setProperty('transform', 'translateY(0)', 'important');
-        m.style.setProperty('z-index', '999999', 'important');
-        if (b) b.style.display = 'block';
-      } else {
-        closeProfileMenu();
-      }
-    }
-
-    // Capture-phase listener as fallback
-    window.addEventListener('click', function(e) {
-      var m = document.getElementById('profileMenu');
-      if (m && m.classList.contains('show')) {
-        if (!e.target.closest('#headerProfileTrigger')) {
-          closeProfileMenu();
-        }
-      }
-    }, true);
-
-    // Also close on touchstart for mobile devices
-    window.addEventListener('touchstart', function(e) {
-      var m = document.getElementById('profileMenu');
-      if (m && m.classList.contains('show')) {
-        if (!e.target.closest('#headerProfileTrigger')) {
-          closeProfileMenu();
-        }
-      }
-    }, { capture: true, passive: true });
-  </script>
 </head>
 <body>
   <!-- Fullscreen invisible backdrop for closing profile menu on outside click -->
@@ -111,7 +51,7 @@
     <nav class="top-navbar">
       <div class="navbar-container">
         <!-- Header Profile & Dropdown -->
-        <div class="header-profile" id="headerProfileTrigger" onclick="toggleProfileMenu(event);" style="cursor: pointer; position: relative; z-index: 99999;">
+        <div class="header-profile" id="headerProfileTrigger" style="cursor: pointer; position: relative; z-index: 99999;" onclick="toggleProfileMenu(event);">
           <div class="header-profile-avatar">
             <img alt="user" src="@_avatar" onerror="this.src='/assets/images/messi-profile.jpg';" />
           </div>
@@ -158,7 +98,7 @@
             <form id="logoutForm" method="post" action="/account/logout">
               @Html.AntiForgeryToken()
             </form>
-            <a href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();" class="profile-menu-logout-link">
+            <a href="javascript:void(0)" class="profile-menu-logout-link">
               <i class="fa fa-sign-out"></i> خروج از حساب
             </a>
           </div>
@@ -204,125 +144,13 @@
     </nav>
   </div>
 
-  <!-- Global Scripts -->
-  <script>
-
-    // Global Topbar Back Button handling
-    const LAYOUT_BACK_MAP = {
-      'attendance': '/specialized-hub',
-      'bank-info': '/financial-hub',
-      'bulletin': '/dashboard',
-      'certificate': '/documents',
-      'certificates': '/documents',
-      'clothing-info': '/profile-hub',
-      'club-info': '/profile-hub',
-      'contact-info': '/profile-hub',
-      'dashboard': '/login',
-      'documents': '/profile-hub',
-      'financial-hub': '/dashboard',
-      'financial-timeline': '/financial-hub',
-      'gallery': '/dashboard',
-      'insurance': '/specialized-hub',
-      'insurance-status': '/specialized-hub',
-      'passport-info': '/profile-hub',
-      'password': '/profile-hub',
-      'personal-info': '/profile-hub',
-      'profile-hub': '/dashboard',
-      'registration': '/dashboard',
-      'registration-history': '/specialized-hub',
-      'specialized-hub': '/dashboard',
-      'sports-info': '/profile-hub',
-      'store': '/dashboard',
-      'talent': '/specialized-hub',
-      'training-backpack': '/dashboard',
-      'verification': '/profile-hub'
-    };
-
-    document.addEventListener('click', function(e) {
-      const backBtn = e.target.closest('.btn-back-top');
-      if (backBtn) {
-        const onclickAttr = backBtn.getAttribute('onclick');
-        if (onclickAttr && onclickAttr.includes('window.location.href')) {
-          return;
-        }
-        e.preventDefault();
-        const parts = window.location.pathname.split('/').filter(Boolean);
-        const curPage = (parts[parts.length - 1] || 'dashboard').replace('.html', '').toLowerCase();
-        const dest = LAYOUT_BACK_MAP[curPage] || '/dashboard';
-        window.location.href = dest;
-      }
-    });
-
-    // Custom select dropdown toggle & select
-    document.addEventListener('click', function(e) {
-      const trigger = e.target.closest('.custom-select-trigger');
-      if (trigger) {
-        const wrapper = trigger.closest('.custom-select-wrapper');
-        if (wrapper) {
-          const isOpen = wrapper.classList.toggle('open');
-          const group = wrapper.closest('.input-group');
-          if (group) {
-            if (isOpen) group.classList.add('has-open-select');
-            else group.classList.remove('has-open-select');
-          }
-        }
-      } else {
-        document.querySelectorAll('.custom-select-wrapper.open').forEach(function(w) {
-          w.classList.remove('open');
-          const g = w.closest('.input-group');
-          if (g) g.classList.remove('has-open-select');
-        });
-      }
-
-      const option = e.target.closest('.custom-select-option');
-      if (option) {
-        const wrapper = option.closest('.custom-select-wrapper');
-        if (wrapper) {
-          const val = option.getAttribute('data-value');
-          const text = option.textContent.trim();
-          const triggerEl = wrapper.querySelector('.custom-select-trigger');
-          const selectEl = wrapper.querySelector('select');
-          if (triggerEl) triggerEl.textContent = text;
-          if (selectEl) {
-            selectEl.value = val;
-            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-          wrapper.classList.remove('open');
-          const g = wrapper.closest('.input-group');
-          if (g) g.classList.remove('has-open-select');
-        }
-      }
-    });
-
-    // Auto-scroll input into view on mobile focus
-    window.addEventListener('focus', function(e) {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) {
-        setTimeout(function() {
-          const rect = e.target.getBoundingClientRect();
-          const viewHeight = window.innerHeight;
-          if (rect.bottom > viewHeight - 120) {
-            window.scrollBy({ top: rect.bottom - (viewHeight - 120), behavior: 'smooth' });
-          }
-        }, 300);
-      }
-    }, true);
-  </script>
+  
 
   @if (TempData["Success"] != null)
   {
     <div id="toast-success" class="toast-success-banner">
       <i class="fa fa-check-circle"></i> @TempData["Success"]
     </div>
-    <script>
-      setTimeout(function() {
-        var toast = document.getElementById('toast-success');
-        if (toast) {
-          toast.style.opacity = '0';
-          toast.style.transition = 'opacity 0.5s ease';
-          setTimeout(() => toast.remove(), 500);
-        }
-      }, 3000);
-    </script>
   }
 
   <!-- Modern Global AJAX Loading Spinner Overlay -->
@@ -334,9 +162,9 @@
   </div>
 
   <!-- Modern Global Result Notification Modal -->
-  <div class="fs-modal-backdrop" id="alaram_box" onclick="if(event.target === this) close_alarm_box();">
+  <div class="fs-modal-backdrop" id="alaram_box">
       <div class="fs-modal-card is-success" id="alarm_card">
-          <button type="button" class="fs-modal-close" onclick="close_alarm_box();" title="بستن">
+          <button type="button" class="fs-modal-close" title="بستن">
               <i class="fa fa-times"></i>
           </button>
           <div class="fs-modal-icon-wrap" id="alarm_icon_wrap">
@@ -355,7 +183,7 @@
               <p id="lbl2"></p>
           </div>
           <div class="fs-modal-footer">
-              <button type="button" class="fs-modal-btn" id="alarm_btn" onclick="close_alarm_box();">
+              <button type="button" class="fs-modal-btn" id="alarm_btn">
                   <span>متوجه شدم</span>
                   <i class="fa fa-chevron-left modal-btn-chevron"></i>
               </button>
